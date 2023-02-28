@@ -14,6 +14,16 @@
         [@ww.textfield labelKey="gradle-enterprise.config.server" name="server" autofocus=true/]
         [@ww.checkbox labelKey="gradle-enterprise.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
         [@ww.textfield labelKey="gradle-enterprise.config.shared-credential-name" name="sharedCredentialName"/]
+        <div class="field-group">
+            <div style="display: inline-block;">
+                [@ui.messageBox type="info"]
+                    <div>
+                        The access key must be in the <b>&lt;server host name&gt;=&lt;access key&gt;</b> format. For more
+                        details please refer to the <a href="https://docs.gradle.com/enterprise/gradle-plugin/#manual_access_key_configuration" target="_blank">documentation</a>.
+                    </div>
+                [/@ui.messageBox]
+            </div>
+        </div>
     [/@ui.bambooSection]
 
     [@ui.bambooSection titleKey="gradle-enterprise.config.gradle-settings.title" headerWeight="h2"]
