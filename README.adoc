@@ -1,0 +1,101 @@
+:imagesdir: images
+:thumbnail: width=80%,align="center"
+
+= Gradle Enterprise Bamboo plugin
+
+== Overview
+This plugin integrates with Gradle Enterprise for Gradle and Maven builds run via Bamboo. Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Gradle Enterprise].
+
+The plugin exposes the links to the created build scans in the Bamboo UI. It connects Gradle and Maven builds to an existing Gradle Enterprise instance such that a build scan is published each time a build is run from Bamboo.
+
+For each Gradle and Maven build that is run from Bamboo, this plugin exposes the links to the created build scans in the Bamboo UI. The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Gradle Enterprise instance such that a Build Scan is published each time a build is run from Bamboo.
+
+The plugin is available from the Atlassian Marketplace.
+
+image::build-scan-links.png[Build Scan Links,{thumbnail}]
+
+== Installation
+
+Install the Gradle Enterprise Bamboo plugin from Atlassian Marketplace (the generic plugin installation process is described https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[here]).
+
+Once the plugin is installed, the Bamboo Administration page will have a new section available under the “Managed Apps” group named Gradle Enterprise integration.
+
+image::admin-plugin-section.png[Plugin Section,{thumbnail}]
+
+When you select the said section, the following configuration will be available
+
+image::no-autoinjection-configuration.png[Empty Plugin Configuration,{thumbnail}]
+
+== Configuration
+
+=== Using Bamboo Shared Credential for Gradle Enterprise server authentication
+In order to specify an access key for Gradle Enterprise server, you would need to create a Shared Credentials in Bamboo and reference the name of that credential in the “Shared credential name” field of the Gradle Enterprise integration page.
+To create a Bamboo Shared Credentials, you’d need to navigate to the Bamboo Administration page and select the “Shared credentials” section.
+
+image::shared-credentials-section.png[Shared Credentials Section,{thumbnail}]
+
+When clicking “Add new credentials”, select the “Username and password” option from the dropdown.
+
+image::username-password-credentials.png[Username and Password Credentials,{thumbnail}]
+
+Fill the form as following:
+
+* _Credential name_ - this is the name of the credential that you’ll be referencing in the “Shared credential name” field of the Gradle Enterprise integration page.
+* _Username_ - you can specify any username value here, as it will not be used by the plugin
+* _Password_ - this should be the value of the access key which is used to authenticate against the Gradle Enterprise server. It has a format of a key value pair (e.g. `host=value`)
+
+=== Gradle Auto-instrumentation
+
+To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
+You’d need to specify your URL, select “Allow untrusted server” if applicable and specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server. You can also override the Gradle plugin repository URL if you aren't able to use Gradle Plugin Portal due to networking or security constraints.
+
+NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] as well, as it will provide more details about your build_
+
+image::gradle-autoinjection-configuration.png[Gradle Auto-injection Configuration,{thumbnail}]
+
+=== Maven Auto-instrumentation
+
+To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
+You’d need to specify your URL, select “Allow untrusted server” if applicable and specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+
+NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension] as well, as it will provide more details about your build_
+
+image::maven-autoinjection-configuration.png[Maven Auto-instrumentation Configuration,{thumbnail}]
+
+=== Gradle and Maven Auto-instrumentation
+
+If you have both Gradle and Maven builds in Bamboo and would like to enable build scan publishing for all, you can simply merge the configuration like this
+
+image::gradle-maven-autoinjection-configuration.png[Gradle and Maven Auto-instrumentation Configuration,{thumbnail}]
+
+== Usage
+
+Once build is completed, you’ll be able to select a build scan link directly from the Job details page in the UI (the build scan link is also present under the Metadata section on the same page)
+
+image::build-scan-links.png[Build Scan Links,{thumbnail}]
+
+== Auto-instrumentation compatibility
+
+The following sections list the compatibility of the plugin with the Gradle Enterprise version based on the given build tool in use.
+
+==== For Gradle builds
+
+For Gradle builds the version used for the Gradle Enterprise Gradle plugin is defined in the `Gradle Enterprise Gradle plugin version` field in the `Gradle settings` section of the configuration form.
+The compatibility of the specified version with Gradle Enterprise can be found https://docs.gradle.com/enterprise/compatibility/#gradle_enterprise_gradle_plugin[here].
+
+For the optional Common Custom User Data Gradle plugin which is defined the same form, you can see the compatibility of the specified version with the Gradle Enterprise Gradle plugin https://github.com/gradle/common-custom-user-data-gradle-plugin#version-compatibility[here].
+
+==== For Maven builds
+
+For Maven builds the version of the Gradle Enterprise Maven extension is bundled into the plugin, meaning that the user can’t change what version the Maven build is instrumented with.
+
+The following table shows the compatibility of the plugin version with Gradle Enterprise:
+
+|===
+|Bamboo Plugin version  | Gradle Enterprise Maven extension version | Common Custom User Data Maven extension version  | Minimum supported Gradle Enterprise version
+|1.0.0                  | 1.16.4                                             | 1.11.1                                                    | 2022.3
+|===
+
+== License
+
+This plugin is available under the https://github.com/gradle/gradle-enterprise-bamboo-plugin/blob/main/LICENSE[Apache License, Version 2.0].

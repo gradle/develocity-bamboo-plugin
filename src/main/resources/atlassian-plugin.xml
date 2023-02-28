@@ -1,0 +1,77 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/gradle-icon.png</param>
+        <param name="plugin-logo">images/gradle-icon.png</param>
+        <param name="configure.url">/admin/buildScansConfig.action</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="gradle-enterprise-bamboo-plugin"/>
+
+    <preJobAction key="gradleEnterprisePreJobAction"
+                  name="Gradle Enterprise auto-injection preparation"
+                  class="com.gradle.enterprise.bamboo.GradleEnterprisePreJobAction">
+        <description>Gradle Enterprise auto-injection preparation</description>
+    </preJobAction>
+
+    <preBuildAction key="gradleEnterprisePreBuildAction"
+                    name="Gradle Enterprise auto-injection"
+                    class="com.gradle.enterprise.bamboo.GradleEnterprisePreBuildAction">
+        <description>Gradle Enterprise auto-injection</description>
+    </preBuildAction>
+
+    <buildProcessor key="gradleEnterpriseBuildProcessor"
+                    name="Gradle Enterprise auto-injection cleanup"
+                    class="com.gradle.enterprise.bamboo.GradleEnterpriseBuildProcessor">
+        <skipIfFailed>false</skipIfFailed>
+        <description>Gradle Enterprise auto-injection cleanup</description>
+    </buildProcessor>
+
+    <web-item key="configureBuildScans"
+              name="Gradle Enterprise integration"
+              section="system.admin/plugins">
+        <label key="Gradle Enterprise integration"/>
+        <link linkId="configureBuildScans">/admin/buildScansConfig.action</link>
+    </web-item>
+
+    <xwork key="buildScansConfigAdmin"
+           name="Gradle Enterprise integration">
+        <package name="configureBuildScans" extends="admin">
+            <action name="buildScansConfig"
+                    class="com.gradle.enterprise.bamboo.admin.BuildScansConfigAction"
+                    method="input">
+                <result name="input" type="freemarker">/templates/views/admin/buildScansConfig.ftl</result>
+            </action>
+
+            <action name="saveBuildScansConfig"
+                    class="com.gradle.enterprise.bamboo.admin.BuildScansConfigAction"
+                    method="save">
+                <result name="input" type="freemarker">/templates/views/admin/buildScansConfig.ftl</result>
+                <result name="success" type="redirect">/admin/buildScansConfig.action</result>
+            </action>
+        </package>
+    </xwork>
+
+    <web-item key="buildScans:${buildKey}-${buildNumber}"
+              name="Build scans"
+              section="results.subMenu/results"
+              weight="20">
+        <label key="Build scans"/>
+        <link linkId="buildScans:${buildKey}-${buildNumber}">/build/result/buildScans.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</link>
+        <condition class="com.gradle.enterprise.bamboo.BuildScansAvailableCondition"/>
+    </web-item>
+
+    <xwork key="buildScans"
+           name="Build scans">
+        <package name="gradleEnterprisePlugin" extends="buildResultView">
+            <action name="buildScans"
+                    class="com.gradle.enterprise.bamboo.BuildScansAction">
+                <result name="success" type="freemarker">/templates/views/buildScans.ftl</result>
+                <result name="error" type="freemarker">/error.ftl</result>
+            </action>
+        </package>
+    </xwork>
+</atlassian-plugin>

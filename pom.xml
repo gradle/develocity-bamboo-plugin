@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.gradle.enterprise</groupId>
+    <artifactId>gradle-enterprise-bamboo-plugin</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <packaging>atlassian-plugin</packaging>
+
+    <name>Gradle Enterprise Bamboo plugin</name>
+    <description>
+        Leverages Gradle Enterprise build scans in Bamboo build jobs and provides auto-injection
+        of the Gradle Enterprise Gradle plugin or the Gradle Enterprise Maven extension.
+    </description>
+
+    <organization>
+        <name>Gradle</name>
+        <url>https://gradle.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0 License</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/gradle/gradle-enterprise-bamboo-plugin</url>
+        <connection>scm:git:https://github.com/gradle/gradle-enterprise-bamboo-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/gradle/gradle-enterprise-bamboo-plugin.git</developerConnection>
+    </scm>
+
+    <properties>
+        <bamboo.version>6.9.2</bamboo.version>
+        <bamboo.data.version>${bamboo.version}</bamboo.data.version>
+        <amps.version>8.1.2</amps.version>
+        <atlassian.spring.scanner.version>2.2.4</atlassian.spring.scanner.version>
+        <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
+
+        <ge.maven.extension.version>1.16.4</ge.maven.extension.version>
+        <ccud.maven.extension.version>1.11.1</ccud.maven.extension.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.9.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.bamboo</groupId>
+            <artifactId>atlassian-bamboo-web</artifactId>
+            <version>${bamboo.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atlassian.bamboo</groupId>
+            <artifactId>atlassian-bamboo-api</artifactId>
+            <version>${bamboo.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atlassian.bamboo</groupId>
+            <artifactId>atlassian-bamboo-core</artifactId>
+            <version>${bamboo.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.16</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.28.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.ratpack</groupId>
+            <artifactId>ratpack-test</artifactId>
+            <version>1.9.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.2.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-process-killer</artifactId>
+            <version>1.10</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[1.8,9)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${generated.java.sources.dir}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.1.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.groovy</groupId>
+                        <artifactId>groovy</artifactId>
+                        <version>4.0.9</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-versions</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                <![CDATA[
+                                def geMavenExtensionVersion = project.properties['ge.maven.extension.version']
+                                def ccudExtensionVersion = project.properties['ccud.maven.extension.version']
+
+                                def buildDirectory = project.properties['generated.java.sources.dir'].replace('\\', '/')
+                                def directory = new File(buildDirectory, 'com/gradle/enterprise/bamboo')
+                                if (!directory.exists()) {
+                                    directory.mkdirs()
+                                }
+
+                                def file = new File(directory, 'Versions.java')
+                                file.text = """
+                                    package com.gradle.enterprise.bamboo;
+
+                                    public final class Versions {
+
+                                        public static final String GE_EXTENSION_VERSION = "$geMavenExtensionVersion";
+                                        public static final String CCUD_EXTENSION_VERSION = "$ccudExtensionVersion";
+
+                                        private Versions() {
+                                        }
+                                    }
+                                """.stripIndent()
+                                ]]>
+                                </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <propertiesEncoding>ISO-8859-1</propertiesEncoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/i18n</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-extensions</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/gradle-enterprise/maven</outputDirectory>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.gradle</groupId>
+                                    <artifactId>gradle-enterprise-maven-extension</artifactId>
+                                    <version>${ge.maven.extension.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.gradle</groupId>
+                                    <artifactId>common-custom-user-data-maven-extension</artifactId>
+                                    <version>${ccud.maven.extension.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>bamboo-maven-plugin</artifactId>
+                <version>${amps.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <productVersion>${bamboo.version}</productVersion>
+                    <productDataVersion>${bamboo.data.version}</productDataVersion>
+                    <enableQuickReload>false</enableQuickReload>
+                    <allowGoogleTracking>false</allowGoogleTracking>
+                    <productDataPath>
+                        ${basedir}/src/test/resources/generated-test-resources-692-license-723.zip
+                    </productDataPath>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                <version>${atlassian.spring.scanner.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>atlassian-spring-scanner</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>3.1.0</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.12.1</version>
+                        <configuration>
+                            <skip>true</skip>
+                            <skipDeploy>true</skipDeploy>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>2.0.0-M3</version>
+                        <configuration>
+                            <tag>${project.artifactId}-${project.version}</tag>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>atlassian-public</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>atlassian-public</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
