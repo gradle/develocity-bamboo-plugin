@@ -20,10 +20,6 @@ public class UsernameAndPasswordCredentialsProvider {
         this.credentialsAccessor = credentialsAccessor;
     }
 
-    public boolean exists(String name) {
-        return findByName(name).isPresent();
-    }
-
     public Optional<CredentialsData> findByName(String name) {
         return Optional.ofNullable(credentialsAccessor.getCredentialsByName(name))
             .filter(d -> SHARED_USERNAME_PASSWORD_PLUGIN_KEY.equals(d.getPluginKey()));

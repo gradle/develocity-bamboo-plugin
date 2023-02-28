@@ -1,6 +1,7 @@
 package com.gradle.enterprise.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
+import com.atlassian.bamboo.credentials.CredentialsData;
 import com.gradle.enterprise.bamboo.config.PersistentConfiguration;
 import com.gradle.enterprise.bamboo.config.PersistentConfigurationManager;
 import com.gradle.enterprise.bamboo.config.UsernameAndPasswordCredentialsProvider;
@@ -61,8 +62,13 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("server", "Please specify a valid URL of the Gradle Enterprise server.");
         }
 
-        if (!isBlankOrExistingSharedCredential(sharedCredentialName)) {
-            addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
+        if (StringUtils.isNotBlank(sharedCredentialName)) {
+            CredentialsData credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
+            if (credentials == null) {
+                addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
+            } else {
+                // TODO: Check format
+            }
         }
 
         if (!isBlankOrValidVersion(gePluginVersion)) {
@@ -95,13 +101,6 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             return true;
         }
         return VERSION_PATTERN.matcher(version).matches();
-    }
-
-    private boolean isBlankOrExistingSharedCredential(String name) {
-        if (StringUtils.isBlank(name)) {
-            return true;
-        }
-        return credentialsProvider.exists(name);
     }
 
     public String save() {
