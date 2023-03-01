@@ -50,7 +50,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void build_scan_is_published() {
+    void buildScanIsPublished() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
@@ -83,7 +83,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void build_scan_not_published_without_agent_version() {
+    void buildScanNotPublishedWithoutAgentVersion() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
@@ -110,7 +110,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void logs_error_if_build_scan_upload_failed() {
+    void logsErrorIfBuildScanUploadFailed() {
         // given
         mockGeServer.rejectUpload();
 

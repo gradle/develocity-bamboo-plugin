@@ -1,13 +1,17 @@
 package it.com.gradle.enterprise.bamboo;
 
+import com.gradle.enterprise.bamboo.BambooApi;
 import com.gradle.enterprise.bamboo.model.TestUser;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +30,7 @@ public abstract class BrowserTest {
     public static final String BAMBOO = System.getProperty("http.bamboo.url", "http://localhost:6990/bamboo");
 
     private static final String VIDEO_RECORDING_ENABLED = "VIDEO_RECORDING_ENABLED";
+    private static final String HEADLESS_BROWSER_DISABLED = "HEADLESS_BROWSER_DISABLED";
 
     private static Playwright playwright;
     private static Browser browser;
@@ -33,10 +38,17 @@ public abstract class BrowserTest {
     private BrowserContext context;
     private Page page;
 
+    protected static BambooApi bambooApi;
+
     @BeforeAll
     static void launchBrowser() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch();
+        browser = launch(playwright.chromium());
+    }
+
+    @BeforeAll
+    static void createBambooApi() {
+        bambooApi = new BambooApi(BAMBOO, TestUser.ADMIN);
     }
 
     @AfterAll
@@ -44,10 +56,24 @@ public abstract class BrowserTest {
         playwright.close();
     }
 
+    @AfterAll
+    static void tearDownBambooApi() {
+        bambooApi.close();
+    }
+
     @BeforeEach
     public void createContextAndPage() {
         context = createBrowserContext();
         page = context.newPage();
+    }
+
+    private static Browser launch(BrowserType browserType) {
+        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50);
+
+            return browserType.launch(launchOptions);
+        }
+        return browserType.launch();
     }
 
     private BrowserContext createBrowserContext() {
@@ -78,6 +104,30 @@ public abstract class BrowserTest {
         page.locator("#loginForm_save").click();
     }
 
+    public final String storeAccessKeyInSharedCredentials(@Nullable String accessKey) {
+        gotoAdminPage();
+
+        String credentialsName = randomString();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared credentials")).click();
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add new credentials")).click();
+
+        if (isBamboo9OrLater()) {
+            page.locator("#credentials-dropdown2-select").getByText("Username and password").click();
+        } else {
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Username and password")).click();
+        }
+
+        page.getByLabel("Credential name (required)").fill(credentialsName);
+        page.getByLabel("Username (required)").fill("ge"); // Hardcoded value, because it's not used
+        if (accessKey != null) {
+            page.getByLabel("Password").fill("test");
+        }
+        page.locator("#createSharedCredentials_save").click();
+        page.reload();
+
+        return credentialsName;
+    }
+
     public final void setupMaven3(String mavenHome) {
         openSharedRemoteCapabilities();
 
@@ -95,7 +145,7 @@ public abstract class BrowserTest {
     }
 
     public final void openSharedRemoteCapabilities() {
-        page.navigate(BAMBOO + "/admin/administer.action");
+        gotoAdminPage();
 
         page.locator("#admin-menu").getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Agents")).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared remote capabilities")).click();
@@ -110,8 +160,7 @@ public abstract class BrowserTest {
 
     public final void assertPluginConfiguration(Consumer<BuildScansConfigurationForm> configurator,
                                                 Consumer<BuildScansConfigurationForm> assertions) {
-        // Navigate to admin settings
-        page.navigate(BAMBOO + "/admin/administer.action");
+        gotoAdminPage();
 
         // Select build scan injection
         page.locator("#configureBuildScans").click();
@@ -123,5 +172,17 @@ public abstract class BrowserTest {
                 .save();
 
         assertions.accept(form);
+    }
+
+    public final String randomString() {
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    private void gotoAdminPage() {
+        page.navigate(BAMBOO + "/admin/administer.action");
+    }
+
+    private static boolean isBamboo9OrLater() {
+        return bambooApi.getBambooVersion().getMajor() >= 9;
     }
 }

@@ -74,7 +74,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void build_scan_is_published() {
+    void buildScanIsPublished() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_GE_SERVER)
@@ -102,7 +102,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void build_scan_not_published_without_extension() {
+    void buildScanNotPublishedWithoutExtension() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_GE_SERVER)
@@ -129,7 +129,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void build_scan_not_published_without_accepting_tos() {
+    void buildScanNotPublishedWithoutAcceptingTos() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_GE_SERVER)

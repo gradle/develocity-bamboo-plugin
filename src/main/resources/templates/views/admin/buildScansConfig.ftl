@@ -14,6 +14,13 @@
         [@ww.textfield labelKey="gradle-enterprise.config.server" name="server" autofocus=true/]
         [@ww.checkbox labelKey="gradle-enterprise.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
         [@ww.textfield labelKey="gradle-enterprise.config.shared-credential-name" name="sharedCredentialName"/]
+        <div class="field-group">
+            <div style="display: inline-block;">
+                [@ui.messageBox type="info"]
+                    [@ww.text name="gradle-enterprise.config.access-key-info"/]
+                [/@ui.messageBox]
+            </div>
+        </div>
     [/@ui.bambooSection]
 
     [@ui.bambooSection titleKey="gradle-enterprise.config.gradle-settings.title" headerWeight="h2"]

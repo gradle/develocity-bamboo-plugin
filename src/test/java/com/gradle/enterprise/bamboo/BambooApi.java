@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public final class BambooApi implements AutoCloseable {
@@ -51,6 +52,8 @@ public final class BambooApi implements AutoCloseable {
     private final CloseableHttpClient client;
     private final Supplier<HttpClientContext> authContext;
     private final Gson gson;
+
+    private final AtomicReference<Version> cachedBambooVersion = new AtomicReference<>();
 
     public BambooApi(String bambooUrl, TestUser user) {
         this.bambooUrl = bambooUrl;
@@ -99,6 +102,11 @@ public final class BambooApi implements AutoCloseable {
     }
 
     public Version getBambooVersion() {
+        Version cachedVersion = cachedBambooVersion.get();
+        if (cachedVersion != null) {
+            return cachedVersion;
+        }
+
         HttpGet request = new HttpGet(String.format("%s/rest/api/latest/info", bambooUrl));
         try (CloseableHttpResponse response = client.execute(request, authContext.get())) {
             int statusCode = response.getStatusLine().getStatusCode();
@@ -112,9 +120,14 @@ public final class BambooApi implements AutoCloseable {
             Map<String, String> json = gson.fromJson(body, new TypeToken<Map<String, String>>() {}.getType());
             // @formatter:on
 
-            return Optional.ofNullable(json.get("version"))
-                .map(Version::of)
-                .orElseThrow(() -> new IllegalStateException("Response must contain Bamboo version"));
+            Version version =
+                Optional.ofNullable(json.get("version"))
+                    .map(Version::of)
+                    .orElseThrow(() -> new IllegalStateException("Response must contain Bamboo version"));
+
+            cachedBambooVersion.set(version);
+
+            return version;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

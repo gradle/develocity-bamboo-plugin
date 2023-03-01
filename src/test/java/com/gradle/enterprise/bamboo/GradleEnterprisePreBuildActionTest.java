@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,8 +25,8 @@ class GradleEnterprisePreBuildActionTest {
     private static final RuntimeException INJECTION_EXCEPTION = new RuntimeException();
 
     @Test
-    void preBuildActionDoesntFailOnException() {
-        BuildScanInjector mockBuildScanInjector = mock(BuildScanInjector.class);
+    void preBuildActionDoesNotFailOnException() {
+        BuildScanInjector<?> mockBuildScanInjector = mock(BuildScanInjector.class);
         BuildLoggerManager mockBuildLoggerManager = mock(BuildLoggerManager.class);
 
         doThrow(INJECTION_EXCEPTION).when(mockBuildScanInjector).inject(any());
@@ -34,10 +35,9 @@ class GradleEnterprisePreBuildActionTest {
         BuildLogger mockBuildLogger = mock(BuildLogger.class);
         when(mockBuildLoggerManager.getLogger(any(ResultKey.class))).thenReturn(mockBuildLogger);
 
-        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction = new GradleEnterprisePreBuildAction(
-                Arrays.asList(mockBuildScanInjector),
-                mockBuildLoggerManager
-        );
+        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction =
+            new GradleEnterprisePreBuildAction(
+                Collections.singletonList(mockBuildScanInjector), mockBuildLoggerManager);
 
         gradleEnterprisePreBuildAction.init(TestFixtures.getBuildContext());
 
@@ -51,8 +51,8 @@ class GradleEnterprisePreBuildActionTest {
 
     @Test
     void injectionSucceedsForOneAndFailsForAnother() {
-        BuildScanInjector mockSuccessfulBuildScanInjector = mock(BuildScanInjector.class);
-        BuildScanInjector mockFailedBuildScanInjector = mock(BuildScanInjector.class);
+        BuildScanInjector<?> mockSuccessfulBuildScanInjector = mock(BuildScanInjector.class);
+        BuildScanInjector<?> mockFailedBuildScanInjector = mock(BuildScanInjector.class);
         BuildLoggerManager mockBuildLoggerManager = mock(BuildLoggerManager.class);
 
         doThrow(INJECTION_EXCEPTION).when(mockFailedBuildScanInjector).inject(any());
@@ -61,10 +61,9 @@ class GradleEnterprisePreBuildActionTest {
         BuildLogger mockBuildLogger = mock(BuildLogger.class);
         when(mockBuildLoggerManager.getLogger(any(ResultKey.class))).thenReturn(mockBuildLogger);
 
-        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction = new GradleEnterprisePreBuildAction(
-                Arrays.asList(mockSuccessfulBuildScanInjector, mockFailedBuildScanInjector),
-                mockBuildLoggerManager
-        );
+        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction =
+            new GradleEnterprisePreBuildAction(
+                Arrays.asList(mockSuccessfulBuildScanInjector, mockFailedBuildScanInjector), mockBuildLoggerManager);
 
         gradleEnterprisePreBuildAction.init(TestFixtures.getBuildContext());
 

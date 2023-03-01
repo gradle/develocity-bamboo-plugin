@@ -5,7 +5,6 @@ import com.gradle.enterprise.bamboo.model.TestUser;
 import com.microsoft.playwright.Locator;
 import it.com.gradle.enterprise.bamboo.BrowserTest;
 import it.com.gradle.enterprise.bamboo.BuildScansConfigurationForm;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +24,14 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void should_configure_all_fields() {
+    void shouldConfigureAllFields() {
+        String accessKey = String.format("scans.gradle.com=%s", randomString());
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(accessKey);
+
         assertPluginConfiguration(
             form -> form
                 .setServer("https://scans.gradle.com")
+                .setSharedCredentialName(sharedCredentialName)
                 .setGePluginVersion("3.12")
                 .setCcudPluginVersion("1.8.2")
                 .setPluginRepository("https://plugins.gradle.org")
@@ -38,6 +41,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
             form -> {
                 assertThat(form.getServerLocator()).hasValue("https://scans.gradle.com");
+                assertThat(form.getSharedCredentialNameLocator()).hasValue(sharedCredentialName);
                 assertThat(form.getGePluginVersionLocator()).hasValue("3.12");
                 assertThat(form.getCcudPluginVersionLocator()).hasValue("1.8.2");
                 assertThat(form.getPluginRepositoryLocator()).hasValue("https://plugins.gradle.org");
@@ -50,52 +54,74 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void server_uri_is_not_properly_specified() {
+    void invalidServerUrl() {
         assertInvalidInput(
-            form -> form.setServer(RandomStringUtils.randomAscii(10)),
+            form -> form.setServer(randomString()),
             "#fieldArea_saveBuildScansConfig_server > div.error.control-form-error",
             "Please specify a valid URL of the Gradle Enterprise server."
         );
     }
 
     @Test
-    void referenced_shared_credentials_do_not_exist() {
+    void invalidSharedCredential() {
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(randomString());
+
         assertInvalidInput(
-            form -> form.setSharedCredentialName(RandomStringUtils.randomAscii(10)),
+            form -> form.setSharedCredentialName(sharedCredentialName),
+            "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
+            "Shared credential contains an invalid access key."
+        );
+    }
+
+    @Test
+    void sharedCredentialWithoutPassword() {
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(null);
+
+        assertInvalidInput(
+            form -> form.setSharedCredentialName(sharedCredentialName),
+            "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
+            "Shared credential contains an invalid access key."
+        );
+    }
+
+    @Test
+    void sharedCredentialDoesNotExist() {
+        assertInvalidInput(
+            form -> form.setSharedCredentialName(randomString()),
             "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
             "Please specify the name of the existing shared credential of type 'Username and password'."
         );
     }
 
     @Test
-    void invalid_gradle_enterprise_plugin_version_is_specified() {
+    void invalidGradleEnterprisePluginVersion() {
         assertInvalidInput(
-            form -> form.setGePluginVersion(RandomStringUtils.randomAscii(10)),
+            form -> form.setGePluginVersion(randomString()),
             "#fieldArea_saveBuildScansConfig_gePluginVersion > div.error.control-form-error",
             "Please specify a valid version of the Gradle Enterprise Gradle plugin."
         );
     }
 
     @Test
-    void invalid_ccud_plugin_version_is_specified() {
+    void invalidCcudPluginVersion() {
         assertInvalidInput(
-            form -> form.setCcudPluginVersion(RandomStringUtils.randomAscii(10)),
+            form -> form.setCcudPluginVersion(randomString()),
             "#fieldArea_saveBuildScansConfig_ccudPluginVersion > div.error.control-form-error",
             "Please specify a valid version of the Common Custom User Data Gradle plugin."
         );
     }
 
     @Test
-    void invalid_gradle_plugin_repository_is_specified() {
+    void invalidGradlePluginRepository() {
         assertInvalidInput(
-            form -> form.setPluginRepository(RandomStringUtils.randomAscii(10)),
+            form -> form.setPluginRepository(randomString()),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
             "Please specify a valid URL of the Gradle plugins repository."
         );
     }
 
     @Test
-    void shows_embedded_ge_extension_version() {
+    void showsEmbeddedGradleEnterpriseExtensionVersion() {
         assertPluginConfiguration(
             NO_OP_CONFIGURATOR,
             form ->
@@ -104,7 +130,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void shows_embedded_ccud_extension_version() {
+    void showsEmbeddedCcudExtensionVersion() {
         assertPluginConfiguration(
             NO_OP_CONFIGURATOR,
             form ->

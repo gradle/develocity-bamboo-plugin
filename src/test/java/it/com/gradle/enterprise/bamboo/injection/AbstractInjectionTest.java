@@ -4,7 +4,6 @@ import com.atlassian.bamboo.builder.LifeCycleState;
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanKeys;
 import com.atlassian.bamboo.plan.PlanResultKey;
-import com.gradle.enterprise.bamboo.BambooApi;
 import com.gradle.enterprise.bamboo.Constants;
 import com.gradle.enterprise.bamboo.model.BuildResultDetails;
 import com.gradle.enterprise.bamboo.model.JobKey;
@@ -12,8 +11,6 @@ import com.gradle.enterprise.bamboo.model.TestUser;
 import com.gradle.enterprise.bamboo.model.TriggeredBuild;
 import it.com.gradle.enterprise.bamboo.BrowserTest;
 import org.awaitility.pollinterval.FibonacciPollInterval;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.Duration;
@@ -26,18 +23,6 @@ import static org.awaitility.Awaitility.await;
 abstract class AbstractInjectionTest extends BrowserTest {
 
     public static final String PROJECT_KEY = "TP";
-
-    protected static BambooApi bambooApi;
-
-    @BeforeAll
-    static void createBambooApi() {
-        bambooApi = new BambooApi(BAMBOO, TestUser.ADMIN);
-    }
-
-    @AfterAll
-    static void tearDownBambooApi() {
-        bambooApi.close();
-    }
 
     @BeforeEach
     void login() {
@@ -80,5 +65,4 @@ abstract class AbstractInjectionTest extends BrowserTest {
             .findFirst()
             .map(BuildResultDetails.Metadata.Item::getValue);
     }
-
 }
