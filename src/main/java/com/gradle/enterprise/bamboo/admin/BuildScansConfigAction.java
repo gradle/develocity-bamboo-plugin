@@ -69,7 +69,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             } else {
                 String accessKey = credentials.getPassword();
                 if (StringUtils.isNotBlank(accessKey) && !AccessKeyValidator.isValid(accessKey)) {
-                    addFieldError("sharedCredentialName", "Access key format is not valid.");
+                    addFieldError("sharedCredentialName", "Shared credential contains an invalid access key.");
                 }
             }
         }
