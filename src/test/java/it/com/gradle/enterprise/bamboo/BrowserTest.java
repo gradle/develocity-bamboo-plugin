@@ -92,9 +92,9 @@ public abstract class BrowserTest {
     }
 
     public final String storeAccessKeyInSharedCredentials(@Nullable String accessKey) {
-        String credentialsName = RandomStringUtils.randomAlphanumeric(10);
+        gotoAdminPage();
 
-        page.navigate(BAMBOO + "/admin/administer.action");
+        String credentialsName = randomString();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared credentials")).click();
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add new credentials")).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Username and password")).click();
@@ -105,6 +105,7 @@ public abstract class BrowserTest {
             page.getByLabel("Password").fill("test");
         }
         page.locator("#createSharedCredentials_save").click();
+        page.reload();
 
         return credentialsName;
     }
@@ -126,7 +127,7 @@ public abstract class BrowserTest {
     }
 
     public final void openSharedRemoteCapabilities() {
-        page.navigate(BAMBOO + "/admin/administer.action");
+        gotoAdminPage();
 
         page.locator("#admin-menu").getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Agents")).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared remote capabilities")).click();
@@ -141,8 +142,7 @@ public abstract class BrowserTest {
 
     public final void assertPluginConfiguration(Consumer<BuildScansConfigurationForm> configurator,
                                                 Consumer<BuildScansConfigurationForm> assertions) {
-        // Navigate to admin settings
-        page.navigate(BAMBOO + "/admin/administer.action");
+        gotoAdminPage();
 
         // Select build scan injection
         page.locator("#configureBuildScans").click();
@@ -154,5 +154,13 @@ public abstract class BrowserTest {
                 .save();
 
         assertions.accept(form);
+    }
+
+    public final String randomString() {
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    private void gotoAdminPage() {
+        page.navigate(BAMBOO + "/admin/administer.action");
     }
 }

@@ -5,7 +5,6 @@ import com.gradle.enterprise.bamboo.model.TestUser;
 import com.microsoft.playwright.Locator;
 import it.com.gradle.enterprise.bamboo.BrowserTest;
 import it.com.gradle.enterprise.bamboo.BuildScansConfigurationForm;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
     @Test
     void shouldConfigureAllFields() {
-        String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAscii(10));
+        String accessKey = String.format("scans.gradle.com=%s", randomString());
         String sharedCredentialName = storeAccessKeyInSharedCredentials(accessKey);
 
         assertPluginConfiguration(
@@ -57,7 +56,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     @Test
     void invalidServerUrl() {
         assertInvalidInput(
-            form -> form.setServer(RandomStringUtils.randomAscii(10)),
+            form -> form.setServer(randomString()),
             "#fieldArea_saveBuildScansConfig_server > div.error.control-form-error",
             "Please specify a valid URL of the Gradle Enterprise server."
         );
@@ -65,7 +64,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
     @Test
     void invalidSharedCredential() {
-        String sharedCredentialName = storeAccessKeyInSharedCredentials(RandomStringUtils.randomAscii(10));
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(randomString());
 
         assertInvalidInput(
             form -> form.setSharedCredentialName(sharedCredentialName),
@@ -88,7 +87,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     @Test
     void sharedCredentialDoesNotExist() {
         assertInvalidInput(
-            form -> form.setSharedCredentialName(RandomStringUtils.randomAscii(10)),
+            form -> form.setSharedCredentialName(randomString()),
             "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
             "Please specify the name of the existing shared credential of type 'Username and password'."
         );
@@ -97,7 +96,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     @Test
     void invalidGradleEnterprisePluginVersion() {
         assertInvalidInput(
-            form -> form.setGePluginVersion(RandomStringUtils.randomAscii(10)),
+            form -> form.setGePluginVersion(randomString()),
             "#fieldArea_saveBuildScansConfig_gePluginVersion > div.error.control-form-error",
             "Please specify a valid version of the Gradle Enterprise Gradle plugin."
         );
@@ -106,7 +105,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     @Test
     void invalidCcudPluginVersion() {
         assertInvalidInput(
-            form -> form.setCcudPluginVersion(RandomStringUtils.randomAscii(10)),
+            form -> form.setCcudPluginVersion(randomString()),
             "#fieldArea_saveBuildScansConfig_ccudPluginVersion > div.error.control-form-error",
             "Please specify a valid version of the Common Custom User Data Gradle plugin."
         );
@@ -115,7 +114,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     @Test
     void invalidGradlePluginRepository() {
         assertInvalidInput(
-            form -> form.setPluginRepository(RandomStringUtils.randomAscii(10)),
+            form -> form.setPluginRepository(randomString()),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
             "Please specify a valid URL of the Gradle plugins repository."
         );

@@ -22,7 +22,7 @@ public final class BuildScansConfigurationForm {
         Stream.of(getAllowUntrustedServerLocator(), getInjectMavenExtensionLocator(), getInjectCcudExtensionLocator())
             .forEach(Locator::uncheck);
 
-        return this;
+        return save();
     }
 
     public BuildScansConfigurationForm configure(Consumer<BuildScansConfigurationForm> configurator) {
