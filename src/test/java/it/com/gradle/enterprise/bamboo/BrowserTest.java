@@ -1,6 +1,6 @@
 package it.com.gradle.enterprise.bamboo;
 
-import com.atlassian.bamboo.util.Version;
+import com.gradle.enterprise.bamboo.BambooApi;
 import com.gradle.enterprise.bamboo.model.TestUser;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -32,13 +32,13 @@ public abstract class BrowserTest {
     private static final String VIDEO_RECORDING_ENABLED = "VIDEO_RECORDING_ENABLED";
     private static final String HEADLESS_BROWSER_DISABLED = "HEADLESS_BROWSER_DISABLED";
 
-    private static final Version BAMBOO_VERSION = Version.of(System.getProperty("product.bamboo.version"));
-
     private static Playwright playwright;
     private static Browser browser;
 
     private BrowserContext context;
     private Page page;
+
+    protected static BambooApi bambooApi;
 
     @BeforeAll
     static void launchBrowser() {
@@ -46,9 +46,19 @@ public abstract class BrowserTest {
         browser = launch(playwright.chromium());
     }
 
+    @BeforeAll
+    static void createBambooApi() {
+        bambooApi = new BambooApi(BAMBOO, TestUser.ADMIN);
+    }
+
     @AfterAll
     static void closeBrowser() {
         playwright.close();
+    }
+
+    @AfterAll
+    static void tearDownBambooApi() {
+        bambooApi.close();
     }
 
     @BeforeEach
@@ -173,6 +183,6 @@ public abstract class BrowserTest {
     }
 
     private static boolean isBamboo9OrLater() {
-        return BAMBOO_VERSION.getMajor() >= 9;
+        return bambooApi.getBambooVersion().getMajor() >= 9;
     }
 }
