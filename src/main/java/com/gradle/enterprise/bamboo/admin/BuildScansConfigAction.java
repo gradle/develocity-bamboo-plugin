@@ -1,9 +1,9 @@
 package com.gradle.enterprise.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
-import com.atlassian.bamboo.credentials.CredentialsData;
 import com.gradle.enterprise.bamboo.config.PersistentConfiguration;
 import com.gradle.enterprise.bamboo.config.PersistentConfigurationManager;
+import com.gradle.enterprise.bamboo.config.UsernameAndPassword;
 import com.gradle.enterprise.bamboo.config.UsernameAndPasswordCredentialsProvider;
 import org.apache.commons.lang3.StringUtils;
 
@@ -63,11 +63,14 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         }
 
         if (StringUtils.isNotBlank(sharedCredentialName)) {
-            CredentialsData credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
+            UsernameAndPassword credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
             if (credentials == null) {
                 addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
             } else {
-                // TODO: Check format
+                String accessKey = credentials.getPassword();
+                if (StringUtils.isNotBlank(accessKey) && !AccessKeyValidator.isValid(accessKey)) {
+                    addFieldError("sharedCredentialName", "Access key format is not valid.");
+                }
             }
         }
 
