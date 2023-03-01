@@ -97,7 +97,7 @@ public abstract class BrowserTest {
         String credentialsName = randomString();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared credentials")).click();
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add new credentials")).click();
-        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Username and password")).click();
+        page.getByText("Username and password").click();
 
         page.getByLabel("Credential name (required)").fill(credentialsName);
         page.getByLabel("Username (required)").fill("ge"); // Hardcoded value, because it's not used
