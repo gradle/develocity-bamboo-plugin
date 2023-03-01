@@ -33,12 +33,12 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
 
     private static final String HOME = "HOME";
 
-    private static final String SCRIPT_PLUGIN_KEY = "com.atlassian.bamboo.plugins.scripttask:task.builder.script";
-
     // Commercial plugin https://bobswift.atlassian.net/wiki/spaces/BGTP/overview
     private static final String BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY = "org.swift.bamboo.groovy:gradle";
     private static final String BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY = "org.swift.bamboo.groovy:gradlewrapper";
     private static final String BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY = "org.swift.bamboo.groovy:gradlew";
+
+    public static final String SCRIPT_PLUGIN_KEY = "com.atlassian.bamboo.plugins.scripttask:task.builder.script";
 
     // Artifactory gradle builder: https://github.com/jfrog/bamboo-artifactory-plugin/blob/master/src/main/java/org/jfrog/bamboo/task/ArtifactoryGradleTask.java
     public static final String ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX = "artifactoryGradleTask";

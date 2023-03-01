@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public final class UsernameAndPassword {
 
-    private static final String SHARED_USERNAME_PASSWORD_PLUGIN_KEY = "com.atlassian.bamboo.plugin.sharedCredentials:usernamePasswordCredentials";
+    public static final String SHARED_USERNAME_PASSWORD_PLUGIN_KEY = "com.atlassian.bamboo.plugin.sharedCredentials:usernamePasswordCredentials";
 
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
 
     private final CredentialsData data;
 
