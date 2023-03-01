@@ -68,7 +68,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
             } else {
                 String accessKey = credentials.getPassword();
-                if (StringUtils.isNotBlank(accessKey) && !AccessKeyValidator.isValid(accessKey)) {
+                if (!AccessKeyValidator.isValid(accessKey)) {
                     addFieldError("sharedCredentialName", "Shared credential contains an invalid access key.");
                 }
             }

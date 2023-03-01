@@ -26,9 +26,13 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
     @Test
     void shouldConfigureAllFields() {
+        String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAscii(10));
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(accessKey);
+
         assertPluginConfiguration(
             form -> form
                 .setServer("https://scans.gradle.com")
+                .setSharedCredentialName(sharedCredentialName)
                 .setGePluginVersion("3.12")
                 .setCcudPluginVersion("1.8.2")
                 .setPluginRepository("https://plugins.gradle.org")
@@ -38,6 +42,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
             form -> {
                 assertThat(form.getServerLocator()).hasValue("https://scans.gradle.com");
+                assertThat(form.getSharedCredentialNameLocator()).hasValue(sharedCredentialName);
                 assertThat(form.getGePluginVersionLocator()).hasValue("3.12");
                 assertThat(form.getCcudPluginVersionLocator()).hasValue("1.8.2");
                 assertThat(form.getPluginRepositoryLocator()).hasValue("https://plugins.gradle.org");
@@ -55,6 +60,28 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> form.setServer(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_server > div.error.control-form-error",
             "Please specify a valid URL of the Gradle Enterprise server."
+        );
+    }
+
+    @Test
+    void invalidSharedCredential() {
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(RandomStringUtils.randomAscii(10));
+
+        assertInvalidInput(
+            form -> form.setSharedCredentialName(sharedCredentialName),
+            "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
+            "Shared credential contains an invalid access key."
+        );
+    }
+
+    @Test
+    void sharedCredentialWithoutPassword() {
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(null);
+
+        assertInvalidInput(
+            form -> form.setSharedCredentialName(sharedCredentialName),
+            "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
+            "Shared credential contains an invalid access key."
         );
     }
 
