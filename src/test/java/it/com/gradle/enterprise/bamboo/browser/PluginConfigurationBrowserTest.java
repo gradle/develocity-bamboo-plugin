@@ -25,7 +25,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void should_configure_all_fields() {
+    void shouldConfigureAllFields() {
         assertPluginConfiguration(
             form -> form
                 .setServer("https://scans.gradle.com")
@@ -50,7 +50,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void server_uri_is_not_properly_specified() {
+    void invalidServerUrl() {
         assertInvalidInput(
             form -> form.setServer(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_server > div.error.control-form-error",
@@ -59,7 +59,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void referenced_shared_credentials_do_not_exist() {
+    void sharedCredentialDoesNotExist() {
         assertInvalidInput(
             form -> form.setSharedCredentialName(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
@@ -68,7 +68,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void invalid_gradle_enterprise_plugin_version_is_specified() {
+    void invalidGradleEnterprisePluginVersion() {
         assertInvalidInput(
             form -> form.setGePluginVersion(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_gePluginVersion > div.error.control-form-error",
@@ -77,7 +77,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void invalid_ccud_plugin_version_is_specified() {
+    void invalidCcudPluginVersion() {
         assertInvalidInput(
             form -> form.setCcudPluginVersion(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_ccudPluginVersion > div.error.control-form-error",
@@ -86,7 +86,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void invalid_gradle_plugin_repository_is_specified() {
+    void invalidGradlePluginRepository() {
         assertInvalidInput(
             form -> form.setPluginRepository(RandomStringUtils.randomAscii(10)),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
@@ -95,7 +95,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void shows_embedded_ge_extension_version() {
+    void showsEmbeddedGradleEnterpriseExtensionVersion() {
         assertPluginConfiguration(
             NO_OP_CONFIGURATOR,
             form ->
@@ -104,7 +104,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void shows_embedded_ccud_extension_version() {
+    void showsEmbeddedCcudExtensionVersion() {
         assertPluginConfiguration(
             NO_OP_CONFIGURATOR,
             form ->
