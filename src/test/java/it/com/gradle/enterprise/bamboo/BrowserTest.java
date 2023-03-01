@@ -1,5 +1,6 @@
 package it.com.gradle.enterprise.bamboo;
 
+import com.atlassian.bamboo.util.Version;
 import com.gradle.enterprise.bamboo.model.TestUser;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -30,6 +31,8 @@ public abstract class BrowserTest {
 
     private static final String VIDEO_RECORDING_ENABLED = "VIDEO_RECORDING_ENABLED";
     private static final String HEADLESS_BROWSER_DISABLED = "HEADLESS_BROWSER_DISABLED";
+
+    private static final Version BAMBOO_VERSION = Version.of(System.getProperty("product.bamboo.version"));
 
     private static Playwright playwright;
     private static Browser browser;
@@ -97,7 +100,12 @@ public abstract class BrowserTest {
         String credentialsName = randomString();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared credentials")).click();
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add new credentials")).click();
-        page.locator("#credentials-dropdown2-select").getByText("Username and password").click();
+
+        if (isBamboo9OrLater()) {
+            page.locator("#credentials-dropdown2-select").getByText("Username and password").click();
+        } else {
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Username and password")).click();
+        }
 
         page.getByLabel("Credential name (required)").fill(credentialsName);
         page.getByLabel("Username (required)").fill("ge"); // Hardcoded value, because it's not used
@@ -162,5 +170,9 @@ public abstract class BrowserTest {
 
     private void gotoAdminPage() {
         page.navigate(BAMBOO + "/admin/administer.action");
+    }
+
+    private static boolean isBamboo9OrLater() {
+        return BAMBOO_VERSION.getMajor() >= 9;
     }
 }
