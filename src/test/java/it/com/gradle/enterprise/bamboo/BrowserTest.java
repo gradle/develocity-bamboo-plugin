@@ -11,6 +11,7 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -77,15 +78,20 @@ public abstract class BrowserTest {
     }
 
     private BrowserContext createBrowserContext() {
-        if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
-            Browser.NewContextOptions contextOptions =
-                new Browser.NewContextOptions()
-                    .setRecordVideoDir(Paths.get("target/playwright/videos"))
-                    .setRecordVideoSize(1024, 768);
+        Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
 
-            return browser.newContext(contextOptions);
+        if (SystemUtils.IS_OS_LINUX) {
+            contextOptions
+                .setIgnoreHTTPSErrors(true);
         }
-        return browser.newContext();
+
+        if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
+            contextOptions
+                .setRecordVideoDir(Paths.get("target/playwright/videos"))
+                .setRecordVideoSize(1024, 768);
+        }
+
+        return browser.newContext(contextOptions);
     }
 
     @AfterEach
