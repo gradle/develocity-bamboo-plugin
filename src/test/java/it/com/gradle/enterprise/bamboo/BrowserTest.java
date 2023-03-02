@@ -74,7 +74,7 @@ public abstract class BrowserTest {
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
 
         if (SystemUtils.IS_OS_LINUX && Objects.equals("chromium", browserType.name())) {
-            launchOptions.setArgs(Collections.singletonList("--ignore-certificate-errors"));
+            launchOptions.setArgs(Collections.singletonList("--disable-quic"));
         }
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
@@ -89,10 +89,10 @@ public abstract class BrowserTest {
     private BrowserContext createBrowserContext() {
         Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
 
-        if (SystemUtils.IS_OS_LINUX) {
-            contextOptions
-                .setIgnoreHTTPSErrors(true);
-        }
+//        if (SystemUtils.IS_OS_LINUX) {
+//            contextOptions
+//                .setIgnoreHTTPSErrors(true);
+//        }
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
