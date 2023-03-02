@@ -19,8 +19,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -46,7 +44,7 @@ public abstract class BrowserTest {
     @BeforeAll
     static void launchBrowser() {
         playwright = Playwright.create();
-        browser = launch(playwright.chromium());
+        browser = launch(SystemUtils.IS_OS_LINUX ? playwright.firefox() : playwright.chromium());
     }
 
     @BeforeAll
@@ -71,19 +69,12 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
-
-        if (SystemUtils.IS_OS_LINUX && Objects.equals("chromium", browserType.name())) {
-            launchOptions.setArgs(Collections.singletonList("--disable-web-security"));
-        }
-
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
-            launchOptions
-                .setHeadless(false)
-                .setSlowMo(50);
-        }
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50);
 
-        return browserType.launch(launchOptions);
+            return browserType.launch(launchOptions);
+        }
+        return browserType.launch();
     }
 
     private BrowserContext createBrowserContext() {
