@@ -19,6 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -69,29 +71,31 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
-            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50);
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
 
-            return browserType.launch(launchOptions);
+        if (SystemUtils.IS_OS_LINUX && Objects.equals("chromium", browserType.name())) {
+            launchOptions.setArgs(Collections.singletonList("--disable-web-security"));
         }
-        return browserType.launch();
+
+        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
+            launchOptions
+                .setHeadless(false)
+                .setSlowMo(50);
+        }
+
+        return browserType.launch(launchOptions);
     }
 
     private BrowserContext createBrowserContext() {
-        Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
-
-        if (SystemUtils.IS_OS_LINUX) {
-            contextOptions
-                .setIgnoreHTTPSErrors(true);
-        }
-
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
-            contextOptions
-                .setRecordVideoDir(Paths.get("target/playwright/videos"))
-                .setRecordVideoSize(1024, 768);
-        }
+            Browser.NewContextOptions contextOptions =
+                new Browser.NewContextOptions()
+                    .setRecordVideoDir(Paths.get("target/playwright/videos"))
+                    .setRecordVideoSize(1024, 768);
 
-        return browser.newContext(contextOptions);
+            return browser.newContext(contextOptions);
+        }
+        return browser.newContext();
     }
 
     @AfterEach
