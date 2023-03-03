@@ -16,6 +16,9 @@ categories:
   - title: 🚦 Tests
     labels:
       - tests
+  - title: 📝 Documentation
+    labels:
+      - documentation
   - title: ✍ Other changes
   # Default label used by Dependabot
   - title: 📦 Dependency updates
