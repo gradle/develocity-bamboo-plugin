@@ -6,8 +6,6 @@
 == Overview
 This plugin integrates with Gradle Enterprise for Gradle and Maven builds run via Bamboo. Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Gradle Enterprise].
 
-The plugin exposes the links to the created build scans in the Bamboo UI. It connects Gradle and Maven builds to an existing Gradle Enterprise instance such that a build scan is published each time a build is run from Bamboo.
-
 For each Gradle and Maven build that is run from Bamboo, this plugin exposes the links to the created build scans in the Bamboo UI. The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Gradle Enterprise instance such that a Build Scan is published each time a build is run from Bamboo.
 
 The plugin is available from the Atlassian Marketplace.
