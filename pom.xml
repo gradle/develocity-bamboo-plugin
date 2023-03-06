@@ -49,7 +49,7 @@
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
-        <ge.maven.extension.version>1.16.4</ge.maven.extension.version>
+        <ge.maven.extension.version>1.16.5</ge.maven.extension.version>
         <ccud.maven.extension.version>1.11.1</ccud.maven.extension.version>
     </properties>
 
