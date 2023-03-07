@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -75,7 +76,7 @@ public abstract class BrowserTest {
         if (Objects.equals("chromium", browserType.name())) {
             // see https://playwright.dev/docs/browsers#google-chrome--microsoft-edge
             launchOptions.setChannel("chrome");
-            launchOptions.setArgs(Collections.singletonList("--allow-insecure-localhost"));
+            launchOptions.setArgs(Arrays.asList("--allow-insecure-localhost", "--ignore-certificate-errors"));
         }
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
@@ -89,6 +90,8 @@ public abstract class BrowserTest {
 
     private BrowserContext createBrowserContext() {
         Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
+
+        contextOptions.setIgnoreHTTPSErrors(true);
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
