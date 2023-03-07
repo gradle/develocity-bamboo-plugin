@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -30,7 +29,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
  */
 public abstract class BrowserTest {
 
-    public static final String BAMBOO = System.getProperty("http.bamboo.url", "http://localhost:6990/bamboo");
+    public static final String BAMBOO = "http://localhost:6990/bamboo";
 
     private static final String VIDEO_RECORDING_ENABLED = "VIDEO_RECORDING_ENABLED";
     private static final String HEADLESS_BROWSER_DISABLED = "HEADLESS_BROWSER_DISABLED";
