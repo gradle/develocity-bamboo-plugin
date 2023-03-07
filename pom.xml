@@ -368,10 +368,6 @@
                         <versionOverride>maven-surefire-plugin</versionOverride>
                         <versionOverride>maven-failsafe-plugin</versionOverride>
                     </versionOverrides>
-                    <systemPropertyVariables>
-                        <https.protocols>TLSv1,TLSv1.1,TLSv1.2,TLSv1.3</https.protocols>
-                        <jdk.tls.client.protocols>TLSv1,TLSv1.1,TLSv1.2,TLSv1.3</jdk.tls.client.protocols>
-                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

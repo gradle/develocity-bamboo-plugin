@@ -18,8 +18,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -72,12 +70,6 @@ public abstract class BrowserTest {
     private static Browser launch(BrowserType browserType) {
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
 
-        if (Objects.equals("chromium", browserType.name())) {
-            // see https://playwright.dev/docs/browsers#google-chrome--microsoft-edge
-            launchOptions.setChannel("chrome");
-            launchOptions.setArgs(Arrays.asList("--allow-insecure-localhost", "--ignore-certificate-errors"));
-        }
-
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions
                 .setHeadless(false)
@@ -89,8 +81,6 @@ public abstract class BrowserTest {
 
     private BrowserContext createBrowserContext() {
         Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
-
-        contextOptions.setIgnoreHTTPSErrors(true);
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
