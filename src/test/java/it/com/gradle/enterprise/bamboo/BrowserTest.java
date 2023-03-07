@@ -11,7 +11,6 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -73,8 +71,9 @@ public abstract class BrowserTest {
     private static Browser launch(BrowserType browserType) {
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
 
-        if (SystemUtils.IS_OS_LINUX && Objects.equals("chromium", browserType.name())) {
-            launchOptions.setArgs(Collections.singletonList("--disable-quic"));
+        if (Objects.equals("chromium", browserType.name())) {
+            // see https://playwright.dev/docs/browsers#google-chrome--microsoft-edge
+            launchOptions.setChannel("chrome");
         }
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
@@ -88,11 +87,6 @@ public abstract class BrowserTest {
 
     private BrowserContext createBrowserContext() {
         Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
-
-//        if (SystemUtils.IS_OS_LINUX) {
-//            contextOptions
-//                .setIgnoreHTTPSErrors(true);
-//        }
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
