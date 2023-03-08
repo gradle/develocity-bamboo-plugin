@@ -27,7 +27,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
  */
 public abstract class BrowserTest {
 
-    public static final String BAMBOO = System.getProperty("http.bamboo.url", "http://localhost:6990/bamboo");
+    public static final String BAMBOO = "http://localhost:6990/bamboo";
 
     private static final String VIDEO_RECORDING_ENABLED = "VIDEO_RECORDING_ENABLED";
     private static final String HEADLESS_BROWSER_DISABLED = "HEADLESS_BROWSER_DISABLED";
@@ -68,24 +68,27 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
-            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(50);
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
 
-            return browserType.launch(launchOptions);
+        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
+            launchOptions
+                .setHeadless(false)
+                .setSlowMo(50);
         }
-        return browserType.launch();
+
+        return browserType.launch(launchOptions);
     }
 
     private BrowserContext createBrowserContext() {
-        if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
-            Browser.NewContextOptions contextOptions =
-                new Browser.NewContextOptions()
-                    .setRecordVideoDir(Paths.get("target/playwright/videos"))
-                    .setRecordVideoSize(1024, 768);
+        Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
 
-            return browser.newContext(contextOptions);
+        if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
+            contextOptions
+                .setRecordVideoDir(Paths.get("target/playwright/videos"))
+                .setRecordVideoSize(1024, 768);
         }
-        return browser.newContext();
+
+        return browser.newContext(contextOptions);
     }
 
     @AfterEach
