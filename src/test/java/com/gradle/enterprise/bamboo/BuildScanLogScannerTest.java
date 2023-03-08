@@ -27,7 +27,7 @@ public class BuildScanLogScannerTest {
 
     @Test
     void buildScanIsNotCollectedDueToNonBuildScanUrlType() {
-        buildScanLogScanner.intercept(new BuildOutputLogEntry("log without build scan data"));
+        buildScanLogScanner.intercept(new BuildOutputLogEntry("Publishing build scan..."));
         buildScanLogScanner.intercept(new BuildOutputLogEntry("http://non-buildscan.url/"));
 
         assertThat(buildContext.getCurrentResult().getCustomBuildData().containsKey(Constants.BUILD_SCANS_KEY), is(false));
