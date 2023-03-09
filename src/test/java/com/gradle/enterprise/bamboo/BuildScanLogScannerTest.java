@@ -19,8 +19,16 @@ public class BuildScanLogScannerTest {
         new BuildScanLogScanner(new BuildScanCollector(buildContext));
 
     @Test
-    void buildScanIsNotCollected() {
+    void buildScanIsNotCollectedAsItsNotPresentInLogs() {
         buildScanLogScanner.intercept(new BuildOutputLogEntry("log without build scan data"));
+
+        assertThat(buildContext.getCurrentResult().getCustomBuildData().containsKey(Constants.BUILD_SCANS_KEY), is(false));
+    }
+
+    @Test
+    void buildScanIsNotCollectedDueToNonBuildScanUrlType() {
+        buildScanLogScanner.intercept(new BuildOutputLogEntry("Publishing build scan..."));
+        buildScanLogScanner.intercept(new BuildOutputLogEntry("http://non-buildscan.url/"));
 
         assertThat(buildContext.getCurrentResult().getCustomBuildData().containsKey(Constants.BUILD_SCANS_KEY), is(false));
     }
@@ -30,6 +38,20 @@ public class BuildScanLogScannerTest {
         String buildScanUrl = TestFixtures.randomBuildScanUrl();
 
         buildScanLogScanner.intercept(new BuildOutputLogEntry("Publishing build scan..."));
+        buildScanLogScanner.intercept(new BuildOutputLogEntry(buildScanUrl));
+
+        assertThat(
+            buildContext.getCurrentResult().getCustomBuildData().get(Constants.BUILD_SCANS_KEY),
+            is(equalTo(buildScanUrl))
+        );
+    }
+
+    @Test
+    void buildScanIsCollectedAndNonBuildScanUrlIsIgnored() {
+        String buildScanUrl = TestFixtures.randomBuildScanUrl();
+
+        buildScanLogScanner.intercept(new BuildOutputLogEntry("Publishing build scan..."));
+        buildScanLogScanner.intercept(new BuildOutputLogEntry("http://non-buildscan.url/"));
         buildScanLogScanner.intercept(new BuildOutputLogEntry(buildScanUrl));
 
         assertThat(
