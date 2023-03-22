@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     ignore:
       - dependency-name: "com.atlassian.bamboo:atlassian-bamboo-*"
       - dependency-name: "com.atlassian.plugin:atlassian-spring-scanner-annotation"
