@@ -29,7 +29,7 @@ public class MavenEmbeddedResourcesTest {
      */
     @ParameterizedTest
     @CsvSource({
-            "GE_EXTENSION, 78856cc1aace49ea609183448d0849d1",
+            "GE_EXTENSION, ee4a279b54f41e4737e7cda15797c196",
             "CCUD_EXTENSION, cbd3b118c27b5b4254a0f04632031eed"
     })
     void copiesEmbeddedExtension(MavenEmbeddedResources.Resource resource, String expectedChecksum) throws Exception {
