@@ -54,7 +54,7 @@ image::gradle-autoinjection-configuration.png[Gradle Auto-injection Configuratio
 === Maven Auto-instrumentation
 
 To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
-You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, check the "Enables Gradle Enterprise Maven extension auto-injection" checkbox and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, select “Enables Gradle Enterprise Maven extension auto-injection” and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension] as well, as it will provide more details about your build_
 
