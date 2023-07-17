@@ -44,7 +44,8 @@ Fill the form as following:
 === Gradle Auto-instrumentation
 
 To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
-You’d need to specify your URL, select “Allow untrusted server” if applicable and specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server. You can also override the Gradle plugin repository URL if you aren't able to use Gradle Plugin Portal due to networking or security constraints.
+You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, specify the desired Gradle Enterprise Gradle plugin version and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+You can also override the Gradle plugin repository URL if you aren't able to use Gradle Plugin Portal due to networking or security constraints.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] as well, as it will provide more details about your build_
 
@@ -53,7 +54,7 @@ image::gradle-autoinjection-configuration.png[Gradle Auto-injection Configuratio
 === Maven Auto-instrumentation
 
 To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
-You’d need to specify your URL, select “Allow untrusted server” if applicable and specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, select “Enables Gradle Enterprise Maven extension auto-injection” and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension] as well, as it will provide more details about your build_
 
@@ -75,14 +76,14 @@ image::build-scan-links.png[Build Scan Links,{thumbnail}]
 
 The following sections list the compatibility of the plugin with the Gradle Enterprise version based on the given build tool in use.
 
-==== For Gradle builds
+=== For Gradle builds
 
 For Gradle builds the version used for the Gradle Enterprise Gradle plugin is defined in the `Gradle Enterprise Gradle plugin version` field in the `Gradle settings` section of the configuration form.
 The compatibility of the specified version with Gradle Enterprise can be found https://docs.gradle.com/enterprise/compatibility/#gradle_enterprise_gradle_plugin[here].
 
 For the optional Common Custom User Data Gradle plugin which is defined the same form, you can see the compatibility of the specified version with the Gradle Enterprise Gradle plugin https://github.com/gradle/common-custom-user-data-gradle-plugin#version-compatibility[here].
 
-==== For Maven builds
+=== For Maven builds
 
 For Maven builds the version of the Gradle Enterprise Maven extension is bundled into the plugin, meaning that the user can’t change what version the Maven build is instrumented with.
 
@@ -90,7 +91,7 @@ The following table shows the compatibility of the plugin version with Gradle En
 
 |===
 |Bamboo Plugin version  | Gradle Enterprise Maven extension version | Common Custom User Data Maven extension version  | Minimum supported Gradle Enterprise version
-|Next version           | 1.17.2                                    | 1.11.1                                           | 2022.3
+|Next version           | 1.17.4                                    | 1.12.1                                           | 2022.3
 |1.1.0                  | 1.16.6                                    | 1.11.1                                           | 2022.3
 |1.0.0                  | 1.16.4                                    | 1.11.1                                           | 2022.3
 |===
