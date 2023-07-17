@@ -156,7 +156,7 @@ public final class BambooApi implements AutoCloseable {
             File tmp = Files.createTempDirectory("bambooAgent").toFile();
             File tmpAgentJar = new File(tmp, bambooAgent);
 
-            FileUtils.copyURLToFile(new URL(bambooUrl + "/admin/agent/" + bambooAgent), tmpAgentJar);
+            FileUtils.copyURLToFile(new URL(bambooUrl + "/agentServer/agentInstaller/" + bambooAgent), tmpAgentJar);
 
             return tmpAgentJar;
         } catch (IOException e) {
