@@ -7,11 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.gradle.enterprise.bamboo.model.Agent;
-import com.gradle.enterprise.bamboo.model.BuildResultDetails;
-import com.gradle.enterprise.bamboo.model.Jobs;
-import com.gradle.enterprise.bamboo.model.TestUser;
-import com.gradle.enterprise.bamboo.model.TriggeredBuild;
+import com.gradle.enterprise.bamboo.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
@@ -150,13 +146,14 @@ public final class BambooApi implements AutoCloseable {
 
     public File downloadAgentJar() {
         Version bambooVersion = getBambooVersion();
-        String bambooAgent = "bamboo-agent-" + bambooVersion + ".jar";
+        String agentPath = bambooVersion.getMajor() >= 8 ? "/agentServer/agentInstaller/" : "/admin/agent/";
+        String agentJar = "bamboo-agent-" + bambooVersion + ".jar";
 
         try {
             File tmp = Files.createTempDirectory("bambooAgent").toFile();
-            File tmpAgentJar = new File(tmp, bambooAgent);
+            File tmpAgentJar = new File(tmp, agentJar);
 
-            FileUtils.copyURLToFile(new URL(bambooUrl + "/agentServer/agentInstaller/" + bambooAgent), tmpAgentJar);
+            FileUtils.copyURLToFile(new URL(bambooUrl + agentPath + agentJar), tmpAgentJar);
 
             return tmpAgentJar;
         } catch (IOException e) {
