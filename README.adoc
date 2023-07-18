@@ -91,7 +91,8 @@ The following table shows the compatibility of the plugin version with Gradle En
 
 |===
 |Bamboo Plugin version  | Gradle Enterprise Maven extension version | Common Custom User Data Maven extension version  | Minimum supported Gradle Enterprise version
-|Next version           | 1.17.4                                    | 1.12.1                                           | 2022.3
+|Next version           | 1.18                                      | 1.12.1                                           | 2022.3
+|1.1.1                  | 1.17.4                                    | 1.12.1                                           | 2022.3
 |1.1.0                  | 1.16.6                                    | 1.11.1                                           | 2022.3
 |1.0.0                  | 1.16.4                                    | 1.11.1                                           | 2022.3
 |===
