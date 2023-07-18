@@ -48,6 +48,8 @@ import java.util.function.Supplier;
 
 public final class BambooApi implements AutoCloseable {
 
+    private static final String BAMBOO_AGENT_URL_PATTERN = "https://packages.atlassian.com/repository/public/com/atlassian/bamboo/bamboo-agent/%1$s/bamboo-agent-%1$s.jar";
+
     private final String bambooUrl;
     private final CloseableHttpClient client;
     private final Supplier<HttpClientContext> authContext;
@@ -150,14 +152,14 @@ public final class BambooApi implements AutoCloseable {
 
     public File downloadAgentJar() {
         Version bambooVersion = getBambooVersion();
-        String agentPath = bambooVersion.getMajor() >= 8 ? "/agentServer/agentInstaller/" : "/admin/agent/";
-        String agentJar = "bamboo-agent-" + bambooVersion + ".jar";
-
         try {
             File tmp = Files.createTempDirectory("bambooAgent").toFile();
-            File tmpAgentJar = new File(tmp, agentJar);
+            File tmpAgentJar = new File(tmp, String.format("bamboo-agent-%s.jar", bambooVersion));
 
-            FileUtils.copyURLToFile(new URL(bambooUrl + agentPath + agentJar), tmpAgentJar);
+            FileUtils.copyURLToFile(
+                new URL(String.format(BAMBOO_AGENT_URL_PATTERN, bambooVersion)),
+                tmpAgentJar
+            );
 
             return tmpAgentJar;
         } catch (IOException e) {
