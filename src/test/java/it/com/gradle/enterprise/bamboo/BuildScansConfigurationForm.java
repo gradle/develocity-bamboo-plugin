@@ -108,7 +108,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public Locator getInjectMavenExtensionLocator() {
-        return page.getByText("Enables Gradle Enterprise Maven extension auto-injection");
+        return page.locator("#label_saveBuildScansConfig_injectMavenExtension");
     }
 
     public Locator getInjectCcudExtensionLocator() {
