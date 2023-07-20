@@ -37,6 +37,7 @@
     <properties>
         <bamboo.version>6.9.2</bamboo.version>
         <bamboo.data.version>${bamboo.version}</bamboo.data.version>
+        <bamboo.product.data.path>${basedir}/src/test/resources/generated-test-resources-692-license-723.zip</bamboo.product.data.path>
         <amps.version>8.11.0</amps.version>
         <atlassian.spring.scanner.version>2.2.4</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
@@ -46,6 +47,8 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <required.java.version>[1.8,9)</required.java.version>
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
@@ -226,7 +229,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[1.8,9)</version>
+                                    <version>${required.java.version}</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -366,9 +369,7 @@
                     <productDataVersion>${bamboo.data.version}</productDataVersion>
                     <enableQuickReload>false</enableQuickReload>
                     <allowGoogleTracking>false</allowGoogleTracking>
-                    <productDataPath>
-                        ${basedir}/src/test/resources/generated-test-resources-692-license-723.zip
-                    </productDataPath>
+                    <productDataPath>${bamboo.product.data.path}</productDataPath>
                     <versionOverrides>
                         <versionOverride>maven-surefire-plugin</versionOverride>
                         <versionOverride>maven-failsafe-plugin</versionOverride>
@@ -395,6 +396,13 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>bamboo93OrLater</id>
+            <properties>
+                <bamboo.product.data.path>${basedir}/src/test/resources/generated-test-resources-923.zip</bamboo.product.data.path>
+                <required.java.version>[11,12)</required.java.version>
+            </properties>
+        </profile>
         <profile>
             <id>release</id>
             <build>
