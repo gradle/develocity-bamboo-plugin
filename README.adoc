@@ -4,15 +4,19 @@
 = Gradle Enterprise Bamboo plugin
 
 == Overview
-This plugin integrates with Gradle Enterprise for Gradle and Maven builds run via Bamboo. Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Gradle Enterprise].
 
-For each Gradle and Maven build that is run from Bamboo, this plugin exposes the links to the created build scans in the Bamboo UI. The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Gradle Enterprise instance such that a Build Scan is published each time a build is run from Bamboo.
+This plugin integrates with Gradle Enterprise for Gradle and Maven builds run via Bamboo.
+Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Gradle Enterprise].
+
+For each Gradle and Maven build that is run from Bamboo, this plugin exposes the links to the created build scans in the Bamboo UI.
+The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Gradle Enterprise instance such that a Build Scan is published each time a build is run from Bamboo.
 
 image::build-scan-links.png[Build Scan Links,{thumbnail}]
 
 == Installation
 
-Install the plugin manually as mentioned in https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[Uploading your own plugin] section. The released JARs can be found in the Releases.
+Install the plugin manually as mentioned in https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[Uploading your own plugin] section.
+The released JARs can be found in the Releases.
 We are also working on making plugin available via https://marketplace.atlassian.com[Atlassian Marketplace].
 
 Once the plugin is installed, the Bamboo Administration page will have a new section available under the “Managed Apps” group named Gradle Enterprise integration.
@@ -26,6 +30,7 @@ image::no-autoinjection-configuration.png[Empty Plugin Configuration,{thumbnail}
 == Configuration
 
 === Using Bamboo Shared Credential for Gradle Enterprise server authentication
+
 In order to specify an access key for Gradle Enterprise server, you would need to create a Shared Credentials in Bamboo and reference the name of that credential in the “Shared credential name” field of the Gradle Enterprise integration page.
 To create a Bamboo Shared Credentials, you’d need to navigate to the Bamboo Administration page and select the “Shared credentials” section.
 
@@ -39,7 +44,8 @@ Fill the form as following:
 
 * _Credential name_ - this is the name of the credential that you’ll be referencing in the “Shared credential name” field of the Gradle Enterprise integration page.
 * _Username_ - you can specify any username value here, as it will not be used by the plugin
-* _Password_ - this should be the value of the access key which is used to authenticate against the Gradle Enterprise server. It has a format of a key value pair (e.g. `host=value`)
+* _Password_ - this should be the value of the access key which is used to authenticate against the Gradle Enterprise server.
+It has a format of a key value pair (e.g. `host=value`)
 
 === Gradle Auto-instrumentation
 
@@ -91,7 +97,7 @@ The following table shows the compatibility of the plugin version with Gradle En
 
 |===
 |Bamboo Plugin version  | Gradle Enterprise Maven extension version | Common Custom User Data Maven extension version  | Minimum supported Gradle Enterprise version
-|Next version           | 1.18                                      | 1.12.1                                           | 2022.3
+|Next version           | 1.18.1                                    | 1.12.2                                           | 2022.3
 |1.1.1                  | 1.17.4                                    | 1.12.1                                           | 2022.3
 |1.1.0                  | 1.16.6                                    | 1.11.1                                           | 2022.3
 |1.0.0                  | 1.16.4                                    | 1.11.1                                           | 2022.3
