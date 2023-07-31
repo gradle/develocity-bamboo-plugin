@@ -400,7 +400,15 @@
 
     <profiles>
         <profile>
-            <id>bamboo93OrLater</id>
+            <id>bamboo924OrLater</id>
+            <properties>
+                <bamboo.product.data.path>
+                    ${basedir}/src/test/resources/generated-test-resources-923.zip
+                </bamboo.product.data.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>bamboo93OrLater</id> <!-- same as bamboo924OrLater, but requires Java 11 -->
             <properties>
                 <bamboo.product.data.path>
                     ${basedir}/src/test/resources/generated-test-resources-923.zip
