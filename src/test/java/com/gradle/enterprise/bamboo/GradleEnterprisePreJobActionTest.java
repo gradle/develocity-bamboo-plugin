@@ -14,6 +14,8 @@ import com.gradle.enterprise.bamboo.config.UsernameAndPassword;
 import com.gradle.enterprise.bamboo.config.UsernameAndPasswordCredentialsProvider;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Collections;
 
@@ -168,8 +170,16 @@ class GradleEnterprisePreJobActionTest {
         verify(buildContext, never()).getVariableContext();
     }
 
-    @Test
-    void addsAccessKeyToContext() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY,
+        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY,
+        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY,
+        GradleBuildScanInjector.SCRIPT_PLUGIN_KEY,
+        GradleBuildScanInjector.COMMAND_PLUGIN_KEY,
+        "org.jfrog.bamboo." + GradleBuildScanInjector.ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX
+    })
+    void addsAccessKeyToContext(String pluginKey) {
         // given
         String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
         CredentialsData credentialsData = mock(CredentialsData.class);
@@ -188,7 +198,7 @@ class GradleEnterprisePreJobActionTest {
 
         RuntimeTaskDefinition runtimeTaskDefinition = mock(RuntimeTaskDefinition.class);
         when(runtimeTaskDefinition.isEnabled()).thenReturn(true);
-        when(runtimeTaskDefinition.getPluginKey()).thenReturn(GradleBuildScanInjector.SCRIPT_PLUGIN_KEY);
+        when(runtimeTaskDefinition.getPluginKey()).thenReturn(pluginKey);
         when(buildContext.getRuntimeTaskDefinitions()).thenReturn(Collections.singletonList(runtimeTaskDefinition));
         when(buildContext.getVariableContext()).thenReturn(variableContext);
 
