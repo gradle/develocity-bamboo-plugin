@@ -10,8 +10,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -50,8 +48,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"GPM", "GPCM"})
+    @GradleProjectTest
     void buildScanIsPublished(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
@@ -84,8 +81,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString(mockGeServer.publicBuildScanId()));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"GPM", "GPCM"})
+    @GradleProjectTest
     void buildScanNotPublishedWithoutAgentVersion(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
@@ -112,8 +108,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, not(containsString(mockGeServer.publicBuildScanId())));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"GPM", "GPCM"})
+    @GradleProjectTest
     void logsErrorIfBuildScanUploadFailed(String buildKey) {
         // given
         mockGeServer.rejectUpload();
