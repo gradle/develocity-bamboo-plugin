@@ -11,6 +11,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @ParameterizedTest
-@ValueSource(strings = {"GPM", "GPCM"})
+@ValueSource(strings = {
+    "GPM", // Uses script task to invoke Gradle
+    "GPCM" // Uses command task to invoke Gradle
+})
 public @interface GradleProjectTest {
 }

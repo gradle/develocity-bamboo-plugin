@@ -3,7 +3,6 @@ package com.gradle.enterprise.bamboo;
 import com.atlassian.bamboo.process.EnvironmentVariableAccessor;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.google.common.annotations.VisibleForTesting;
 import com.gradle.enterprise.bamboo.utils.EnvironmentVariables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,9 +16,6 @@ import static com.gradle.enterprise.bamboo.GradleEnterpriseMavenOptsSetter.merge
 
 @Component
 public class DefaultMavenOptsSetter implements GradleEnterpriseMavenOptsSetter {
-
-    @VisibleForTesting
-    static final String ENVIRONMENT_VARIABLES_KEY = "environmentVariables";
 
     private static final String MAVEN_OPTS = "MAVEN_OPTS";
 
@@ -45,7 +41,7 @@ public class DefaultMavenOptsSetter implements GradleEnterpriseMavenOptsSetter {
     public void apply(RuntimeTaskDefinition task, List<SystemProperty> systemProperties) {
         Map<String, String> configuration = task.getConfiguration();
 
-        String currentEnvironment = configuration.get(ENVIRONMENT_VARIABLES_KEY);
+        String currentEnvironment = configuration.get(Constants.DEFAULT_TASK_ENVIRONMENT_VARIABLES_KEY);
 
         Map<String, String> environment =
             new HashMap<>(environmentVariableAccessor.splitEnvironmentAssignments(currentEnvironment));
@@ -58,7 +54,7 @@ public class DefaultMavenOptsSetter implements GradleEnterpriseMavenOptsSetter {
         String updatedEnvironment =
             environmentVariableAccessor.joinEnvironmentVariables(quoteValuesIfNeeded(environment));
 
-        configuration.put(ENVIRONMENT_VARIABLES_KEY, updatedEnvironment);
+        configuration.put(Constants.DEFAULT_TASK_ENVIRONMENT_VARIABLES_KEY, updatedEnvironment);
     }
 
     private Map<String, String> quoteValuesIfNeeded(Map<String, String> map) {

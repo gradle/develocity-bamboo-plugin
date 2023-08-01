@@ -19,6 +19,8 @@ public final class Constants {
 
     public static final String SPACE = " ";
 
+    public static final String DEFAULT_TASK_ENVIRONMENT_VARIABLES_KEY = "environmentVariables";
+
     private Constants() {
     }
 }
