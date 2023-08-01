@@ -111,7 +111,9 @@ public final class RemoteAgentProcess implements AutoCloseable {
                 30, TimeUnit.SECONDS,
                 10, TimeUnit.SECONDS
             );
-            bambooApi.deleteAgent(remoteAgent.id);
+            if (bambooApi.deleteAgentSupported()) {
+                bambooApi.deleteAgent(remoteAgent.id);
+            }
         }
     }
 
