@@ -20,7 +20,11 @@ abstract class AbstractEnvironmentVariableSetter implements EnvironmentVariableS
 
         String currentEnvironment = StringUtils.trimToNull(configuration.get(environmentVariablesKey));
         String additionalEnvironmentVariable = String.format("%s=%s", name, EnvironmentVariables.quoteIfNeeded(value));
-        String updatedEnvironment = StringUtils.join(new String[]{currentEnvironment, additionalEnvironmentVariable}, ' ');
+
+        String updatedEnvironment =
+            (currentEnvironment == null)
+                ? additionalEnvironmentVariable
+                : StringUtils.join(new String[]{currentEnvironment, additionalEnvironmentVariable}, ' ');
 
         configuration.put(environmentVariablesKey, updatedEnvironment);
     }

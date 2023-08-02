@@ -55,7 +55,7 @@ final class MockGeServer implements BeforeEachCallback, AfterEachCallback {
         mockGeServer.close();
     }
 
-    private void handleToken(Context ctx) throws Exception {
+    private void handleToken(Context ctx) {
         ctx.getRequest().getBody(TEN_MEGABYTES_IN_BYTES).then(request -> {
             Map<String, Object> requestBody =
                 JSON_OBJECT_MAPPER.readValue(request.getText(), MAP_TYPE_REFERENCE);

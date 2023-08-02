@@ -6,10 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultEnvironmentVariableSetter extends AbstractEnvironmentVariableSetter {
 
-    private static final String ENVIRONMENT_VARIABLES_KEY = "environmentVariables";
-
     public DefaultEnvironmentVariableSetter() {
-        super(ENVIRONMENT_VARIABLES_KEY);
+        super(Constants.DEFAULT_TASK_ENVIRONMENT_VARIABLES_KEY);
     }
 
     @Override
@@ -19,6 +17,7 @@ public class DefaultEnvironmentVariableSetter extends AbstractEnvironmentVariabl
 
     @Override
     public int getOrder() {
+        // needs to be the last one
         return LOWEST_PRECEDENCE;
     }
 }

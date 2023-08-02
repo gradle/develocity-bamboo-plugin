@@ -9,7 +9,6 @@ import com.gradle.enterprise.bamboo.model.JobKey;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class GradleInjectionTest extends AbstractInjectionTest {
 
-    private static final String AGENT_VERSION = "3.12.1";
+    private static final String AGENT_VERSION = "3.14.1";
 
     private static RemoteAgentProcess bambooAgent;
 
@@ -49,15 +48,15 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         }
     }
 
-    @Test
-    void buildScanIsPublished() {
+    @GradleProjectTest
+    void buildScanIsPublished(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
             .setGePluginVersion(AGENT_VERSION)
         );
 
-        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPM");
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
         JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
 
         // when
@@ -82,14 +81,14 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString(mockGeServer.publicBuildScanId()));
     }
 
-    @Test
-    void buildScanNotPublishedWithoutAgentVersion() {
+    @GradleProjectTest
+    void buildScanNotPublishedWithoutAgentVersion(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
         );
 
-        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPM");
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
         JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
 
         // when
@@ -109,8 +108,8 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, not(containsString(mockGeServer.publicBuildScanId())));
     }
 
-    @Test
-    void logsErrorIfBuildScanUploadFailed() {
+    @GradleProjectTest
+    void logsErrorIfBuildScanUploadFailed(String buildKey) {
         // given
         mockGeServer.rejectUpload();
 
@@ -119,7 +118,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
             .setGePluginVersion(AGENT_VERSION)
         );
 
-        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPM");
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
         JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
 
         // when
