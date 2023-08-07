@@ -15,9 +15,8 @@ image::build-scan-links.png[Build Scan Links,{thumbnail}]
 
 == Installation
 
-Install the plugin manually as mentioned in https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[Uploading your own plugin] section.
-The released JARs can be found in the Releases.
-We are also working on making plugin available via https://marketplace.atlassian.com[Atlassian Marketplace].
+The plugin is available via https://marketplace.atlassian.com/apps/1230500/gradle-enterprise-plugin-for-bamboo[Atlassian Marketplace].
+It is also possible to install the plugin manually as mentioned in https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[Uploading your own plugin] section. The released JARs can be found in the Releases.
 
 Once the plugin is installed, the Bamboo Administration page will have a new section available under the “Managed Apps” group named Gradle Enterprise integration.
 
