@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class PersistentConfiguration {
 
     @Nullable
@@ -111,5 +113,25 @@ public class PersistentConfiguration {
             .append("injectMavenExtension", injectMavenExtension)
             .append("injectCcudExtension", injectCcudExtension)
             .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersistentConfiguration that = (PersistentConfiguration) o;
+        return allowUntrustedServer == that.allowUntrustedServer &&
+            injectMavenExtension == that.injectMavenExtension &&
+            injectCcudExtension == that.injectCcudExtension && Objects.equals(server, that.server) &&
+            Objects.equals(sharedCredentialName, that.sharedCredentialName) &&
+            Objects.equals(gePluginVersion, that.gePluginVersion) &&
+            Objects.equals(ccudPluginVersion, that.ccudPluginVersion) &&
+            Objects.equals(pluginRepository, that.pluginRepository);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, gePluginVersion, ccudPluginVersion,
+            pluginRepository, injectMavenExtension, injectCcudExtension);
     }
 }

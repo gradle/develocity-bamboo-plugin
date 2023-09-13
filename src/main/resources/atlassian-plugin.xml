@@ -10,6 +10,7 @@
 
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="gradle-enterprise-bamboo-plugin"/>
+    <bambooEventListener key="pluginEnabledListener" class="com.gradle.enterprise.bamboo.config.PluginEnabledListener"/>
 
     <preJobAction key="gradleEnterprisePreJobAction"
                   name="Gradle Enterprise auto-injection preparation"

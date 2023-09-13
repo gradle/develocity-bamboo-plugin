@@ -8,7 +8,7 @@ import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.VariableContext;
 import com.atlassian.bandana.BandanaContext;
 import com.atlassian.bandana.BandanaManager;
-import com.gradle.enterprise.bamboo.config.PersistentConfiguration;
+import com.gradle.enterprise.bamboo.config.JsonConfigurationConverter;
 import com.gradle.enterprise.bamboo.config.PersistentConfigurationManager;
 import com.gradle.enterprise.bamboo.config.UsernameAndPassword;
 import com.gradle.enterprise.bamboo.config.UsernameAndPasswordCredentialsProvider;
@@ -44,7 +44,7 @@ class GradleEnterprisePreJobActionTest {
 
     private final GradleEnterprisePreJobAction gradleEnterprisePreJobAction =
         new GradleEnterprisePreJobAction(
-            new PersistentConfigurationManager(bandanaManager),
+            new PersistentConfigurationManager(bandanaManager, new JsonConfigurationConverter()),
             new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
             Collections.singletonList(gradleBuildScanInjector)
         );
@@ -63,7 +63,7 @@ class GradleEnterprisePreJobActionTest {
     void doesNothingIfNoSharedCredentials() {
         // given
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(new PersistentConfiguration());
+            .thenReturn("{}");
 
         // when
         gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
@@ -78,7 +78,7 @@ class GradleEnterprisePreJobActionTest {
         // given
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(new PersistentConfiguration().setSharedCredentialName(credentialsName));
+            .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
 
         // when
         gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
@@ -97,7 +97,7 @@ class GradleEnterprisePreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(new PersistentConfiguration().setSharedCredentialName(credentialsName));
+            .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
         when(credentialsAccessor.getCredentialsByName(credentialsName))
             .thenReturn(credentialsData);
 
@@ -119,11 +119,9 @@ class GradleEnterprisePreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(
-                new PersistentConfiguration()
-                    .setServer("https://scans.gradle.com")
-                    .setSharedCredentialName(credentialsName)
-                    .setGePluginVersion("3.12"));
+            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
+                "\"gePluginVersion\": \"3.12\"}");
+
         when(credentialsAccessor.getCredentialsByName(credentialsName))
             .thenReturn(credentialsData);
 
@@ -150,10 +148,7 @@ class GradleEnterprisePreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(
-                new PersistentConfiguration()
-                    .setServer("https://scans.gradle.com")
-                    .setSharedCredentialName(credentialsName));
+            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\"}");
         when(credentialsAccessor.getCredentialsByName(credentialsName))
             .thenReturn(credentialsData);
 
@@ -188,11 +183,9 @@ class GradleEnterprisePreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn(
-                new PersistentConfiguration()
-                    .setServer("https://scans.gradle.com")
-                    .setSharedCredentialName(credentialsName)
-                    .setGePluginVersion("3.12"));
+            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
+                "\"gePluginVersion\": \"3.12\"}");
+
         when(credentialsAccessor.getCredentialsByName(credentialsName))
             .thenReturn(credentialsData);
 
