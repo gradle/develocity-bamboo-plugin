@@ -26,7 +26,7 @@ class ConfigurationMigratorTest {
         when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config")))
             .thenReturn(new PersistentConfiguration().setServer("https://mycomp"));
 
-        new ConfigurationMigrator(bandanaManager, new JsonConfigurationConverter()).onPluginEnabled(pluginEnabledEvent);
+        new ConfigurationMigrator(bandanaManager).onPluginEnabled(pluginEnabledEvent);
 
         verify(bandanaManager, times(1)).setValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config.v1"),
             eq("{\"server\":\"https://mycomp\",\"allowUntrustedServer\":false,\"sharedCredentialName\":null,\"gePluginVersion\":null,\"ccudPluginVersion\":null,\"pluginRepository\":null,\"injectMavenExtension\":false,\"injectCcudExtension\":false}"));
@@ -40,7 +40,7 @@ class ConfigurationMigratorTest {
         when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config")))
             .thenReturn(config);
 
-        new ConfigurationMigrator(bandanaManager, new JsonConfigurationConverter()).onPluginEnabled(pluginEnabledEvent);
+        new ConfigurationMigrator(bandanaManager).onPluginEnabled(pluginEnabledEvent);
 
         verify(bandanaManager, times(0)).setValue(any(BandanaContext.class), anyString(), anyString());
         verify(bandanaManager, times(0)).removeValue(any(BandanaContext.class), anyString());

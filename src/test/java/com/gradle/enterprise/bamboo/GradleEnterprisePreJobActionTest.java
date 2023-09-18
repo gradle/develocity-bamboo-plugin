@@ -8,7 +8,6 @@ import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.VariableContext;
 import com.atlassian.bandana.BandanaContext;
 import com.atlassian.bandana.BandanaManager;
-import com.gradle.enterprise.bamboo.config.JsonConfigurationConverter;
 import com.gradle.enterprise.bamboo.config.PersistentConfigurationManager;
 import com.gradle.enterprise.bamboo.config.UsernameAndPassword;
 import com.gradle.enterprise.bamboo.config.UsernameAndPasswordCredentialsProvider;
@@ -44,7 +43,7 @@ class GradleEnterprisePreJobActionTest {
 
     private final GradleEnterprisePreJobAction gradleEnterprisePreJobAction =
         new GradleEnterprisePreJobAction(
-            new PersistentConfigurationManager(bandanaManager, new JsonConfigurationConverter()),
+            new PersistentConfigurationManager(bandanaManager),
             new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
             Collections.singletonList(gradleBuildScanInjector)
         );

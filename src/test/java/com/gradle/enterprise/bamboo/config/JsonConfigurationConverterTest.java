@@ -27,29 +27,29 @@ class JsonConfigurationConverterTest {
 
     @Test
     void toJson() throws JsonProcessingException {
-        assertThat(new JsonConfigurationConverter().toJson(config), is(json));
+        assertThat(JsonConfigurationConverter.toJson(config), is(json));
     }
 
     @Test
     void toNullJson() throws JsonProcessingException {
-        assertThat(new JsonConfigurationConverter().toJson(null), nullValue());
+        assertThat(JsonConfigurationConverter.toJson(null), nullValue());
     }
 
     @Test
     void fromJson() throws IOException {
-        assertThat(new JsonConfigurationConverter().fromJson(json), equalTo(config));
+        assertThat(JsonConfigurationConverter.fromJson(json), equalTo(config));
     }
 
     @Test
     void fromNullJson() throws IOException {
-        assertThat(new JsonConfigurationConverter().fromJson(null), nullValue());
+        assertThat(JsonConfigurationConverter.fromJson(null), nullValue());
     }
 
     @Test
     void unknownAttributesAreIgnored() throws IOException {
         String jsonConfig = "{\"server\":\"https://mycompany.com\",\"foo\":\"bar\"}";
 
-        assertThat(new JsonConfigurationConverter().fromJson(jsonConfig),
+        assertThat(JsonConfigurationConverter.fromJson(jsonConfig),
             equalTo(new PersistentConfiguration().setServer("https://mycompany.com")));
     }
 }

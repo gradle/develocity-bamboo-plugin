@@ -19,12 +19,10 @@ public class ConfigurationMigrator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationMigrator.class);
     private static final String GRADLE_ENTERPRISE_BAMBOO_PLUGIN_KEY = "com.gradle.enterprise.gradle-enterprise-bamboo-plugin";
     private final BandanaManager bandanaManager;
-    private final JsonConfigurationConverter jsonConfigurationConverter;
 
     @Autowired
-    public ConfigurationMigrator(BandanaManager bandanaManager, JsonConfigurationConverter jsonConfigurationConverter) {
+    public ConfigurationMigrator(BandanaManager bandanaManager) {
         this.bandanaManager = bandanaManager;
-        this.jsonConfigurationConverter = jsonConfigurationConverter;
     }
 
     @EventListener
@@ -40,7 +38,7 @@ public class ConfigurationMigrator {
             try {
                 LOGGER.info("Migrating {} config from {} to {}", GRADLE_ENTERPRISE_BAMBOO_PLUGIN_KEY,
                     CONFIG_V0_KEY, CONFIG_V1_KEY);
-                String json = jsonConfigurationConverter.toJson(value);
+                String json = JsonConfigurationConverter.toJson(value);
                 bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CONFIG_V1_KEY, json);
                 bandanaManager.removeValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CONFIG_V0_KEY);
             } catch (JsonProcessingException e) {

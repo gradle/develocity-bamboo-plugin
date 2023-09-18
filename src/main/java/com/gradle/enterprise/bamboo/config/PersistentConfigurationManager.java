@@ -16,19 +16,17 @@ public class PersistentConfigurationManager {
     static final String CONFIG_V0_KEY = "com.gradle.bamboo.plugins.ge.config";
     static final String CONFIG_V1_KEY = "com.gradle.bamboo.plugins.ge.config.v1";
     static final String CURRENT_CONFIG_KEY = CONFIG_V1_KEY;
-    private final JsonConfigurationConverter jsonConfigurationConverter;
 
     private final BandanaManager bandanaManager;
 
     @Autowired
-    public PersistentConfigurationManager(@ComponentImport BandanaManager bandanaManager, JsonConfigurationConverter jsonConfigurationConverter) {
+    public PersistentConfigurationManager(@ComponentImport BandanaManager bandanaManager) {
         this.bandanaManager = bandanaManager;
-        this.jsonConfigurationConverter = jsonConfigurationConverter;
     }
 
     public void save(PersistentConfiguration configuration) {
         try {
-            bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CURRENT_CONFIG_KEY, jsonConfigurationConverter.toJson(configuration));
+            bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CURRENT_CONFIG_KEY, JsonConfigurationConverter.toJson(configuration));
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error serializing configuration as json", e);
         }
@@ -37,9 +35,7 @@ public class PersistentConfigurationManager {
     public Optional<PersistentConfiguration> load() {
         try {
             Object value = bandanaManager.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CURRENT_CONFIG_KEY);
-            return Optional.ofNullable(
-                jsonConfigurationConverter.fromJson((String) value)
-            );
+            return Optional.ofNullable(JsonConfigurationConverter.fromJson((String) value));
         } catch (IOException e) {
             throw new RuntimeException("Error deserializing configuration from json", e);
         }
