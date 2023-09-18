@@ -11,20 +11,19 @@ import java.io.IOException;
 @Component
 public class JsonConfigurationConverter {
 
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public JsonConfigurationConverter() {
-        objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    public @Nullable String toJson(@Nullable Object configuration) throws JsonProcessingException {
+    @Nullable
+    String toJson(@Nullable Object configuration) throws JsonProcessingException {
         if (configuration == null) {
             return null;
         }
         return objectMapper.writeValueAsString(configuration);
     }
 
-    public @Nullable PersistentConfiguration fromJson(@Nullable String json) throws IOException {
+    @Nullable
+    PersistentConfiguration fromJson(@Nullable String json) throws IOException {
         if (json == null) {
             return null;
         }

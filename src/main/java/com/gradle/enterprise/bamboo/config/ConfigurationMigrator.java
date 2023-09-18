@@ -10,35 +10,39 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class PluginEnabledListener {
+import static com.gradle.enterprise.bamboo.config.PersistentConfigurationManager.CONFIG_V0_KEY;
+import static com.gradle.enterprise.bamboo.config.PersistentConfigurationManager.CONFIG_V1_KEY;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PluginEnabledListener.class);
-    private static final String PLUGIN_KEY = "com.gradle.enterprise.gradle-enterprise-bamboo-plugin";
+@Component
+public class ConfigurationMigrator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationMigrator.class);
+    private static final String GRADLE_ENTERPRISE_BAMBOO_PLUGIN_KEY = "com.gradle.enterprise.gradle-enterprise-bamboo-plugin";
     private final BandanaManager bandanaManager;
     private final JsonConfigurationConverter jsonConfigurationConverter;
 
     @Autowired
-    public PluginEnabledListener(BandanaManager bandanaManager, JsonConfigurationConverter jsonConfigurationConverter) {
+    public ConfigurationMigrator(BandanaManager bandanaManager, JsonConfigurationConverter jsonConfigurationConverter) {
         this.bandanaManager = bandanaManager;
         this.jsonConfigurationConverter = jsonConfigurationConverter;
     }
 
     @EventListener
     public void onPluginEnabled(PluginEnabledEvent event) {
-        if (PLUGIN_KEY.equals(event.getPlugin().getKey())) {
-            migrateLegacyConfigToV1();
+        if (GRADLE_ENTERPRISE_BAMBOO_PLUGIN_KEY.equals(event.getPlugin().getKey())) {
+            migrateConfigV0ToV1();
         }
     }
 
-    private void migrateLegacyConfigToV1() {
-        Object value = bandanaManager.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, PersistentConfigurationManager.LEGACY_CONFIG_V0_KEY);
+    private void migrateConfigV0ToV1() {
+        Object value = bandanaManager.getValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CONFIG_V0_KEY);
         if (value != null && PersistentConfiguration.class.getName().equals(value.getClass().getName())) {
             try {
-                LOGGER.info("Migrating {} config to json", PLUGIN_KEY);
+                LOGGER.info("Migrating {} config from {} to {}", GRADLE_ENTERPRISE_BAMBOO_PLUGIN_KEY,
+                    CONFIG_V0_KEY, CONFIG_V1_KEY);
                 String json = jsonConfigurationConverter.toJson(value);
-                bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, PersistentConfigurationManager.CONFIG_V1_KEY, json);
-                bandanaManager.removeValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, PersistentConfigurationManager.LEGACY_CONFIG_V0_KEY);
+                bandanaManager.setValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CONFIG_V1_KEY, json);
+                bandanaManager.removeValue(PlanAwareBandanaContext.GLOBAL_CONTEXT, CONFIG_V0_KEY);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("Could not migrate config to json", e);
             }
