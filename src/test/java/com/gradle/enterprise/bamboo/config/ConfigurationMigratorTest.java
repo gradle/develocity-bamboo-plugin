@@ -13,7 +13,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ConfigurationMigratorTest {
 
@@ -21,7 +26,7 @@ class ConfigurationMigratorTest {
     private final PluginEnabledEvent pluginEnabledEvent = mock(PluginEnabledEvent.class);
 
     @Test
-    void runsMigrateConfigV0toV1() {
+    void runsMigrateConfigV0ToV1() {
         setupPluginEnabledEventMock("com.gradle.enterprise.gradle-enterprise-bamboo-plugin");
         when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config")))
             .thenReturn(new PersistentConfiguration().setServer("https://mycomp"));
@@ -35,7 +40,7 @@ class ConfigurationMigratorTest {
 
     @ParameterizedTest
     @MethodSource("configAndEventProvider")
-    void doesNotRunMigrateConfigV0toV1(Object config, String eventKey) {
+    void doesNotRunMigrateConfigV0ToV1(Object config, String eventKey) {
         setupPluginEnabledEventMock(eventKey);
         when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config")))
             .thenReturn(config);

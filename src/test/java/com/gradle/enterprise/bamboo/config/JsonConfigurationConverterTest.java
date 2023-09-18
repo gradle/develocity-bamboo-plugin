@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class JsonConfigurationConverterTest {
