@@ -1,7 +1,7 @@
 package it.com.gradle.enterprise.bamboo;
 
-import com.gradle.enterprise.bamboo.BambooApi;
-import com.gradle.enterprise.bamboo.model.TestUser;
+import com.gradle.develocity.bamboo.BambooApi;
+import com.gradle.develocity.bamboo.model.TestUser;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;

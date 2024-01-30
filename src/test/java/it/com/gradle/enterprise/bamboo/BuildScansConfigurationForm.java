@@ -16,7 +16,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm clear() {
-        Stream.of(getServerLocator(), getSharedCredentialNameLocator(), getPluginRepositoryLocator(), getGePluginVersionLocator(), getCcudPluginVersionLocator())
+        Stream.of(getServerLocator(), getSharedCredentialNameLocator(), getPluginRepositoryLocator(), getDevelocityPluginVersionLocator(), getCcudPluginVersionLocator())
             .forEach(Locator::clear);
 
         Stream.of(getAllowUntrustedServerLocator(), getInjectMavenExtensionLocator(), getInjectCcudExtensionLocator())
@@ -49,8 +49,8 @@ public final class BuildScansConfigurationForm {
         return setServer(url.toString());
     }
 
-    public BuildScansConfigurationForm setGePluginVersion(String version) {
-        getGePluginVersionLocator().fill(version);
+    public BuildScansConfigurationForm setDevelocityPluginVersion(String version) {
+        getDevelocityPluginVersionLocator().fill(version);
         return this;
     }
 
@@ -84,15 +84,15 @@ public final class BuildScansConfigurationForm {
     }
 
     public Locator getServerLocator() {
-        return page.getByLabel("Gradle Enterprise server URL");
+        return page.getByLabel("Develocity server URL");
     }
 
     public Locator getSharedCredentialNameLocator() {
         return page.getByLabel("Shared credential name");
     }
 
-    public Locator getGePluginVersionLocator() {
-        return page.getByLabel("Gradle Enterprise Gradle plugin version");
+    public Locator getDevelocityPluginVersionLocator() {
+        return page.getByLabel("Develocity Gradle plugin version");
     }
 
     public Locator getCcudPluginVersionLocator() {

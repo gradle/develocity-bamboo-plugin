@@ -4,8 +4,8 @@ import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanKeys;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.google.common.collect.Iterables;
-import com.gradle.enterprise.bamboo.RemoteAgentProcess;
-import com.gradle.enterprise.bamboo.model.JobKey;
+import com.gradle.develocity.bamboo.RemoteAgentProcess;
+import com.gradle.develocity.bamboo.model.JobKey;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.junit.jupiter.api.AfterAll;
@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 public class MavenInjectionTest extends AbstractInjectionTest {
 
-    private static final String PUBLIC_GE_SERVER = "https://scans.gradle.com";
+    private static final String PUBLIC_DEVELOCITY_SERVER = "https://scans.gradle.com";
 
     private static final String JAVA_HOME_PROP = "java.home";
     private static final Collection<String> MAVEN_HOME_ENV_VARS = Arrays.asList("M2_HOME", "MAVEN_HOME");
@@ -77,7 +77,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     void buildScanIsPublished() {
         // given
         ensurePluginConfiguration(form -> form
-            .setServer(PUBLIC_GE_SERVER)
+            .setServer(PUBLIC_DEVELOCITY_SERVER)
             .enableGeExtensionAutoInjection()
         );
 
@@ -105,7 +105,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     void buildScanNotPublishedWithoutExtension() {
         // given
         ensurePluginConfiguration(form -> form
-            .setServer(PUBLIC_GE_SERVER)
+            .setServer(PUBLIC_DEVELOCITY_SERVER)
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPA");
@@ -132,7 +132,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     void buildScanNotPublishedWithoutAcceptingTos() {
         // given
         ensurePluginConfiguration(form -> form
-            .setServer(PUBLIC_GE_SERVER)
+            .setServer(PUBLIC_DEVELOCITY_SERVER)
             .enableGeExtensionAutoInjection()
         );
 

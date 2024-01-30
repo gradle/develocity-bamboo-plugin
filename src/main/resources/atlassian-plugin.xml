@@ -9,46 +9,46 @@
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="gradle-enterprise-bamboo-plugin"/>
-    <bambooEventListener key="pluginEnabledListener" class="com.gradle.enterprise.bamboo.config.ConfigurationMigrator"/>
+    <resource type="i18n" name="i18n" location="develocity-bamboo-plugin"/>
+    <bambooEventListener key="pluginEnabledListener" class="com.gradle.develocity.bamboo.config.ConfigurationMigrator"/>
 
-    <preJobAction key="gradleEnterprisePreJobAction"
-                  name="Gradle Enterprise auto-injection preparation"
-                  class="com.gradle.enterprise.bamboo.GradleEnterprisePreJobAction">
-        <description>Gradle Enterprise auto-injection preparation</description>
+    <preJobAction key="develocityPreJobAction"
+                  name="Develocity auto-injection preparation"
+                  class="com.gradle.develocity.bamboo.GradleEnterprisePreJobAction">
+        <description>Develocity auto-injection preparation</description>
     </preJobAction>
 
-    <preBuildAction key="gradleEnterprisePreBuildAction"
-                    name="Gradle Enterprise auto-injection"
-                    class="com.gradle.enterprise.bamboo.GradleEnterprisePreBuildAction">
-        <description>Gradle Enterprise auto-injection</description>
+    <preBuildAction key="develocityPreBuildAction"
+                    name="Develocity auto-injection"
+                    class="com.gradle.develocity.bamboo.GradleEnterprisePreBuildAction">
+        <description>Develocity auto-injection</description>
     </preBuildAction>
 
-    <buildProcessor key="gradleEnterpriseBuildProcessor"
-                    name="Gradle Enterprise auto-injection cleanup"
-                    class="com.gradle.enterprise.bamboo.GradleEnterpriseBuildProcessor">
+    <buildProcessor key="develocityBuildProcessor"
+                    name="Develocity auto-injection cleanup"
+                    class="com.gradle.develocity.bamboo.GradleEnterpriseBuildProcessor">
         <skipIfFailed>false</skipIfFailed>
-        <description>Gradle Enterprise auto-injection cleanup</description>
+        <description>Develocity auto-injection cleanup</description>
     </buildProcessor>
 
     <web-item key="configureBuildScans"
-              name="Gradle Enterprise integration"
+              name="Develocity integration"
               section="system.admin/plugins">
-        <label key="Gradle Enterprise integration"/>
+        <label key="Develocity integration"/>
         <link linkId="configureBuildScans">/admin/buildScansConfig.action</link>
     </web-item>
 
     <xwork key="buildScansConfigAdmin"
-           name="Gradle Enterprise integration">
+           name="Develocity integration">
         <package name="configureBuildScans" extends="admin">
             <action name="buildScansConfig"
-                    class="com.gradle.enterprise.bamboo.admin.BuildScansConfigAction"
+                    class="com.gradle.develocity.bamboo.admin.BuildScansConfigAction"
                     method="input">
                 <result name="input" type="freemarker">/templates/views/admin/buildScansConfig.ftl</result>
             </action>
 
             <action name="saveBuildScansConfig"
-                    class="com.gradle.enterprise.bamboo.admin.BuildScansConfigAction"
+                    class="com.gradle.develocity.bamboo.admin.BuildScansConfigAction"
                     method="save">
                 <result name="input" type="freemarker">/templates/views/admin/buildScansConfig.ftl</result>
                 <result name="success" type="redirect">/admin/buildScansConfig.action</result>
@@ -62,14 +62,14 @@
               weight="20">
         <label key="Build scans"/>
         <link linkId="buildScans:${buildKey}-${buildNumber}">/build/result/buildScans.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</link>
-        <condition class="com.gradle.enterprise.bamboo.BuildScansAvailableCondition"/>
+        <condition class="com.gradle.develocity.bamboo.BuildScansAvailableCondition"/>
     </web-item>
 
     <xwork key="buildScans"
            name="Build scans">
         <package name="gradleEnterprisePlugin" extends="buildResultView">
             <action name="buildScans"
-                    class="com.gradle.enterprise.bamboo.BuildScansAction">
+                    class="com.gradle.develocity.bamboo.BuildScansAction">
                 <result name="success" type="freemarker">/templates/views/buildScans.ftl</result>
                 <result name="error" type="freemarker">/error.ftl</result>
             </action>

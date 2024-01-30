@@ -1,15 +1,15 @@
 :imagesdir: images
 :thumbnail: width=80%,align="center"
 
-= Gradle Enterprise Bamboo plugin
+= Develocity Bamboo plugin
 
 == Overview
 
-This plugin integrates with Gradle Enterprise for Gradle and Maven builds run via Bamboo.
-Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Gradle Enterprise].
+This plugin integrates with Develocity for Gradle and Maven builds run via Bamboo.
+Build scans are available as a free service on https://scans.gradle.com[scans.gradle.com] and commercially via https://gradle.com[Develocity].
 
 For each Gradle and Maven build that is run from Bamboo, this plugin exposes the links to the created build scans in the Bamboo UI.
-The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Gradle Enterprise instance such that a Build Scan is published each time a build is run from Bamboo.
+The plugin can also be configured to ad-hoc connect Gradle and Maven builds to an existing Develocity instance such that a Build Scan is published each time a build is run from Bamboo.
 
 image::build-scan-links.png[Build Scan Links,{thumbnail}]
 
@@ -18,7 +18,7 @@ image::build-scan-links.png[Build Scan Links,{thumbnail}]
 The plugin is available via https://marketplace.atlassian.com/apps/1230500/gradle-enterprise-plugin-for-bamboo[Atlassian Marketplace].
 It is also possible to install the plugin manually as mentioned in https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[Uploading your own plugin] section. The released JARs can be found in the Releases.
 
-Once the plugin is installed, the Bamboo Administration page will have a new section available under the “Managed Apps” group named Gradle Enterprise integration.
+Once the plugin is installed, the Bamboo Administration page will have a new section available under the “Managed Apps” group named Develocity integration.
 
 image::admin-plugin-section.png[Plugin Section,{thumbnail}]
 
@@ -28,9 +28,9 @@ image::no-autoinjection-configuration.png[Empty Plugin Configuration,{thumbnail}
 
 == Configuration
 
-=== Using Bamboo Shared Credential for Gradle Enterprise server authentication
+=== Using Bamboo Shared Credential for Develocity server authentication
 
-In order to specify an access key for Gradle Enterprise server, you would need to create a Shared Credentials in Bamboo and reference the name of that credential in the “Shared credential name” field of the Gradle Enterprise integration page.
+In order to specify an access key for Develocity server, you would need to create a Shared Credentials in Bamboo and reference the name of that credential in the “Shared credential name” field of the Develocity integration page.
 To create a Bamboo Shared Credentials, you’d need to navigate to the Bamboo Administration page and select the “Shared credentials” section.
 
 image::shared-credentials-section.png[Shared Credentials Section,{thumbnail}]
@@ -41,15 +41,15 @@ image::username-password-credentials.png[Username and Password Credentials,{thum
 
 Fill the form as following:
 
-* _Credential name_ - this is the name of the credential that you’ll be referencing in the “Shared credential name” field of the Gradle Enterprise integration page.
+* _Credential name_ - this is the name of the credential that you’ll be referencing in the “Shared credential name” field of the Develocity integration page.
 * _Username_ - you can specify any username value here, as it will not be used by the plugin
-* _Password_ - this should be the value of the access key which is used to authenticate against the Gradle Enterprise server.
+* _Password_ - this should be the value of the access key which is used to authenticate against the Develocity server.
 It has a format of a key value pair (e.g. `host=value`)
 
 === Gradle Auto-instrumentation
 
-To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
-You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, specify the desired Gradle Enterprise Gradle plugin version and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
+You’d need to specify your Develocity server URL, select “Allow untrusted server” if applicable, specify the desired Develocity Gradle plugin version and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Develocity server.
 You can also override the Gradle plugin repository URL if you aren't able to use Gradle Plugin Portal due to networking or security constraints.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] as well, as it will provide more details about your build_
@@ -58,8 +58,8 @@ image::gradle-autoinjection-configuration.png[Gradle Auto-injection Configuratio
 
 === Maven Auto-instrumentation
 
-To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Gradle Enterprise server URL and `Gradle Enterprise Access Key` as a name of a Shared Credential in Bamboo).
-You’d need to specify your Gradle Enterprise server URL, select “Allow untrusted server” if applicable, select “Enables Gradle Enterprise Maven extension auto-injection” and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Gradle Enterprise server.
+To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
+You’d need to specify your Develocity server URL, select “Allow untrusted server” if applicable, select “Enables Develocity Maven extension auto-injection” and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Develocity server.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension] as well, as it will provide more details about your build_
 
@@ -79,23 +79,23 @@ image::build-scan-links.png[Build Scan Links,{thumbnail}]
 
 == Auto-instrumentation compatibility
 
-The following sections list the compatibility of the plugin with the Gradle Enterprise version based on the given build tool in use.
+The following sections list the compatibility of the plugin with the Develocity version based on the given build tool in use.
 
 === For Gradle builds
 
-For Gradle builds the version used for the Gradle Enterprise Gradle plugin is defined in the `Gradle Enterprise Gradle plugin version` field in the `Gradle settings` section of the configuration form.
-The compatibility of the specified version with Gradle Enterprise can be found https://docs.gradle.com/enterprise/compatibility/#gradle_enterprise_gradle_plugin[here].
+For Gradle builds the version used for the Develocity Gradle plugin is defined in the `Develocity Gradle plugin version` field in the `Gradle settings` section of the configuration form.
+The compatibility of the specified version with Develocity can be found https://docs.gradle.com/enterprise/compatibility/#gradle_enterprise_gradle_plugin[here].
 
-For the optional Common Custom User Data Gradle plugin which is defined the same form, you can see the compatibility of the specified version with the Gradle Enterprise Gradle plugin https://github.com/gradle/common-custom-user-data-gradle-plugin#version-compatibility[here].
+For the optional Common Custom User Data Gradle plugin which is defined the same form, you can see the compatibility of the specified version with the Develocity Gradle plugin https://github.com/gradle/common-custom-user-data-gradle-plugin#version-compatibility[here].
 
 === For Maven builds
 
-For Maven builds the version of the Gradle Enterprise Maven extension is bundled into the plugin, meaning that the user can’t change what version the Maven build is instrumented with.
+For Maven builds the version of the Develocity Maven extension is bundled into the plugin, meaning that the user can’t change what version the Maven build is instrumented with.
 
-The following table shows the compatibility of the plugin version with Gradle Enterprise:
+The following table shows the compatibility of the plugin version with Develocity:
 
 |===
-|Bamboo Plugin version  | Gradle Enterprise Maven extension version | Common Custom User Data Maven extension version  | Minimum supported Gradle Enterprise version
+|Bamboo Plugin version  | Develocity Maven extension version        | Common Custom User Data Maven extension version  | Minimum supported Develocity version
 |Next version           | 1.20                                      | 1.12.4                                           | 2023.3
 |1.2.0                  | 1.18.1                                    | 1.12.2                                           | 2023.2
 |1.1.2                  | 1.18.1                                    | 1.12.2                                           | 2023.2
@@ -106,4 +106,4 @@ The following table shows the compatibility of the plugin version with Gradle En
 
 == License
 
-This plugin is available under the https://github.com/gradle/gradle-enterprise-bamboo-plugin/blob/main/LICENSE[Apache License, Version 2.0].
+This plugin is available under the https://github.com/gradle/develocity-bamboo-plugin/blob/main/LICENSE[Apache License, Version 2.0].

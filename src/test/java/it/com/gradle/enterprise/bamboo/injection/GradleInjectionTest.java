@@ -4,8 +4,8 @@ import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanKeys;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.google.common.collect.Iterables;
-import com.gradle.enterprise.bamboo.RemoteAgentProcess;
-import com.gradle.enterprise.bamboo.model.JobKey;
+import com.gradle.develocity.bamboo.RemoteAgentProcess;
+import com.gradle.develocity.bamboo.model.JobKey;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,7 +53,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
-            .setGePluginVersion(AGENT_VERSION)
+            .setDevelocityPluginVersion(AGENT_VERSION)
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
@@ -115,7 +115,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         ensurePluginConfiguration(form -> form
             .setServer(mockGeServer.getAddress())
-            .setGePluginVersion(AGENT_VERSION)
+            .setDevelocityPluginVersion(AGENT_VERSION)
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);

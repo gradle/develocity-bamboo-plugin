@@ -1,7 +1,7 @@
 package it.com.gradle.enterprise.bamboo.browser;
 
-import com.gradle.enterprise.bamboo.Versions;
-import com.gradle.enterprise.bamboo.model.TestUser;
+import com.gradle.develocity.bamboo.Versions;
+import com.gradle.develocity.bamboo.model.TestUser;
 import com.microsoft.playwright.Locator;
 import it.com.gradle.enterprise.bamboo.BrowserTest;
 import it.com.gradle.enterprise.bamboo.BuildScansConfigurationForm;
@@ -32,7 +32,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> form
                 .setServer("https://scans.gradle.com")
                 .setSharedCredentialName(sharedCredentialName)
-                .setGePluginVersion("3.12")
+                .setDevelocityPluginVersion("3.12")
                 .setCcudPluginVersion("1.8.2")
                 .setPluginRepository("https://plugins.gradle.org")
                 .allowUntrustedServer()
@@ -42,7 +42,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> {
                 assertThat(form.getServerLocator()).hasValue("https://scans.gradle.com");
                 assertThat(form.getSharedCredentialNameLocator()).hasValue(sharedCredentialName);
-                assertThat(form.getGePluginVersionLocator()).hasValue("3.12");
+                assertThat(form.getDevelocityPluginVersionLocator()).hasValue("3.12");
                 assertThat(form.getCcudPluginVersionLocator()).hasValue("1.8.2");
                 assertThat(form.getPluginRepositoryLocator()).hasValue("https://plugins.gradle.org");
 
@@ -58,7 +58,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
         assertInvalidInput(
             form -> form.setServer(randomString()),
             "#fieldArea_saveBuildScansConfig_server > div.error.control-form-error",
-            "Please specify a valid URL of the Gradle Enterprise server."
+            "Please specify a valid URL of the Develocity server."
         );
     }
 
@@ -94,11 +94,11 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void invalidGradleEnterprisePluginVersion() {
+    void invalidDevelocityPluginVersion() {
         assertInvalidInput(
-            form -> form.setGePluginVersion(randomString()),
-            "#fieldArea_saveBuildScansConfig_gePluginVersion > div.error.control-form-error",
-            "Please specify a valid version of the Gradle Enterprise Gradle plugin."
+            form -> form.setDevelocityPluginVersion(randomString()),
+            "#fieldArea_saveBuildScansConfig_develocityPluginVersion > div.error.control-form-error",
+            "Please specify a valid version of the Develocity Gradle plugin."
         );
     }
 
@@ -121,12 +121,12 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void showsEmbeddedGradleEnterpriseExtensionVersion() {
+    void showsEmbeddedDevelocityExtensionVersion() {
         assertPluginConfiguration(
             NO_OP_CONFIGURATOR,
             form ->
                 assertThat(form.locator("#saveBuildScansConfig_injectMavenExtensionDesc"))
-                    .hasText("Injects the Gradle Enterprise Maven extension " + Versions.GE_EXTENSION_VERSION + " to Maven builds."));
+                    .hasText("Injects the Develocity Maven extension " + Versions.DEVELOCITY_EXTENSION_VERSION + " to Maven builds."));
     }
 
     @Test
