@@ -126,10 +126,10 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
     private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config) {
         VariableContext variableContext = buildContext.getVariableContext();
 
-        Objects.runIfNotNull(config.server, s -> variableContext.addLocalVariable("GE_PLUGIN_GRADLE_ENTERPRISE_URL", s));
-        Objects.runIfTrue(config.allowUntrustedServer, () -> variableContext.addLocalVariable("GE_PLUGIN_GRADLE_ENTERPRISE_ALLOW_UNTRUSTED_SERVER", "true"));
-        Objects.runIfNotNull(config.develocityPluginVersion, v -> variableContext.addLocalVariable("GE_PLUGIN_GRADLE_ENTERPRISE_PLUGIN_VERSION", v));
-        Objects.runIfNotNull(config.ccudPluginVersion, v -> variableContext.addLocalVariable("GE_PLUGIN_CCUD_PLUGIN_VERSION", v));
-        Objects.runIfNotNull(config.pluginRepository, r -> variableContext.addLocalVariable("GE_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", r));
+        Objects.runIfNotNull(config.server, s -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_URL", s));
+        Objects.runIfTrue(config.allowUntrustedServer, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ALLOW_UNTRUSTED_SERVER", "true"));
+        Objects.runIfNotNull(config.develocityPluginVersion, v -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_PLUGIN_VERSION", v));
+        Objects.runIfNotNull(config.ccudPluginVersion, v -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", v));
+        Objects.runIfNotNull(config.pluginRepository, r -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", r));
     }
 }
