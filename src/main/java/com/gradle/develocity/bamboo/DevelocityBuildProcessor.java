@@ -22,7 +22,7 @@ public class DevelocityBuildProcessor extends AbstractBuildTask implements Custo
     @NotNull
     @Override
     public BuildContext call() {
-        registeredGradleEnterpriseResources()
+        registeredDevelocityResources()
             .stream()
             .map(File::new)
             .forEach(this::delete);
@@ -30,7 +30,7 @@ public class DevelocityBuildProcessor extends AbstractBuildTask implements Custo
         return buildContext;
     }
 
-    private Collection<String> registeredGradleEnterpriseResources() {
+    private Collection<String> registeredDevelocityResources() {
         CurrentResult currentResult = buildContext.getCurrentResult();
         if (currentResult == null) {
             return Collections.emptyList();
