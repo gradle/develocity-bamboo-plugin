@@ -48,7 +48,7 @@ It has a format of a key value pair (e.g. `host=value`)
 
 === Gradle Auto-instrumentation
 
-To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
+To enable build scan publishing for Gradle builds, the configuration would look something like presented below (using https://develocity.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
 You’d need to specify your Develocity server URL, select “Allow untrusted server” if applicable, specify the desired Develocity Gradle plugin version and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Develocity server.
 You can also override the Gradle plugin repository URL if you aren't able to use Gradle Plugin Portal due to networking or security constraints.
 
@@ -58,7 +58,7 @@ image::gradle-autoinjection-configuration.png[Gradle Auto-injection Configuratio
 
 === Maven Auto-instrumentation
 
-To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://ge.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
+To enable build scan publishing for Maven builds, the configuration would look something like presented below (using https://develocity.mycompany.com as an example of Develocity server URL and `Develocity Access Key` as a name of a Shared Credential in Bamboo).
 You’d need to specify your Develocity server URL, select “Allow untrusted server” if applicable, select “Enables Develocity Maven extension auto-injection” and, if required, specify the name of the Bamboo shared credential that holds the access key for authenticating with the Develocity server.
 
 NOTE: _Although optional, we highly suggest instrumenting the build with our https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension] as well, as it will provide more details about your build_

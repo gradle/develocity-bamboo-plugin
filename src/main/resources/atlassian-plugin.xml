@@ -67,7 +67,7 @@
 
     <xwork key="buildScans"
            name="Build scans">
-        <package name="gradleEnterprisePlugin" extends="buildResultView">
+        <package name="develocityPlugin" extends="buildResultView">
             <action name="buildScans"
                     class="com.gradle.develocity.bamboo.BuildScansAction">
                 <result name="success" type="freemarker">/templates/views/buildScans.ftl</result>

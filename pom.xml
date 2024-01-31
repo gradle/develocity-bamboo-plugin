@@ -280,7 +280,7 @@
                         <configuration>
                             <source>
                                 <![CDATA[
-                                def geMavenExtensionVersion = project.properties['develocity.maven.extension.version']
+                                def develocityMavenExtensionVersion = project.properties['develocity.maven.extension.version']
                                 def ccudExtensionVersion = project.properties['ccud.maven.extension.version']
 
                                 def buildDirectory = project.properties['generated.java.sources.dir'].replace('\\', '/')
@@ -295,7 +295,7 @@
 
                                     public final class Versions {
 
-                                        public static final String DEVELOCITY_EXTENSION_VERSION = "$geMavenExtensionVersion";
+                                        public static final String DEVELOCITY_EXTENSION_VERSION = "$develocityMavenExtensionVersion";
                                         public static final String CCUD_EXTENSION_VERSION = "$ccudExtensionVersion";
 
                                         private Versions() {

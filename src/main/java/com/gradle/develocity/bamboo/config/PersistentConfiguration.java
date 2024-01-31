@@ -107,7 +107,7 @@ public class PersistentConfiguration {
             .append("server", server)
             .append("allowUntrustedServer", allowUntrustedServer)
             .append("sharedCredentialName", sharedCredentialName)
-            .append("gePluginVersion", develocityPluginVersion)
+            .append("develocityPluginVersion", develocityPluginVersion)
             .append("ccudPluginVersion", ccudPluginVersion)
             .append("pluginRepository", pluginRepository)
             .append("injectMavenExtension", injectMavenExtension)
