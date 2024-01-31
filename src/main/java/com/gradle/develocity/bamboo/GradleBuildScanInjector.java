@@ -115,10 +115,10 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         LOGGER.debug("Gradle init script: {}", initScript.getAbsolutePath());
 
         prepareEnvironment(buildContext, config);
-        registerGradleEnterpriseResources(buildContext, initScript);
+        registerDevelocityResources(buildContext, initScript);
         setupBuildScansLogInterceptor(buildContext);
 
-        accessKeyExporter.exportGradleEnterpriseAccessKey(buildContext, tasks);
+        accessKeyExporter.exportDevelocityAccessKey(buildContext, tasks);
 
         LOGGER.debug("Develocity Gradle auto-injection completed");
     }

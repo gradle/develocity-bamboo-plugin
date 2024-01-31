@@ -21,10 +21,10 @@ public class DevelocityAccessKeyExporter {
         this.environmentVariableSetters = Collections.sortedByOrder(environmentVariableSetters);
     }
 
-    public void exportGradleEnterpriseAccessKey(BuildContext buildContext,
-                                                Collection<RuntimeTaskDefinition> tasks) {
+    public void exportDevelocityAccessKey(BuildContext buildContext,
+                                          Collection<RuntimeTaskDefinition> tasks) {
         BambooIterables.stream(buildContext.getVariableContext().getPasswordVariables())
-            .filter(this::isGradleEnterpriseAccessKey)
+            .filter(this::isDevelocityAccessKey)
             .findFirst()
             .map(VariableDefinitionContext::getValue)
             .ifPresent(accessKey ->
@@ -36,7 +36,7 @@ public class DevelocityAccessKeyExporter {
                         .ifPresent(setter -> setter.apply(task, Constants.DEVELOCITY_ACCESS_KEY, accessKey))));
     }
 
-    private boolean isGradleEnterpriseAccessKey(VariableDefinitionContext context) {
+    private boolean isDevelocityAccessKey(VariableDefinitionContext context) {
         return Constants.ACCESS_KEY.equals(context.getKey());
     }
 }

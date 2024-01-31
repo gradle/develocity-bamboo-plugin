@@ -99,7 +99,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
         String mavenExtClasspath = classpath.asString();
         LOGGER.debug("Maven classpath: {}", mavenExtClasspath);
 
-        registerGradleEnterpriseResources(buildContext, classpath.files());
+        registerDevelocityResources(buildContext, classpath.files());
 
         List<SystemProperty> systemProperties = new ArrayList<>();
         systemProperties.add(new SystemProperty("maven.ext.class.path", mavenExtClasspath));
@@ -118,7 +118,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
 
         setupBuildScansLogInterceptor(buildContext);
 
-        accessKeyExporter.exportGradleEnterpriseAccessKey(buildContext, tasks);
+        accessKeyExporter.exportDevelocityAccessKey(buildContext, tasks);
 
         LOGGER.debug("Develocity Maven auto-injection completed");
     }

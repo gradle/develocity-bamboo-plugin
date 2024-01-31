@@ -36,7 +36,7 @@ abstract class AbstractBuildScanInjector<C extends BuildToolConfiguration> imple
             .add(new BuildScanLogScanner(new BuildScanCollector(buildContext)));
     }
 
-    protected final void registerGradleEnterpriseResources(BuildContext buildContext, File... resources) {
+    protected final void registerDevelocityResources(BuildContext buildContext, File... resources) {
         CurrentResult currentResult = buildContext.getCurrentResult();
         if (currentResult != null) {
             Arrays.stream(resources)

@@ -9,7 +9,7 @@ public final class Constants {
     public static final String BUILD_SCANS_KEY = "buildScans";
     public static final String BUILD_SCANS_SEPARATOR = ",";
 
-    public static final String DEVELOCITY_RESOURCES_KEY = "gradleEnterprise.resources";
+    public static final String DEVELOCITY_RESOURCES_KEY = "develocity.resources";
     public static final String DEVELOCITY_RESOURCES_SEPARATOR = ",";
 
     // must have secret as part of the name, see com.atlassian.bamboo.util.PasswordMaskingUtils
