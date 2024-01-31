@@ -18,17 +18,17 @@ public interface DevelocityMavenOptsSetter extends Ordered {
     void apply(RuntimeTaskDefinition task, List<SystemProperty> systemProperties);
 
     static String mergeMavenOpts(@Nullable String existingMavenOpts, List<SystemProperty> systemProperties) {
-        Stream<String> geMavenOpts = systemProperties.stream().map(SystemProperty::asString);
+        Stream<String> develocityMavenOpts = systemProperties.stream().map(SystemProperty::asString);
 
         if (StringUtils.isBlank(existingMavenOpts)) {
-            return joinOnSpace(geMavenOpts);
+            return joinOnSpace(develocityMavenOpts);
         }
 
         Set<String> keys = systemProperties.stream().map(SystemProperty::key).collect(Collectors.toSet());
 
         Stream<String> filteredExistingMavenOpts = splitOnSpace(existingMavenOpts).filter(v -> keys.stream().noneMatch(v::contains));
 
-        return joinOnSpace(Stream.concat(filteredExistingMavenOpts, geMavenOpts));
+        return joinOnSpace(Stream.concat(filteredExistingMavenOpts, develocityMavenOpts));
     }
 
     static Stream<String> splitOnSpace(String value) {

@@ -39,11 +39,11 @@ final class MockDevelocityServer implements BeforeEachCallback, AfterEachCallbac
     private final List<ScanTokenRequest> scanTokenRequests = Collections.synchronizedList(new LinkedList<>());
 
     private boolean rejectUpload;
-    private EmbeddedApp mockGeServer;
+    private EmbeddedApp mockDevelocityServer;
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        mockGeServer = EmbeddedApp.fromHandlers(c -> c
+        mockDevelocityServer = EmbeddedApp.fromHandlers(c -> c
             .prefix("scans/publish", c1 -> c1
                 .post("gradle/:pluginVersion/token", this::handleToken)
                 .post("gradle/:pluginVersion/upload", this::handleUpload)
@@ -52,7 +52,7 @@ final class MockDevelocityServer implements BeforeEachCallback, AfterEachCallbac
 
     @Override
     public void afterEach(ExtensionContext context) {
-        mockGeServer.close();
+        mockDevelocityServer.close();
     }
 
     private void handleToken(Context ctx) {
@@ -107,8 +107,8 @@ final class MockDevelocityServer implements BeforeEachCallback, AfterEachCallbac
     }
 
     public URI getAddress() {
-        Preconditions.checkNotNull(mockGeServer, "mockGeServer has not yet been created");
-        return mockGeServer.getAddress();
+        Preconditions.checkNotNull(mockDevelocityServer, "mockDevelocityServer has not yet been created");
+        return mockDevelocityServer.getAddress();
     }
 
     @Nullable

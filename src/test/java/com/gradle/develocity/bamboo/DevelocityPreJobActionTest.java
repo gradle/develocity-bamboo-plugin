@@ -119,7 +119,7 @@ class DevelocityPreJobActionTest {
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
             .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
-                "\"gePluginVersion\": \"3.12\"}");
+                "\"develocityPluginVersion\": \"3.12\"}");
 
         when(credentialsAccessor.getCredentialsByName(credentialsName))
             .thenReturn(credentialsData);
