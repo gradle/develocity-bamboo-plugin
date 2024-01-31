@@ -31,7 +31,7 @@ public final class TestFixtures {
     }
 
     public static String randomBuildScanUrl() {
-        return "https://ge-server/s/" + RandomStringUtils.randomAlphanumeric(13);
+        return "https://develocity-server/s/" + RandomStringUtils.randomAlphanumeric(13);
     }
 
     public static BuildContext getBuildContext() {

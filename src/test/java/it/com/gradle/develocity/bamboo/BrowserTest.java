@@ -121,7 +121,7 @@ public abstract class BrowserTest {
         }
 
         page.getByLabel("Credential name (required)").fill(credentialsName);
-        page.getByLabel("Username (required)").fill("ge"); // Hardcoded value, because it's not used
+        page.getByLabel("Username (required)").fill("develocity"); // Hardcoded value, because it's not used
         if (accessKey != null) {
             page.getByLabel("Password").fill("test");
         }
