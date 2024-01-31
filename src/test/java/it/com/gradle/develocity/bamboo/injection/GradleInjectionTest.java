@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo.injection;
+package it.com.gradle.develocity.bamboo.injection;
 
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanKeys;
@@ -27,7 +27,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     private static RemoteAgentProcess bambooAgent;
 
     @RegisterExtension
-    public final MockGeServer mockGeServer = new MockGeServer();
+    public final MockDevelocityServer mockDevelocityServer = new MockDevelocityServer();
 
     @BeforeAll
     static void startBambooAgent() {
@@ -52,7 +52,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     void buildScanIsPublished(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
-            .setServer(mockGeServer.getAddress())
+            .setServer(mockDevelocityServer.getAddress())
             .setDevelocityPluginVersion(AGENT_VERSION)
         );
 
@@ -64,13 +64,13 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         waitForBuildToFinish(planResultKey);
 
         // then
-        MockGeServer.ScanTokenRequest scanTokenRequest = mockGeServer.getLastScanTokenRequest();
+        MockDevelocityServer.ScanTokenRequest scanTokenRequest = mockDevelocityServer.getLastScanTokenRequest();
         assertThat(scanTokenRequest, notNullValue());
         assertThat(scanTokenRequest.agentVersion, is(equalTo(AGENT_VERSION)));
 
         // and
         String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
-        assertThat(buildScans, equalTo(mockGeServer.publicBuildScanId()));
+        assertThat(buildScans, equalTo(mockDevelocityServer.publicBuildScanId()));
 
         // and
         String output = bambooApi.getLog(planResultKey);
@@ -78,14 +78,14 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
         assertThat(output, containsString("Publishing build scan..."));
-        assertThat(output, containsString(mockGeServer.publicBuildScanId()));
+        assertThat(output, containsString(mockDevelocityServer.publicBuildScanId()));
     }
 
     @GradleProjectTest
     void buildScanNotPublishedWithoutAgentVersion(String buildKey) {
         // given
         ensurePluginConfiguration(form -> form
-            .setServer(mockGeServer.getAddress())
+            .setServer(mockDevelocityServer.getAddress())
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
@@ -105,16 +105,16 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
         assertThat(output, not(containsString("Publishing build scan...")));
-        assertThat(output, not(containsString(mockGeServer.publicBuildScanId())));
+        assertThat(output, not(containsString(mockDevelocityServer.publicBuildScanId())));
     }
 
     @GradleProjectTest
     void logsErrorIfBuildScanUploadFailed(String buildKey) {
         // given
-        mockGeServer.rejectUpload();
+        mockDevelocityServer.rejectUpload();
 
         ensurePluginConfiguration(form -> form
-            .setServer(mockGeServer.getAddress())
+            .setServer(mockDevelocityServer.getAddress())
             .setDevelocityPluginVersion(AGENT_VERSION)
         );
 
@@ -131,11 +131,11 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
         assertThat(output, containsString("Publishing build scan..."));
-        assertThat(output, not(containsString(mockGeServer.publicBuildScanId())));
+        assertThat(output, not(containsString(mockDevelocityServer.publicBuildScanId())));
         assertThat(output, containsString("Publishing failed."));
 
         assertThat(output, containsString("Plugin version: " + AGENT_VERSION));
-        assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockGeServer.getAddress(), AGENT_VERSION)));
+        assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), AGENT_VERSION)));
         assertThat(output, containsString("Response status code: 502"));
     }
 }

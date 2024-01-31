@@ -35,13 +35,13 @@ class DevelocityPreBuildActionTest {
         BuildLogger mockBuildLogger = mock(BuildLogger.class);
         when(mockBuildLoggerManager.getLogger(any(ResultKey.class))).thenReturn(mockBuildLogger);
 
-        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction =
-            new GradleEnterprisePreBuildAction(
+        DevelocityPreBuildAction develocityPreBuildAction =
+            new DevelocityPreBuildAction(
                 Collections.singletonList(mockBuildScanInjector), mockBuildLoggerManager);
 
-        gradleEnterprisePreBuildAction.init(TestFixtures.getBuildContext());
+        develocityPreBuildAction.init(TestFixtures.getBuildContext());
 
-        assertDoesNotThrow(gradleEnterprisePreBuildAction::call);
+        assertDoesNotThrow(develocityPreBuildAction::call);
         verify(mockBuildLoggerManager, times(1)).getLogger(any(ResultKey.class));
 
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
@@ -61,13 +61,13 @@ class DevelocityPreBuildActionTest {
         BuildLogger mockBuildLogger = mock(BuildLogger.class);
         when(mockBuildLoggerManager.getLogger(any(ResultKey.class))).thenReturn(mockBuildLogger);
 
-        GradleEnterprisePreBuildAction gradleEnterprisePreBuildAction =
-            new GradleEnterprisePreBuildAction(
+        DevelocityPreBuildAction develocityPreBuildAction =
+            new DevelocityPreBuildAction(
                 Arrays.asList(mockSuccessfulBuildScanInjector, mockFailedBuildScanInjector), mockBuildLoggerManager);
 
-        gradleEnterprisePreBuildAction.init(TestFixtures.getBuildContext());
+        develocityPreBuildAction.init(TestFixtures.getBuildContext());
 
-        assertDoesNotThrow(gradleEnterprisePreBuildAction::call);
+        assertDoesNotThrow(develocityPreBuildAction::call);
 
         verify(mockSuccessfulBuildScanInjector, times(1)).inject(any(BuildContext.class));
         verify(mockFailedBuildScanInjector, times(1)).inject(any(BuildContext.class));

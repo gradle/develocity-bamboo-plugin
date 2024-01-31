@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.gradle.develocity.bamboo.GradleEnterpriseMavenOptsSetter.mergeMavenOpts;
+import static com.gradle.develocity.bamboo.DevelocityMavenOptsSetter.mergeMavenOpts;
 
 @Component
-public class DefaultMavenOptsSetter implements GradleEnterpriseMavenOptsSetter {
+public class DefaultMavenOptsSetter implements DevelocityMavenOptsSetter {
 
     private static final String MAVEN_OPTS = "MAVEN_OPTS";
 

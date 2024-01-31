@@ -1,4 +1,4 @@
-[#-- @ftlvariable name="" type="com.gradle.enterprise.bamboo.BuildScansAction" --]
+[#-- @ftlvariable name="" type="com.gradle.develocity.bamboo.BuildScansAction" --]
 <html>
 <head>
     <meta name="tab" content="Build scans"/>

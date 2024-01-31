@@ -41,8 +41,8 @@ class DevelocityPreJobActionTest {
     private final GradleBuildScanInjector gradleBuildScanInjector =
         new GradleBuildScanInjector(null, null, null, null);
 
-    private final GradleEnterprisePreJobAction gradleEnterprisePreJobAction =
-        new GradleEnterprisePreJobAction(
+    private final DevelocityPreJobAction develocityPreJobAction =
+        new DevelocityPreJobAction(
             new PersistentConfigurationManager(bandanaManager),
             new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
             Collections.singletonList(gradleBuildScanInjector)
@@ -51,7 +51,7 @@ class DevelocityPreJobActionTest {
     @Test
     void doesNothingIfNoConfiguration() {
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         verify(bandanaManager, times(1)).getValue(any(BandanaContext.class), anyString());
@@ -65,7 +65,7 @@ class DevelocityPreJobActionTest {
             .thenReturn("{}");
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         verify(bandanaManager, times(1)).getValue(any(BandanaContext.class), anyString());
@@ -80,7 +80,7 @@ class DevelocityPreJobActionTest {
             .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         verify(credentialsAccessor, times(1)).getCredentialsByName(credentialsName);
@@ -101,7 +101,7 @@ class DevelocityPreJobActionTest {
             .thenReturn(credentialsData);
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         verify(credentialsAccessor, times(1)).getCredentialsByName(credentialsName);
@@ -130,7 +130,7 @@ class DevelocityPreJobActionTest {
         when(buildContext.getRuntimeTaskDefinitions()).thenReturn(Collections.singletonList(runtimeTaskDefinition));
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         assertThat(gradleBuildScanInjector.hasSupportedTasks(buildContext), is(false));
@@ -157,7 +157,7 @@ class DevelocityPreJobActionTest {
         when(buildContext.getRuntimeTaskDefinitions()).thenReturn(Collections.singletonList(runtimeTaskDefinition));
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         assertThat(gradleBuildScanInjector.hasSupportedTasks(buildContext), is(true));
@@ -195,7 +195,7 @@ class DevelocityPreJobActionTest {
         when(buildContext.getVariableContext()).thenReturn(variableContext);
 
         // when
-        gradleEnterprisePreJobAction.execute(stageExecution, buildContext);
+        develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
         verify(variableContext, times(1)).addLocalVariable(Constants.ACCESS_KEY, accessKey);

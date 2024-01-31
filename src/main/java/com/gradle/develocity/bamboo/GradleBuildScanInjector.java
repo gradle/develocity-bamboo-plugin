@@ -55,7 +55,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         );
 
     private final EnvironmentVariableAccessor environmentVariableAccessor;
-    private final GradleEnterpriseAccessKeyExporter accessKeyExporter;
+    private final DevelocityAccessKeyExporter accessKeyExporter;
     private final GradleEmbeddedResources gradleEmbeddedResources = new GradleEmbeddedResources();
 
     @Autowired
@@ -63,7 +63,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         @ComponentImport BuildLoggerManager buildLoggerManager,
         PersistentConfigurationManager configurationManager,
         @ComponentImport EnvironmentVariableAccessor environmentVariableAccessor,
-        GradleEnterpriseAccessKeyExporter accessKeyExporter
+        DevelocityAccessKeyExporter accessKeyExporter
     ) {
         super(buildLoggerManager, configurationManager);
         this.environmentVariableAccessor = environmentVariableAccessor;

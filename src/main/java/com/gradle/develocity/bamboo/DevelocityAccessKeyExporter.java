@@ -12,12 +12,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Component
-public class GradleEnterpriseAccessKeyExporter {
+public class DevelocityAccessKeyExporter {
 
     private final List<EnvironmentVariableSetter> environmentVariableSetters;
 
     @Autowired
-    public GradleEnterpriseAccessKeyExporter(List<EnvironmentVariableSetter> environmentVariableSetters) {
+    public DevelocityAccessKeyExporter(List<EnvironmentVariableSetter> environmentVariableSetters) {
         this.environmentVariableSetters = Collections.sortedByOrder(environmentVariableSetters);
     }
 

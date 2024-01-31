@@ -1,10 +1,10 @@
-package it.com.gradle.enterprise.bamboo.browser;
+package it.com.gradle.develocity.bamboo.browser;
 
 import com.gradle.develocity.bamboo.Versions;
 import com.gradle.develocity.bamboo.model.TestUser;
 import com.microsoft.playwright.Locator;
-import it.com.gradle.enterprise.bamboo.BrowserTest;
-import it.com.gradle.enterprise.bamboo.BuildScansConfigurationForm;
+import it.com.gradle.develocity.bamboo.BrowserTest;
+import it.com.gradle.develocity.bamboo.BuildScansConfigurationForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

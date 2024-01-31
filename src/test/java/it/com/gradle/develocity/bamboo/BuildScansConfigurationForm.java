@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo;
+package it.com.gradle.develocity.bamboo;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

@@ -15,17 +15,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GradleEnterprisePreJobAction implements PreJobAction {
+public class DevelocityPreJobAction implements PreJobAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GradleEnterprisePreJobAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DevelocityPreJobAction.class);
 
     private final PersistentConfigurationManager configurationManager;
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final List<BuildScanInjector<? extends BuildToolConfiguration>> injectors;
 
-    public GradleEnterprisePreJobAction(PersistentConfigurationManager configurationManager,
-                                        UsernameAndPasswordCredentialsProvider credentialsProvider,
-                                        List<BuildScanInjector<? extends BuildToolConfiguration>> injectors) {
+    public DevelocityPreJobAction(PersistentConfigurationManager configurationManager,
+                                  UsernameAndPasswordCredentialsProvider credentialsProvider,
+                                  List<BuildScanInjector<? extends BuildToolConfiguration>> injectors) {
         this.configurationManager = configurationManager;
         this.credentialsProvider = credentialsProvider;
         this.injectors = injectors;

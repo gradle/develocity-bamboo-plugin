@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo;
+package it.com.gradle.develocity.bamboo;
 
 import com.gradle.develocity.bamboo.BambooApi;
 import com.gradle.develocity.bamboo.model.TestUser;

@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo.injection;
+package it.com.gradle.develocity.bamboo.injection;
 
 import com.atlassian.bamboo.builder.LifeCycleState;
 import com.atlassian.bamboo.plan.PlanKey;
@@ -9,7 +9,7 @@ import com.gradle.develocity.bamboo.model.BuildResultDetails;
 import com.gradle.develocity.bamboo.model.JobKey;
 import com.gradle.develocity.bamboo.model.TestUser;
 import com.gradle.develocity.bamboo.model.TriggeredBuild;
-import it.com.gradle.enterprise.bamboo.BrowserTest;
+import it.com.gradle.develocity.bamboo.BrowserTest;
 import org.awaitility.pollinterval.FibonacciPollInterval;
 import org.junit.jupiter.api.BeforeEach;
 

@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 public class DefaultMavenOptsSetterTest {
 
-    private final GradleEnterpriseMavenOptsSetter mavenOptsSetter =
+    private final DevelocityMavenOptsSetter mavenOptsSetter =
         new DefaultMavenOptsSetter(new EnvironmentVariableAccessorImpl(null, null));
 
     @Test

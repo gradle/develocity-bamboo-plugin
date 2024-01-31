@@ -14,19 +14,19 @@
 
     <preJobAction key="develocityPreJobAction"
                   name="Develocity auto-injection preparation"
-                  class="com.gradle.develocity.bamboo.GradleEnterprisePreJobAction">
+                  class="com.gradle.develocity.bamboo.DevelocityPreJobAction">
         <description>Develocity auto-injection preparation</description>
     </preJobAction>
 
     <preBuildAction key="develocityPreBuildAction"
                     name="Develocity auto-injection"
-                    class="com.gradle.develocity.bamboo.GradleEnterprisePreBuildAction">
+                    class="com.gradle.develocity.bamboo.DevelocityPreBuildAction">
         <description>Develocity auto-injection</description>
     </preBuildAction>
 
     <buildProcessor key="develocityBuildProcessor"
                     name="Develocity auto-injection cleanup"
-                    class="com.gradle.develocity.bamboo.GradleEnterpriseBuildProcessor">
+                    class="com.gradle.develocity.bamboo.DevelocityBuildProcessor">
         <skipIfFailed>false</skipIfFailed>
         <description>Develocity auto-injection cleanup</description>
     </buildProcessor>

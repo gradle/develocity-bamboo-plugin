@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.gradle.develocity.bamboo.GradleEnterpriseMavenOptsSetter.mergeMavenOpts;
+import static com.gradle.develocity.bamboo.DevelocityMavenOptsSetter.mergeMavenOpts;
 
 @Component
-public class ArtifactoryMaven3TaskMavenOptsSetter implements GradleEnterpriseMavenOptsSetter {
+public class ArtifactoryMaven3TaskMavenOptsSetter implements DevelocityMavenOptsSetter {
 
     // https://github.com/jfrog/bamboo-artifactory-plugin/blob/master/src/main/java/org/jfrog/bamboo/context/Maven3BuildContext.java#L61
     @VisibleForTesting

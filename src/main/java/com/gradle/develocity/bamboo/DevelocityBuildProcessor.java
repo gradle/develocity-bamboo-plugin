@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-public class GradleEnterpriseBuildProcessor extends AbstractBuildTask implements CustomBuildProcessor {
+public class DevelocityBuildProcessor extends AbstractBuildTask implements CustomBuildProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GradleEnterpriseBuildProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DevelocityBuildProcessor.class);
 
     @NotNull
     @Override

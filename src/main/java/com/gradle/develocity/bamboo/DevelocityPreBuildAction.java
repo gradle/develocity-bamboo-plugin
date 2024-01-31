@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GradleEnterprisePreBuildAction extends AbstractBuildTask implements CustomPreBuildAction {
+public class DevelocityPreBuildAction extends AbstractBuildTask implements CustomPreBuildAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GradleEnterprisePreBuildAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DevelocityPreBuildAction.class);
 
     private final List<BuildScanInjector<? extends BuildToolConfiguration>> injectors;
     private final BuildLoggerManager buildLoggerManager;
 
-    public GradleEnterprisePreBuildAction(
+    public DevelocityPreBuildAction(
             List<BuildScanInjector<? extends BuildToolConfiguration>> injectors,
             @ComponentImport BuildLoggerManager buildLoggerManager
     ) {

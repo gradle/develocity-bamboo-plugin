@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo.injection;
+package it.com.gradle.develocity.bamboo.injection;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-final class MockGeServer implements BeforeEachCallback, AfterEachCallback {
+final class MockDevelocityServer implements BeforeEachCallback, AfterEachCallback {
 
     private static final long TEN_MEGABYTES_IN_BYTES = 1024 * 1024 * 10;
 

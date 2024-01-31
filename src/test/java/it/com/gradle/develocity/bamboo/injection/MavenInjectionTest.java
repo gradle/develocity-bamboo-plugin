@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo.injection;
+package it.com.gradle.develocity.bamboo.injection;
 
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanKeys;

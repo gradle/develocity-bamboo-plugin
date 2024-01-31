@@ -39,16 +39,16 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             endsWith(ARTIFACTORY_MAVEN_3_TASK_KEY_SUFFIX)
         );
 
-    private final GradleEnterpriseAccessKeyExporter accessKeyExporter;
-    private final List<GradleEnterpriseMavenOptsSetter> mavenOptsSetters;
+    private final DevelocityAccessKeyExporter accessKeyExporter;
+    private final List<DevelocityMavenOptsSetter> mavenOptsSetters;
     private final MavenEmbeddedResources mavenEmbeddedResources = new MavenEmbeddedResources();
 
     @Autowired
     public MavenBuildScanInjector(
         @ComponentImport BuildLoggerManager buildLoggerManager,
         PersistentConfigurationManager configurationManager,
-        GradleEnterpriseAccessKeyExporter accessKeyExporter,
-        List<GradleEnterpriseMavenOptsSetter> mavenOptsSetters
+        DevelocityAccessKeyExporter accessKeyExporter,
+        List<DevelocityMavenOptsSetter> mavenOptsSetters
     ) {
         super(buildLoggerManager, configurationManager);
         this.accessKeyExporter = accessKeyExporter;

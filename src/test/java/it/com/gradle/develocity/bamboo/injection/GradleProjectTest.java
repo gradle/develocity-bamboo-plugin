@@ -1,4 +1,4 @@
-package it.com.gradle.enterprise.bamboo.injection;
+package it.com.gradle.develocity.bamboo.injection;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 public class ArtifactoryMaven3TaskMavenOptsSetterTest {
 
-    private final GradleEnterpriseMavenOptsSetter mavenOptsSetter = new ArtifactoryMaven3TaskMavenOptsSetter();
+    private final DevelocityMavenOptsSetter mavenOptsSetter = new ArtifactoryMaven3TaskMavenOptsSetter();
 
     @Test
     void orderIsSet() {
