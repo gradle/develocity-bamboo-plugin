@@ -30,7 +30,7 @@
 
     <scm>
         <url>https://github.com/gradle/develocity-bamboo-plugin</url>
-        <connection>scm:git:https://github.com/gradle/develocuty-bamboo-plugin.git</connection>
+        <connection>scm:git:https://github.com/gradle/develocity-bamboo-plugin.git</connection>
         <developerConnection>scm:git:https://github.com/gradle/develocity-bamboo-plugin.git</developerConnection>
     </scm>
 
