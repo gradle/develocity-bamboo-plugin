@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -155,4 +156,31 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("[INFO] The build scan was not published due to a configuration problem."));
         assertThat(output, containsString("[INFO] The Gradle Terms of Service have not been agreed to."));
     }
+    @Test
+    void extensionAlreadyAppliedInProjectAndBuildScanAttemptedToPublishToProjectConfiguredHost() {
+        // given
+        ensurePluginConfiguration(form -> form
+                .setServer(PUBLIC_DEVELOCITY_SERVER)
+                .enableGeExtensionAutoInjection()
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPEA");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+
+        assertThat(output, containsString("[WARNING] Unexpected error while contacting Gradle Enterprise server at http://localhost:8080/"));
+    }
+
 }
