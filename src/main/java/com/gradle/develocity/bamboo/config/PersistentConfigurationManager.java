@@ -13,8 +13,8 @@ import java.util.Optional;
 @Component
 public class PersistentConfigurationManager {
 
-    static final String CONFIG_V0_KEY = "com.gradle.bamboo.plugins.develocity.config";
-    static final String CONFIG_V1_KEY = "com.gradle.bamboo.plugins.develocity.config.v1";
+    static final String CONFIG_V0_KEY = "com.gradle.bamboo.plugins.ge.config";
+    static final String CONFIG_V1_KEY = "com.gradle.bamboo.plugins.ge.config.v1";
     static final String CURRENT_CONFIG_KEY = CONFIG_V1_KEY;
 
     private final BandanaManager bandanaManager;

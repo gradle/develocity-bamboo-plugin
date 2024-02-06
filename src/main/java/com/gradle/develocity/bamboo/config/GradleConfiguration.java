@@ -28,7 +28,7 @@ public final class GradleConfiguration extends BuildToolConfiguration {
             configuration.getServer(),
             configuration.isAllowUntrustedServer(),
             configuration.getSharedCredentialName(),
-            configuration.getDevelocityPluginVersion(),
+            configuration.getGePluginVersion(),
             configuration.getCcudPluginVersion(),
             configuration.getPluginRepository());
     }

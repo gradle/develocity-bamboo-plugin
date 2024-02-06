@@ -15,7 +15,7 @@ public final class Constants {
     // must have secret as part of the name, see com.atlassian.bamboo.util.PasswordMaskingUtils
     public static final String ACCESS_KEY = "develocity.secret.accessKey";
 
-    public static final String DEVELOCITY_ACCESS_KEY = "DEVELOCITY_ACCESS_KEY";
+    public static final String DEVELOCITY_ACCESS_KEY = "GRADLE_ENTERPRISE_ACCESS_KEY";
 
     public static final String SPACE = " ";
 

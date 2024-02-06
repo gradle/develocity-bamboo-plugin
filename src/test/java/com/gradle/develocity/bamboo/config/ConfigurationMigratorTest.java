@@ -27,15 +27,15 @@ class ConfigurationMigratorTest {
 
     @Test
     void runsMigrateConfigV0ToV1() {
-        setupPluginEnabledEventMock("com.gradle.develocity.develocity-bamboo-plugin");
-        when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.develocity.config")))
+        setupPluginEnabledEventMock("com.gradle.enterprise.gradle-enterprise-bamboo-plugin");
+        when(bandanaManager.getValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config")))
             .thenReturn(new PersistentConfiguration().setServer("https://mycomp"));
 
         new ConfigurationMigrator(bandanaManager).onPluginEnabled(pluginEnabledEvent);
 
-        verify(bandanaManager, times(1)).setValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.develocity.config.v1"),
-            eq("{\"server\":\"https://mycomp\",\"allowUntrustedServer\":false,\"sharedCredentialName\":null,\"develocityPluginVersion\":null,\"ccudPluginVersion\":null,\"pluginRepository\":null,\"injectMavenExtension\":false,\"injectCcudExtension\":false}"));
-        verify(bandanaManager, times(1)).removeValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.develocity.config"));
+        verify(bandanaManager, times(1)).setValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config.v1"),
+            eq("{\"server\":\"https://mycomp\",\"allowUntrustedServer\":false,\"sharedCredentialName\":null,\"gePluginVersion\":null,\"ccudPluginVersion\":null,\"pluginRepository\":null,\"injectMavenExtension\":false,\"injectCcudExtension\":false}"));
+        verify(bandanaManager, times(1)).removeValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.ge.config"));
     }
 
     @ParameterizedTest
@@ -53,8 +53,8 @@ class ConfigurationMigratorTest {
 
     static Stream<Arguments> configAndEventProvider() {
         return Stream.of(
-            arguments(null, "com.gradle.develocity.develocity-bamboo-plugin"),
-            arguments("not a Persistent Configuration object", "com.gradle.develocity.develocity-bamboo-plugin"),
+            arguments(null, "com.gradle.enterprise.gradle-enterprise-bamboo-plugin"),
+            arguments("not a Persistent Configuration object", "com.gradle.enterprise.gradle-enterprise-bamboo-plugin"),
             arguments(new PersistentConfiguration(), "some.other.plugin")
         );
     }

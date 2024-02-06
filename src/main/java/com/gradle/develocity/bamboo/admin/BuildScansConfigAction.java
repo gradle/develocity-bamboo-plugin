@@ -44,7 +44,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 server = config.getServer();
                 allowUntrustedServer = config.isAllowUntrustedServer();
                 sharedCredentialName = config.getSharedCredentialName();
-                develocityPluginVersion = config.getDevelocityPluginVersion();
+                develocityPluginVersion = config.getGePluginVersion();
                 ccudPluginVersion = config.getCcudPluginVersion();
                 pluginRepository = config.getPluginRepository();
                 injectMavenExtension = config.isInjectMavenExtension();
@@ -113,7 +113,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setAllowUntrustedServer(allowUntrustedServer)
                 .setSharedCredentialName(sharedCredentialName)
                 .setPluginRepository(pluginRepository)
-                .setDevelocityPluginVersion(develocityPluginVersion)
+                .setGePluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
                 .setInjectMavenExtension(injectMavenExtension)
                 .setInjectCcudExtension(injectCcudExtension));

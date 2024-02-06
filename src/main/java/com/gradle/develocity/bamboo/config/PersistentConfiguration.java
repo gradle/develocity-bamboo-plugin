@@ -15,7 +15,7 @@ public class PersistentConfiguration {
     private String sharedCredentialName;
 
     @Nullable
-    private String develocityPluginVersion;
+    private String gePluginVersion;
     @Nullable
     private String ccudPluginVersion;
     @Nullable
@@ -54,12 +54,12 @@ public class PersistentConfiguration {
     }
 
     @Nullable
-    public String getDevelocityPluginVersion() {
-        return develocityPluginVersion;
+    public String getGePluginVersion() {
+        return gePluginVersion;
     }
 
-    public PersistentConfiguration setDevelocityPluginVersion(String develocityPluginVersion) {
-        this.develocityPluginVersion = StringUtils.trimToNull(develocityPluginVersion);
+    public PersistentConfiguration setGePluginVersion(String gePluginVersion) {
+        this.gePluginVersion = StringUtils.trimToNull(gePluginVersion);
         return this;
     }
 
@@ -107,7 +107,7 @@ public class PersistentConfiguration {
             .append("server", server)
             .append("allowUntrustedServer", allowUntrustedServer)
             .append("sharedCredentialName", sharedCredentialName)
-            .append("develocityPluginVersion", develocityPluginVersion)
+            .append("gePluginVersion", gePluginVersion)
             .append("ccudPluginVersion", ccudPluginVersion)
             .append("pluginRepository", pluginRepository)
             .append("injectMavenExtension", injectMavenExtension)
@@ -124,14 +124,14 @@ public class PersistentConfiguration {
             injectMavenExtension == that.injectMavenExtension &&
             injectCcudExtension == that.injectCcudExtension && Objects.equals(server, that.server) &&
             Objects.equals(sharedCredentialName, that.sharedCredentialName) &&
-            Objects.equals(develocityPluginVersion, that.develocityPluginVersion) &&
+            Objects.equals(gePluginVersion, that.gePluginVersion) &&
             Objects.equals(ccudPluginVersion, that.ccudPluginVersion) &&
             Objects.equals(pluginRepository, that.pluginRepository);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, develocityPluginVersion, ccudPluginVersion,
+        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, gePluginVersion, ccudPluginVersion,
             pluginRepository, injectMavenExtension, injectCcudExtension);
     }
 }

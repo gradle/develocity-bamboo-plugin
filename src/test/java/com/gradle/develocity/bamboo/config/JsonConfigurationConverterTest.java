@@ -14,7 +14,7 @@ class JsonConfigurationConverterTest {
 
     private static final PersistentConfiguration config = new PersistentConfiguration()
         .setServer("https://mycompany.com")
-        .setDevelocityPluginVersion("3.11")
+        .setGePluginVersion("3.11")
         .setPluginRepository("https://plugins.mycompany.com")
         .setSharedCredentialName("develocity-creds")
         .setAllowUntrustedServer(true)
@@ -23,7 +23,7 @@ class JsonConfigurationConverterTest {
         .setInjectMavenExtension(true);
 
     private static final String json = "{\"server\":\"https://mycompany.com\",\"allowUntrustedServer\":true," +
-        "\"sharedCredentialName\":\"develocity-creds\",\"develocityPluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
+        "\"sharedCredentialName\":\"develocity-creds\",\"gePluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
         "\"pluginRepository\":\"https://plugins.mycompany.com\",\"injectMavenExtension\":true," +
         "\"injectCcudExtension\":true}";
 
