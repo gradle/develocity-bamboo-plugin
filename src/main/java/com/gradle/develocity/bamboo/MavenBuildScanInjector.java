@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +39,9 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             eq(MAVEN_3_PLUGIN_KEY),
             endsWith(ARTIFACTORY_MAVEN_3_TASK_KEY_SUFFIX)
         );
+
+    private static final MavenCoordinates DEVELOCITY_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "gradle-enterprise-maven-extension");
+    private static final MavenCoordinates CCUD_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "common-custom-user-data-maven-extension");
 
     private final DevelocityAccessKeyExporter accessKeyExporter;
     private final List<DevelocityMavenOptsSetter> mavenOptsSetters;
@@ -90,36 +94,62 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             return;
         }
 
+        MavenExtensions existingMavenExtensions = getExistingMavenExtensions(buildContext);
+
         Classpath classpath = new Classpath();
-        classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
-        if (config.injectCcudExtension) {
+        List<SystemProperty> systemProperties = new ArrayList<>();
+        if (!existingMavenExtensions.hasExtension(DEVELOCITY_EXTENSION_MAVEN_COORDINATES)) {
+            classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
+
+            systemProperties.add(new SystemProperty("gradle.scan.uploadInBackground", "false"));
+            systemProperties.add(new SystemProperty("gradle.enterprise.url", config.server));
+            if (config.allowUntrustedServer) {
+                systemProperties.add(new SystemProperty("gradle.enterprise.allowUntrustedServer", "true"));
+            }
+        }
+        if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.CCUD_EXTENSION));
         }
 
-        String mavenExtClasspath = classpath.asString();
-        LOGGER.debug("Maven classpath: {}", mavenExtClasspath);
+        if (classpath.isNotEmpty()) {
+            String mavenExtClasspath = classpath.asString();
+            LOGGER.debug("Maven classpath: {}", mavenExtClasspath);
 
-        registerDevelocityResources(buildContext, classpath.files());
+            registerDevelocityResources(buildContext, classpath.files());
 
-        List<SystemProperty> systemProperties = new ArrayList<>();
-        systemProperties.add(new SystemProperty("maven.ext.class.path", mavenExtClasspath));
-        systemProperties.add(new SystemProperty("gradle.scan.uploadInBackground", "false"));
-        systemProperties.add(new SystemProperty("gradle.enterprise.url", config.server));
-        if (config.allowUntrustedServer) {
-            systemProperties.add(new SystemProperty("gradle.enterprise.allowUntrustedServer", "true"));
+            systemProperties.add(new SystemProperty("maven.ext.class.path", mavenExtClasspath));
+
+            tasks.forEach(task ->
+                    mavenOptsSetters
+                            .stream()
+                            .filter(setter -> setter.applies(task))
+                            .findFirst()
+                            .ifPresent(setter -> setter.apply(task, systemProperties)));
+        } else {
+            LOGGER.debug("Maven classpath is empty due to an existing Develocity and CCUD extension");
         }
-
-        tasks.forEach(task ->
-            mavenOptsSetters
-                .stream()
-                .filter(setter -> setter.applies(task))
-                .findFirst()
-                .ifPresent(setter -> setter.apply(task, systemProperties)));
 
         setupBuildScansLogInterceptor(buildContext);
 
         accessKeyExporter.exportDevelocityAccessKey(buildContext, tasks);
 
         LOGGER.debug("Develocity Maven auto-injection completed");
+    }
+
+    private static MavenExtensions getExistingMavenExtensions(BuildContext buildContext) {
+        for (String checkoutLocation : buildContext.getCheckoutLocation().values()) {
+            File checkoutDirectory = new File(checkoutLocation);
+            File extensionsFile = new File(checkoutDirectory, ".mvn/extensions.xml");
+
+            if (extensionsFile.exists()) {
+                LOGGER.debug("Found extensions file: {}", extensionsFile);
+
+                return MavenExtensions.fromFile(extensionsFile);
+            } else {
+                LOGGER.debug("Extensions file not found: {}", extensionsFile);
+            }
+        }
+
+        return MavenExtensions.empty();
     }
 }

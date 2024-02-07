@@ -28,4 +28,9 @@ final class Classpath {
     private static String classpathSeparator() {
         return SystemUtils.IS_OS_WINDOWS ? ";" : ":";
     }
+
+    boolean isNotEmpty() {
+        return !files.isEmpty();
+    }
+
 }
