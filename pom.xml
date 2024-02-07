@@ -6,13 +6,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gradle.enterprise</groupId>
     <artifactId>gradle-enterprise-bamboo-plugin</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>atlassian-plugin</packaging>
 
-    <name>Gradle Enterprise Bamboo plugin</name>
+    <name>Develocity Bamboo plugin</name>
     <description>
-        Leverages Gradle Enterprise build scans in Bamboo build jobs and provides auto-injection
-        of the Gradle Enterprise Gradle plugin or the Gradle Enterprise Maven extension.
+        Leverages Develocity build scans in Bamboo build jobs and provides auto-injection
+        of the Develocity Gradle plugin or the Develocity Maven extension.
     </description>
 
     <organization>
@@ -29,9 +29,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/gradle/gradle-enterprise-bamboo-plugin</url>
-        <connection>scm:git:https://github.com/gradle/gradle-enterprise-bamboo-plugin.git</connection>
-        <developerConnection>scm:git:https://github.com/gradle/gradle-enterprise-bamboo-plugin.git</developerConnection>
+        <url>https://github.com/gradle/develocity-bamboo-plugin</url>
+        <connection>scm:git:https://github.com/gradle/develocity-bamboo-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/gradle/develocity-bamboo-plugin.git</developerConnection>
     </scm>
 
     <properties>
@@ -54,7 +54,7 @@
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
-        <ge.maven.extension.version>1.20</ge.maven.extension.version>
+        <develocity.maven.extension.version>1.20</develocity.maven.extension.version>
         <ccud.maven.extension.version>1.12.4</ccud.maven.extension.version>
     </properties>
 
@@ -280,22 +280,22 @@
                         <configuration>
                             <source>
                                 <![CDATA[
-                                def geMavenExtensionVersion = project.properties['ge.maven.extension.version']
+                                def develocityMavenExtensionVersion = project.properties['develocity.maven.extension.version']
                                 def ccudExtensionVersion = project.properties['ccud.maven.extension.version']
 
                                 def buildDirectory = project.properties['generated.java.sources.dir'].replace('\\', '/')
-                                def directory = new File(buildDirectory, 'com/gradle/enterprise/bamboo')
+                                def directory = new File(buildDirectory, 'com/gradle/develocity/bamboo')
                                 if (!directory.exists()) {
                                     directory.mkdirs()
                                 }
 
                                 def file = new File(directory, 'Versions.java')
                                 file.text = """
-                                    package com.gradle.enterprise.bamboo;
+                                    package com.gradle.develocity.bamboo;
 
                                     public final class Versions {
 
-                                        public static final String GE_EXTENSION_VERSION = "$geMavenExtensionVersion";
+                                        public static final String DEVELOCITY_EXTENSION_VERSION = "$develocityMavenExtensionVersion";
                                         public static final String CCUD_EXTENSION_VERSION = "$ccudExtensionVersion";
 
                                         private Versions() {
@@ -345,12 +345,12 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/gradle-enterprise/maven</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/develocity/maven</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.gradle</groupId>
                                     <artifactId>gradle-enterprise-maven-extension</artifactId>
-                                    <version>${ge.maven.extension.version}</version>
+                                    <version>${develocity.maven.extension.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.gradle</groupId>
