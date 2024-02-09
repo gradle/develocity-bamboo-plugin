@@ -23,7 +23,7 @@ class JsonConfigurationConverterTest {
         .setInjectMavenExtension(true);
 
     private static final String json = "{\"server\":\"https://mycompany.com\",\"allowUntrustedServer\":true," +
-        "\"sharedCredentialName\":\"develocity-creds\",\"gePluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
+        "\"sharedCredentialName\":\"develocity-creds\",\"develocityPluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
         "\"pluginRepository\":\"https://plugins.mycompany.com\",\"injectMavenExtension\":true," +
         "\"injectCcudExtension\":true}";
 
