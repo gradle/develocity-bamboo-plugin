@@ -17,7 +17,7 @@ import static com.gradle.develocity.bamboo.config.PersistentConfigurationManager
 public class ConfigurationMigrator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationMigrator.class);
-    private static final String DEVELOCITY_BAMBOO_PLUGIN_KEY = "com.gradle.enterprise.gradle-enterprise-bamboo-plugin";
+    private static final String DEVELOCITY_BAMBOO_PLUGIN_KEY = "com.gradle.develocity.develocity-bamboo-plugin";
     private final BandanaManager bandanaManager;
 
     @Autowired

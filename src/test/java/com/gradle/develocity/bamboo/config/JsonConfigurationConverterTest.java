@@ -14,7 +14,7 @@ class JsonConfigurationConverterTest {
 
     private static final PersistentConfiguration config = new PersistentConfiguration()
         .setServer("https://mycompany.com")
-        .setGePluginVersion("3.11")
+        .setDevelocityPluginVersion("3.11")
         .setPluginRepository("https://plugins.mycompany.com")
         .setSharedCredentialName("develocity-creds")
         .setAllowUntrustedServer(true)
