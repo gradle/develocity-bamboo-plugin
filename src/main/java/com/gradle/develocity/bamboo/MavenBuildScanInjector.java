@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static com.gradle.develocity.bamboo.SystemProperty.SystemPropertyKeyWithDeprecatedKey.*;
+import static com.gradle.develocity.bamboo.SystemProperty.SimpleSystemPropertyKey.MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY;
 import static com.gradle.develocity.bamboo.utils.StringPredicates.endsWith;
 import static com.gradle.develocity.bamboo.utils.StringPredicates.eq;
 
@@ -104,10 +106,10 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
         ) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
 
-            systemProperties.add(new SystemProperty("gradle.scan.uploadInBackground", "false"));
-            systemProperties.add(new SystemProperty("gradle.enterprise.url", config.server));
+            systemProperties.addAll(UPLOAD_IN_BACKGROUND_SYSTEM_PROPERTIES.forValue(false));
+            systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue(config.server));
             if (config.allowUntrustedServer) {
-                systemProperties.add(new SystemProperty("gradle.enterprise.allowUntrustedServer", "true"));
+                systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
             }
         }
         if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)) {
@@ -120,7 +122,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
 
             registerDevelocityResources(buildContext, classpath.files());
 
-            systemProperties.add(new SystemProperty("maven.ext.class.path", mavenExtClasspath));
+            systemProperties.add(MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY.forValue(mavenExtClasspath));
 
             tasks.forEach(task ->
                     mavenOptsSetters
