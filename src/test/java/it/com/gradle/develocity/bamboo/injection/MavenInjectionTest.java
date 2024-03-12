@@ -130,7 +130,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void buildScanNotPublishedWithoutAcceptingTos() {
+    void buildScanNotPublishedWithoutAcceptingTermsOfUse() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
@@ -154,7 +154,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
         assertThat(output, containsString("[INFO] The build scan was not published due to a configuration problem."));
-        assertThat(output, containsString("[INFO] The Gradle Terms of Service have not been agreed to."));
+        assertThat(output, containsString("[INFO] The Gradle Terms of Use have not been agreed to."));
     }
     @Test
     void extensionAlreadyAppliedInProjectAndBuildScanAttemptedToPublishToProjectConfiguredHost() {
