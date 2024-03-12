@@ -40,7 +40,8 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             endsWith(ARTIFACTORY_MAVEN_3_TASK_KEY_SUFFIX)
         );
 
-    private static final MavenCoordinates DEVELOCITY_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "gradle-enterprise-maven-extension");
+    private static final MavenCoordinates GRADLE_ENTERPRISE_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "gradle-enterprise-maven-extension");
+    private static final MavenCoordinates DEVELOCITY_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "develocity-maven-extension");
     private static final MavenCoordinates CCUD_EXTENSION_MAVEN_COORDINATES = new MavenCoordinates("com.gradle", "common-custom-user-data-maven-extension");
 
     private final DevelocityAccessKeyExporter accessKeyExporter;

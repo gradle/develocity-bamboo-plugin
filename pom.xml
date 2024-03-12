@@ -54,7 +54,7 @@
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
-        <develocity.maven.extension.version>1.20.1</develocity.maven.extension.version>
+        <develocity.maven.extension.version>1.21-rc-3</develocity.maven.extension.version>
         <ccud.maven.extension.version>1.12.4</ccud.maven.extension.version>
     </properties>
 
@@ -349,7 +349,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.gradle</groupId>
-                                    <artifactId>gradle-enterprise-maven-extension</artifactId>
+                                    <artifactId>develocity-maven-extension</artifactId>
                                     <version>${develocity.maven.extension.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -449,6 +449,10 @@
 
     <repositories>
         <repository>
+            <id>gradle-enterprise-libs-release-candidates</id>
+            <url>https://repo.grdev.net/artifactory/enterprise-libs-release-candidates-local/</url>
+        </repository>
+        <repository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>
             <snapshots>
@@ -464,6 +468,10 @@
     </repositories>
 
     <pluginRepositories>
+        <pluginRepository>
+            <id>gradle-enterprise-libs-release-candidates</id>
+            <url>https://repo.grdev.net/artifactory/enterprise-libs-release-candidates-local/</url>
+        </pluginRepository>
         <pluginRepository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>
