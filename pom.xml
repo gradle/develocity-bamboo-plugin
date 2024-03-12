@@ -449,8 +449,8 @@
 
     <repositories>
         <repository>
-            <id>gradle-enterprise-libs-release-candidates</id>
-            <url>https://repo.grdev.net/artifactory/enterprise-libs-release-candidates-local/</url>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
         </repository>
         <repository>
             <id>atlassian-public</id>
@@ -469,8 +469,8 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>gradle-enterprise-libs-release-candidates</id>
-            <url>https://repo.grdev.net/artifactory/enterprise-libs-release-candidates-local/</url>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
         </pluginRepository>
         <pluginRepository>
             <id>atlassian-public</id>
