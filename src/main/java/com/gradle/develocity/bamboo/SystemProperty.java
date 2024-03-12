@@ -1,6 +1,6 @@
 package com.gradle.develocity.bamboo;
 
-final class SystemProperty {
+public final class SystemProperty {
 
     private final String key;
     private final String value;
