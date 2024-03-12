@@ -99,7 +99,9 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
 
         Classpath classpath = new Classpath();
         List<SystemProperty> systemProperties = new ArrayList<>();
-        if (!existingMavenExtensions.hasExtension(DEVELOCITY_EXTENSION_MAVEN_COORDINATES)) {
+        if (!existingMavenExtensions.hasExtension(GRADLE_ENTERPRISE_EXTENSION_MAVEN_COORDINATES)
+                && !existingMavenExtensions.hasExtension(DEVELOCITY_EXTENSION_MAVEN_COORDINATES)
+        ) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
 
             systemProperties.add(new SystemProperty("gradle.scan.uploadInBackground", "false"));
