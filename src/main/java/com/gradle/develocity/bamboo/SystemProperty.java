@@ -29,10 +29,9 @@ public final class SystemProperty {
 
         private final String develocityKey;
 
-        @Nullable
         private final String deprecatedKey;
 
-        SystemPropertyKeyWithDeprecatedKey(String develocityKey, @Nullable String deprecatedKey) {
+        SystemPropertyKeyWithDeprecatedKey(String develocityKey, String deprecatedKey) {
             this.develocityKey = develocityKey;
             this.deprecatedKey = deprecatedKey;
         }
@@ -51,9 +50,7 @@ public final class SystemProperty {
             String val = (value == null) ? "" : value;
 
             properties.add(new SystemProperty(develocityKey, val));
-            if (deprecatedKey != null) {
-                properties.add(new SystemProperty(deprecatedKey, val));
-            }
+            properties.add(new SystemProperty(deprecatedKey, val));
 
             return properties;
         }
