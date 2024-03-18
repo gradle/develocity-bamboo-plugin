@@ -37,7 +37,7 @@ public class DefaultMavenOptsSetterTest {
     void mavenOpsAreSet() {
         // given
         List<SystemProperty> systemProperties = new ArrayList<>();
-        systemProperties.add(MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY.forValue("test/path/gradle-enterprise-maven-extension-1.15.4.jar"));
+        systemProperties.add(MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY.forValue("test/path/develocity-maven-extension-1.21.jar"));
         systemProperties.addAll(UPLOAD_IN_BACKGROUND_SYSTEM_PROPERTIES.forValue(false));
         systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue("url"));
 
@@ -63,7 +63,7 @@ public class DefaultMavenOptsSetterTest {
                 equalTo(Constants.DEFAULT_TASK_ENVIRONMENT_VARIABLES_KEY),
                 equalTo(
                         "MAVEN_OPTS=\"" +
-                                "-Dmaven.ext.class.path=test/path/gradle-enterprise-maven-extension-1.15.4.jar " +
+                                "-Dmaven.ext.class.path=test/path/develocity-maven-extension-1.21.jar " +
                                 "-Ddevelocity.scan.uploadInBackground=false " +
                                 "-Dgradle.scan.uploadInBackground=false " +
                                 "-Ddevelocity.url=url " +
