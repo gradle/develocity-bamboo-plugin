@@ -88,18 +88,24 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // when
         PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
         waitForBuildToFinish(planResultKey);
-
-        // then
-        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
-        assertThat(buildScans, startsWith("https://gradle.com/s/"));
-
-        // and
         String output = bambooApi.getLog(planResultKey);
 
+        boolean isRc = output.contains("Release candidate versions are not accepted by this Develocity server");
+
+        // then
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, containsString("[INFO] Publishing build scan..."));
-        assertThat(output, containsString("[INFO] https://gradle.com/s/"));
+        // and
+        if (!isRc) {
+            String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+            assertThat(buildScans, startsWith("https://gradle.com/s/"));
+        }
+
+        // and
+        if (!isRc) {
+            assertThat(output, containsString("[INFO] Publishing build scan..."));
+            assertThat(output, containsString("[INFO] https://gradle.com/s/"));
+        }
     }
 
     @Test
