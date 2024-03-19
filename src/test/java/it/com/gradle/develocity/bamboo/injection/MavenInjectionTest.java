@@ -90,6 +90,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         waitForBuildToFinish(planResultKey);
         String output = bambooApi.getLog(planResultKey);
 
+        // CLEANUP: Remove isRc condition when Maven extension is released
         boolean isRc = output.contains("Release candidate versions are not accepted by this Develocity server");
 
         // then
