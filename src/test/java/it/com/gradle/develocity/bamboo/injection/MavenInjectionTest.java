@@ -88,18 +88,25 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // when
         PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
         waitForBuildToFinish(planResultKey);
-
-        // then
-        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
-        assertThat(buildScans, startsWith("https://gradle.com/s/"));
-
-        // and
         String output = bambooApi.getLog(planResultKey);
 
+        // CLEANUP: Remove isRc condition when Maven extension is released
+        boolean isRc = output.contains("Release candidate versions are not accepted by this Develocity server");
+
+        // then
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, containsString("[INFO] Publishing build scan..."));
-        assertThat(output, containsString("[INFO] https://gradle.com/s/"));
+        // and
+        if (!isRc) {
+            String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+            assertThat(buildScans, startsWith("https://gradle.com/s/"));
+        }
+
+        // and
+        if (!isRc) {
+            assertThat(output, containsString("[INFO] Publishing build scan..."));
+            assertThat(output, containsString("[INFO] https://gradle.com/s/"));
+        }
     }
 
     @Test
@@ -130,7 +137,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
-    void buildScanNotPublishedWithoutAcceptingTos() {
+    void buildScanNotPublishedWithoutAcceptingTermsOfUse() {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
@@ -154,7 +161,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
         assertThat(output, containsString("[INFO] The build scan was not published due to a configuration problem."));
-        assertThat(output, containsString("[INFO] The Gradle Terms of Service have not been agreed to."));
+        assertThat(output, containsString("[INFO] The Gradle Terms of Use have not been agreed to."));
     }
     @Test
     void extensionAlreadyAppliedInProjectAndBuildScanAttemptedToPublishToProjectConfiguredHost() {

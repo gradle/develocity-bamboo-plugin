@@ -54,7 +54,8 @@
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
-        <develocity.maven.extension.version>1.20.1</develocity.maven.extension.version>
+        <!-- CLEANUP: Update to released version of Maven extension -->
+        <develocity.maven.extension.version>1.21-rc-3</develocity.maven.extension.version>
         <ccud.maven.extension.version>1.12.4</ccud.maven.extension.version>
     </properties>
 
@@ -349,7 +350,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.gradle</groupId>
-                                    <artifactId>gradle-enterprise-maven-extension</artifactId>
+                                    <artifactId>develocity-maven-extension</artifactId>
                                     <version>${develocity.maven.extension.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -448,6 +449,11 @@
     </profiles>
 
     <repositories>
+        <!-- CLEANUP: Remove gradle-dev-public repository when Maven extension is released-->
+        <repository>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
+        </repository>
         <repository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>
@@ -464,6 +470,11 @@
     </repositories>
 
     <pluginRepositories>
+        <!-- CLEANUP: Remove gradle-dev-public plugin repository when Maven extension is released-->
+        <pluginRepository>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
+        </pluginRepository>
         <pluginRepository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>
