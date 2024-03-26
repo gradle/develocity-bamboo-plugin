@@ -54,7 +54,8 @@
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
-        <develocity.maven.extension.version>1.20.1</develocity.maven.extension.version>
+        <!-- CLEANUP: Update to released version of Maven extension -->
+        <develocity.maven.extension.version>1.21-rc-3</develocity.maven.extension.version>
         <ccud.maven.extension.version>1.13</ccud.maven.extension.version>
     </properties>
 
@@ -109,7 +110,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.0.0-jre</version>
+            <version>33.1.0-jre</version>
             <scope>provided</scope>
         </dependency>
 
@@ -157,7 +158,7 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>1.41.2</version>
+            <version>1.42.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -171,14 +172,14 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>4.0.4</version>
+            <version>4.0.5</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -266,7 +267,7 @@
                     <dependency>
                         <groupId>org.apache.groovy</groupId>
                         <artifactId>groovy</artifactId>
-                        <version>4.0.18</version>
+                        <version>4.0.20</version>
                         <scope>runtime</scope>
                     </dependency>
                 </dependencies>
@@ -349,7 +350,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.gradle</groupId>
-                                    <artifactId>gradle-enterprise-maven-extension</artifactId>
+                                    <artifactId>develocity-maven-extension</artifactId>
                                     <version>${develocity.maven.extension.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -448,6 +449,11 @@
     </profiles>
 
     <repositories>
+        <!-- CLEANUP: Remove gradle-dev-public repository when Maven extension is released-->
+        <repository>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
+        </repository>
         <repository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>
@@ -464,6 +470,11 @@
     </repositories>
 
     <pluginRepositories>
+        <!-- CLEANUP: Remove gradle-dev-public plugin repository when Maven extension is released-->
+        <pluginRepository>
+            <id>gradle-dev-public</id>
+            <url>https://repo.grdev.net/artifactory/public</url>
+        </pluginRepository>
         <pluginRepository>
             <id>atlassian-public</id>
             <url>https://maven.atlassian.com/repository/public</url>

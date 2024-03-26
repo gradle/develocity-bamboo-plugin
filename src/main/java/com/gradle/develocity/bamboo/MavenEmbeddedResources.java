@@ -37,8 +37,8 @@ public final class MavenEmbeddedResources {
     enum Resource {
 
         DEVELOCITY_EXTENSION(
-            "gradle-enterprise-maven-extension-" + Versions.DEVELOCITY_EXTENSION_VERSION + ".jar",
-            "gradle-enterprise-maven-extension.jar"
+            "develocity-maven-extension-" + Versions.DEVELOCITY_EXTENSION_VERSION + ".jar",
+            "develocity-maven-extension.jar"
         ),
 
         CCUD_EXTENSION(
