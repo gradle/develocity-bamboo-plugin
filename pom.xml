@@ -56,7 +56,7 @@
 
         <!-- CLEANUP: Update to released version of Maven extension -->
         <develocity.maven.extension.version>1.21-rc-3</develocity.maven.extension.version>
-        <ccud.maven.extension.version>1.12.4</ccud.maven.extension.version>
+        <ccud.maven.extension.version>1.13</ccud.maven.extension.version>
     </properties>
 
     <dependencyManagement>
