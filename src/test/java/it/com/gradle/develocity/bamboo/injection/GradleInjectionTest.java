@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class GradleInjectionTest extends AbstractInjectionTest {
 
-    private static final String GRADLE_ENTERPRISE_AGENT_VERSION = "3.16.2";
-    private static final String DEVELOCITY_AGENT_VERSION = "3.17-rc-5";
+    private static final String GRADLE_ENTERPRISE_PLUGIN_VERSION = "3.16.2";
+    private static final String DEVELOCITY_PLUGIN_VERSION = "3.17-rc-5";
 
     private static RemoteAgentProcess bambooAgent;
 
@@ -51,12 +51,12 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
     @GradleProjectTest
     void buildScanIsPublishedWithDevelocityPlugin(String buildKey) {
-        assertBuildScanPublished(buildKey, DEVELOCITY_AGENT_VERSION);
+        assertBuildScanPublished(buildKey, DEVELOCITY_PLUGIN_VERSION);
     }
 
     @GradleProjectTest
-    void buildScanIsPublished(String buildKey) {
-        assertBuildScanPublished(buildKey, GRADLE_ENTERPRISE_AGENT_VERSION);
+    void buildScanIsPublishedWithGradleEnterprisePlugin(String buildKey) {
+        assertBuildScanPublished(buildKey, GRADLE_ENTERPRISE_PLUGIN_VERSION);
     }
 
     void assertBuildScanPublished(String buildKey, String agentVersion) {
@@ -125,7 +125,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         ensurePluginConfiguration(form -> form
             .setServer(mockDevelocityServer.getAddress())
-            .setDevelocityPluginVersion(DEVELOCITY_AGENT_VERSION)
+            .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
@@ -144,8 +144,8 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, not(containsString(mockDevelocityServer.publicBuildScanId())));
         assertThat(output, containsString("Publishing failed."));
 
-        assertThat(output, containsString("Plugin version: " + DEVELOCITY_AGENT_VERSION));
-        assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), DEVELOCITY_AGENT_VERSION)));
+        assertThat(output, containsString("Plugin version: " + DEVELOCITY_PLUGIN_VERSION));
+        assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), DEVELOCITY_PLUGIN_VERSION)));
         assertThat(output, containsString("Response status code: 502"));
     }
 }
