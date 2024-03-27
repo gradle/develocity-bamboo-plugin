@@ -17,6 +17,7 @@
     [@ui.bambooSection titleKey="develocity.config.connection-settings.title" headerWeight="h2"]
         [@ww.textfield labelKey="develocity.config.server" name="server" autofocus=true/]
         [@ww.checkbox labelKey="develocity.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
+        [@ww.checkbox labelKey="develocity.config.enforce-url" name="enforceUrl" toggle="true"/]
         [@ww.textfield labelKey="develocity.config.shared-credential-name" name="sharedCredentialName"/]
         <div class="field-group">
             <div style="display: inline-block;">

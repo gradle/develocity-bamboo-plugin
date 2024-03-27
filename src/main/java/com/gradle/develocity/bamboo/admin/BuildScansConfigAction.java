@@ -20,6 +20,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private String server;
     private boolean allowUntrustedServer;
     private String sharedCredentialName;
+    private boolean enforceUrl;
 
     /* Gradle specific parameters */
     private String develocityPluginVersion;
@@ -55,6 +56,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 injectCcudExtension = config.isInjectCcudExtension();
                 mavenExtensionCustomCoordinates = config.getMavenExtensionCustomCoordinates();
                 ccudExtensionCustomCoordinates = config.getCcudExtensionCustomCoordinates();
+                enforceUrl = config.isEnforceUrl();
             });
 
         return INPUT;
@@ -134,6 +136,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setServer(server)
                 .setAllowUntrustedServer(allowUntrustedServer)
                 .setSharedCredentialName(sharedCredentialName)
+                .setEnforceUrl(enforceUrl)
                 .setPluginRepository(pluginRepository)
                 .setDevelocityPluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
@@ -167,6 +170,14 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setSharedCredentialName(String sharedCredentialName) {
         this.sharedCredentialName = sharedCredentialName;
+    }
+
+    public boolean isEnforceUrl() {
+        return enforceUrl;
+    }
+
+    public void setEnforceUrl(boolean enforceUrl) {
+        this.enforceUrl = enforceUrl;
     }
 
     public String getDevelocityPluginVersion() {

@@ -9,6 +9,7 @@ import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.MavenConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.utils.Collections;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,11 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
 
             systemProperties.addAll(UPLOAD_IN_BACKGROUND_SYSTEM_PROPERTIES.forValue(false));
+            systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue(config.server));
+            if (config.allowUntrustedServer) {
+                systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
+            }
+        } else if (!StringUtils.isBlank(config.server) && config.enforceUrl) {
             systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue(config.server));
             if (config.allowUntrustedServer) {
                 systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));

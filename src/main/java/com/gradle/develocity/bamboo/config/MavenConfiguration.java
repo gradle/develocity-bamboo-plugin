@@ -17,9 +17,10 @@ public final class MavenConfiguration extends BuildToolConfiguration {
                                boolean injectMavenExtension,
                                boolean injectCcudExtension,
                                @Nullable String mavenExtensionCustomCoordinates,
-                               @Nullable String ccudExtensionCustomCoordinates
+                               @Nullable String ccudExtensionCustomCoordinates,
+                               boolean enforceUrl
                                ) {
-        super(server, allowUntrustedServer, sharedCredentialName);
+        super(server, allowUntrustedServer, sharedCredentialName, enforceUrl);
         this.injectMavenExtension = injectMavenExtension;
         this.injectCcudExtension = injectCcudExtension;
         this.mavenExtensionCustomCoordinates = MavenCoordinates.parseCoordinates(mavenExtensionCustomCoordinates);
@@ -34,7 +35,8 @@ public final class MavenConfiguration extends BuildToolConfiguration {
             configuration.isInjectMavenExtension(),
             configuration.isInjectCcudExtension(),
             configuration.getMavenExtensionCustomCoordinates(),
-            configuration.getCcudExtensionCustomCoordinates()
+            configuration.getCcudExtensionCustomCoordinates(),
+            configuration.isEnforceUrl()
             );
     }
 

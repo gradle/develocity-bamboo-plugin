@@ -13,6 +13,7 @@ public class PersistentConfiguration {
     private boolean allowUntrustedServer;
     @Nullable
     private String sharedCredentialName;
+    private boolean enforceUrl;
 
     @Nullable
     private String develocityPluginVersion;
@@ -56,6 +57,15 @@ public class PersistentConfiguration {
 
     public PersistentConfiguration setSharedCredentialName(@Nullable String sharedCredentialName) {
         this.sharedCredentialName = StringUtils.trimToNull(sharedCredentialName);
+        return this;
+    }
+
+    public boolean isEnforceUrl() {
+        return enforceUrl;
+    }
+
+    public PersistentConfiguration setEnforceUrl(boolean enforceUrl) {
+        this.enforceUrl = enforceUrl;
         return this;
     }
 
@@ -132,6 +142,7 @@ public class PersistentConfiguration {
         return new ToStringBuilder(this)
             .append("server", server)
             .append("allowUntrustedServer", allowUntrustedServer)
+            .append("enforceUrl", enforceUrl)
             .append("sharedCredentialName", sharedCredentialName)
             .append("develocityPluginVersion", develocityPluginVersion)
             .append("ccudPluginVersion", ccudPluginVersion)
@@ -149,6 +160,7 @@ public class PersistentConfiguration {
         if (o == null || getClass() != o.getClass()) return false;
         PersistentConfiguration that = (PersistentConfiguration) o;
         return allowUntrustedServer == that.allowUntrustedServer &&
+            enforceUrl == that.enforceUrl &&
             injectMavenExtension == that.injectMavenExtension &&
             injectCcudExtension == that.injectCcudExtension &&
             Objects.equals(server, that.server) &&
@@ -162,7 +174,7 @@ public class PersistentConfiguration {
 
     @Override
     public int hashCode() {
-        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, develocityPluginVersion, ccudPluginVersion,
+        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, enforceUrl, develocityPluginVersion, ccudPluginVersion,
             pluginRepository, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates);
     }
 }
