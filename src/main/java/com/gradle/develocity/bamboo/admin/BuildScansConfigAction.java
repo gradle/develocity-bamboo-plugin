@@ -1,6 +1,7 @@
 package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
+import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.config.UsernameAndPassword;
@@ -29,6 +30,9 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private boolean injectMavenExtension;
     private boolean injectCcudExtension;
 
+    private String mavenExtensionCustomCoordinates;
+    private String ccudExtensionCustomCoordinates;
+
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final PersistentConfigurationManager configurationManager;
 
@@ -49,6 +53,8 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 pluginRepository = config.getPluginRepository();
                 injectMavenExtension = config.isInjectMavenExtension();
                 injectCcudExtension = config.isInjectCcudExtension();
+                mavenExtensionCustomCoordinates = config.getMavenExtensionCustomCoordinates();
+                ccudExtensionCustomCoordinates = config.getCcudExtensionCustomCoordinates();
             });
 
         return INPUT;
@@ -85,6 +91,22 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         if (!isBlankOrValidUrl(pluginRepository)) {
             addFieldError("pluginRepository", "Please specify a valid URL of the Gradle plugins repository.");
         }
+
+        if (!isBlankOrValidGavc(mavenExtensionCustomCoordinates)) {
+            addFieldError("mavenExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
+        }
+
+        if (!isBlankOrValidGavc(ccudExtensionCustomCoordinates)) {
+            addFieldError("ccudExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
+        }
+
+    }
+
+    private boolean isBlankOrValidGavc(String coordinates) {
+        if (StringUtils.isBlank(coordinates)) {
+            return true;
+        }
+        return MavenCoordinates.parseCoordinates(coordinates) != null;
     }
 
     private static boolean isBlankOrValidUrl(String url) {
@@ -116,7 +138,9 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setDevelocityPluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
                 .setInjectMavenExtension(injectMavenExtension)
-                .setInjectCcudExtension(injectCcudExtension));
+                .setInjectCcudExtension(injectCcudExtension)
+                .setMavenExtensionCustomCoordinates(mavenExtensionCustomCoordinates)
+                .setCcudExtensionCustomCoordinates(ccudExtensionCustomCoordinates));
 
         return SUCCESS;
     }
@@ -183,5 +207,21 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setInjectCcudExtension(boolean injectCcudExtension) {
         this.injectCcudExtension = injectCcudExtension;
+    }
+
+    public String getMavenExtensionCustomCoordinates() {
+        return mavenExtensionCustomCoordinates;
+    }
+
+    public void setMavenExtensionCustomCoordinates(String mavenExtensionCustomCoordinates) {
+        this.mavenExtensionCustomCoordinates = mavenExtensionCustomCoordinates;
+    }
+
+    public String getCcudExtensionCustomCoordinates() {
+        return ccudExtensionCustomCoordinates;
+    }
+
+    public void setCcudExtensionCustomCoordinates(String ccudExtensionCustomCoordinates) {
+        this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
     }
 }

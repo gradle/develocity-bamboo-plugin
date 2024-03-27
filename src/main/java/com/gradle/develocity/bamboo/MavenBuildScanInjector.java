@@ -103,6 +103,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
         List<SystemProperty> systemProperties = new ArrayList<>();
         if (!existingMavenExtensions.hasExtension(GRADLE_ENTERPRISE_EXTENSION_MAVEN_COORDINATES)
                 && !existingMavenExtensions.hasExtension(DEVELOCITY_EXTENSION_MAVEN_COORDINATES)
+            && !existingMavenExtensions.hasExtension(config.mavenExtensionCustomCoordinates)
         ) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
 
@@ -112,7 +113,8 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
                 systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
             }
         }
-        if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)) {
+        if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)
+            && !existingMavenExtensions.hasExtension(config.ccudExtensionCustomCoordinates)) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.CCUD_EXTENSION));
         }
 

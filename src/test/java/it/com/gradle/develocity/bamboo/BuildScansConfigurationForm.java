@@ -79,6 +79,11 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm setMavenExtensionCustomCoordinates(String coordinates) {
+        getMavenExtensionCustomCoordinatesLocator().fill(coordinates);
+        return this;
+    }
+
     public Locator locator(String selector) {
         return page.locator(selector);
     }
@@ -113,5 +118,9 @@ public final class BuildScansConfigurationForm {
 
     public Locator getInjectCcudExtensionLocator() {
         return page.getByText("Enables Common Custom User Data Maven extension auto-injection");
+    }
+
+    public Locator getMavenExtensionCustomCoordinatesLocator() {
+        return page.getByText("Develocity Maven Extension Custom Coordinates");
     }
 }

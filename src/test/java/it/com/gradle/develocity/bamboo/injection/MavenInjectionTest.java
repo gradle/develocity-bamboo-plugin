@@ -190,4 +190,32 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("[WARNING] Unexpected error while contacting Gradle Enterprise server at http://localhost:8080/"));
     }
 
+    @Test
+    void customExtensionAlreadyApplied() {
+        // given
+        ensurePluginConfiguration(form -> form
+            .setServer(PUBLIC_DEVELOCITY_SERVER)
+            .enableGeExtensionAutoInjection()
+            .setMavenExtensionCustomCoordinates("org.apache.maven.extensions:maven-enforcer-extension")
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPCE");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+
+        assertThat(output, not(containsString("[INFO] The Gradle Terms of Use have not been agreed to.")));
+    }
+
 }

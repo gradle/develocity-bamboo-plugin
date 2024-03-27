@@ -36,6 +36,8 @@
     [@ui.bambooSection titleKey="develocity.config.maven-settings.title" headerWeight="h2"]
         [@ww.checkbox labelKey="develocity.config.maven-extension.enabled" name="injectMavenExtension" toggle="true"/]
         [@ww.checkbox labelKey="develocity.config.ccud-extension.enabled" name="injectCcudExtension" toggle="true"/]
+        [@ww.textfield labelKey="develocity.config.custom-maven-extension" name="mavenExtensionCustomCoordinates"/]
+        [@ww.textfield labelKey="develocity.config.custom-ccud-extension" name="ccudExtensionCustomCoordinates"/]
     [/@ui.bambooSection]
 [/@ww.form]
 

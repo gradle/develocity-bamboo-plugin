@@ -25,6 +25,12 @@ public class PersistentConfiguration {
     private boolean injectCcudExtension;
 
     @Nullable
+    private String mavenExtensionCustomCoordinates;
+
+    @Nullable
+    private String ccudExtensionCustomCoordinates;
+
+    @Nullable
     public String getServer() {
         return server;
     }
@@ -101,6 +107,26 @@ public class PersistentConfiguration {
         return this;
     }
 
+    @Nullable
+    public String getMavenExtensionCustomCoordinates() {
+        return mavenExtensionCustomCoordinates;
+    }
+
+    public PersistentConfiguration setMavenExtensionCustomCoordinates(@Nullable String mavenExtensionCustomCoordinates) {
+        this.mavenExtensionCustomCoordinates = mavenExtensionCustomCoordinates;
+        return this;
+    }
+
+    @Nullable
+    public String getCcudExtensionCustomCoordinates() {
+        return ccudExtensionCustomCoordinates;
+    }
+
+    public PersistentConfiguration setCcudExtensionCustomCoordinates(@Nullable String ccudExtensionCustomCoordinates) {
+        this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -112,6 +138,8 @@ public class PersistentConfiguration {
             .append("pluginRepository", pluginRepository)
             .append("injectMavenExtension", injectMavenExtension)
             .append("injectCcudExtension", injectCcudExtension)
+            .append("customMavenExtension", mavenExtensionCustomCoordinates)
+            .append("customCcudExtension", ccudExtensionCustomCoordinates)
             .toString();
     }
 
@@ -122,16 +150,19 @@ public class PersistentConfiguration {
         PersistentConfiguration that = (PersistentConfiguration) o;
         return allowUntrustedServer == that.allowUntrustedServer &&
             injectMavenExtension == that.injectMavenExtension &&
-            injectCcudExtension == that.injectCcudExtension && Objects.equals(server, that.server) &&
+            injectCcudExtension == that.injectCcudExtension &&
+            Objects.equals(server, that.server) &&
             Objects.equals(sharedCredentialName, that.sharedCredentialName) &&
             Objects.equals(develocityPluginVersion, that.develocityPluginVersion) &&
             Objects.equals(ccudPluginVersion, that.ccudPluginVersion) &&
-            Objects.equals(pluginRepository, that.pluginRepository);
+            Objects.equals(pluginRepository, that.pluginRepository) &&
+            Objects.equals(mavenExtensionCustomCoordinates, that.mavenExtensionCustomCoordinates) &&
+            Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(server, allowUntrustedServer, sharedCredentialName, develocityPluginVersion, ccudPluginVersion,
-            pluginRepository, injectMavenExtension, injectCcudExtension);
+            pluginRepository, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates);
     }
 }
