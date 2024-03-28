@@ -89,7 +89,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public Locator getServerLocator() {
-        return page.getByLabel("Develocity server URL");
+        return page.getByLabel("Develocity server URL", new Page.GetByLabelOptions().setExact(true));
     }
 
     public Locator getSharedCredentialNameLocator() {
