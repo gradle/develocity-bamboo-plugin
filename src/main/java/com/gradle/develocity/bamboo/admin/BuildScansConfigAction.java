@@ -24,6 +24,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private String develocityPluginVersion;
     private String ccudPluginVersion;
     private String pluginRepository;
+    private String pluginRepositoryCredentialName;
 
     /* Maven specific parameters */
     private boolean injectMavenExtension;
@@ -47,6 +48,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 develocityPluginVersion = config.getDevelocityPluginVersion();
                 ccudPluginVersion = config.getCcudPluginVersion();
                 pluginRepository = config.getPluginRepository();
+                pluginRepositoryCredentialName = config.getPluginRepositoryCredentialName();
                 injectMavenExtension = config.isInjectMavenExtension();
                 injectCcudExtension = config.isInjectCcudExtension();
             });
@@ -85,6 +87,13 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         if (!isBlankOrValidUrl(pluginRepository)) {
             addFieldError("pluginRepository", "Please specify a valid URL of the Gradle plugins repository.");
         }
+
+        if (StringUtils.isNotBlank(pluginRepositoryCredentialName)) {
+            UsernameAndPassword credentials = credentialsProvider.findByName(pluginRepositoryCredentialName).orElse(null);
+            if (credentials == null) {
+                addFieldError("pluginRepositoryCredentialName", "Please specify the name of the existing repository credential of type 'Username and password'.");
+            }
+        }
     }
 
     private static boolean isBlankOrValidUrl(String url) {
@@ -113,6 +122,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setAllowUntrustedServer(allowUntrustedServer)
                 .setSharedCredentialName(sharedCredentialName)
                 .setPluginRepository(pluginRepository)
+                .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .setDevelocityPluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
                 .setInjectMavenExtension(injectMavenExtension)
@@ -167,6 +177,14 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setPluginRepository(String pluginRepository) {
         this.pluginRepository = pluginRepository;
+    }
+
+    public String getPluginRepositoryCredentialName() {
+        return pluginRepositoryCredentialName;
+    }
+
+    public void setPluginRepositoryCredentialName(String pluginRepositoryCredentialName) {
+        this.pluginRepositoryCredentialName = pluginRepositoryCredentialName;
     }
 
     public boolean isInjectMavenExtension() {

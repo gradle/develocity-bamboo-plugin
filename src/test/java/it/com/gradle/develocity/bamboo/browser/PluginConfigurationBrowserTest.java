@@ -25,8 +25,8 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
 
     @Test
     void shouldConfigureAllFields() {
-        String accessKey = String.format("scans.gradle.com=%s", randomString());
-        String sharedCredentialName = storeAccessKeyInSharedCredentials(accessKey);
+        String sharedCredentialName = storeAccessKeyInSharedCredentials(String.format("scans.gradle.com=%s", randomString()));
+        String pluginRepositoryCredentialName = storePluginCredentialInSharedCredentials(randomString(), randomString());
 
         assertPluginConfiguration(
             form -> form
@@ -35,6 +35,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 .setDevelocityPluginVersion("3.12")
                 .setCcudPluginVersion("1.8.2")
                 .setPluginRepository("https://plugins.gradle.org")
+                .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .allowUntrustedServer()
                 .enableGeExtensionAutoInjection()
                 .enableCcudExtensionAutoInjection(),
@@ -45,6 +46,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 assertThat(form.getDevelocityPluginVersionLocator()).hasValue("3.12");
                 assertThat(form.getCcudPluginVersionLocator()).hasValue("1.8.2");
                 assertThat(form.getPluginRepositoryLocator()).hasValue("https://plugins.gradle.org");
+                assertThat(form.getPluginRepositoryCredentialNameLocator()).hasValue(pluginRepositoryCredentialName);
 
                 assertThat(form.getAllowUntrustedServerLocator()).isChecked();
                 assertThat(form.getInjectMavenExtensionLocator()).isChecked();
@@ -117,6 +119,15 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> form.setPluginRepository(randomString()),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
             "Please specify a valid URL of the Gradle plugins repository."
+        );
+    }
+
+    @Test
+    void pluginRepositoryCredentialDoesNotExist() {
+        assertInvalidInput(
+                form -> form.setPluginRepositoryCredentialName(randomString()),
+                "#fieldArea_saveBuildScansConfig_pluginRepositoryCredentialName > div.error.control-form-error",
+                "Please specify the name of the existing repository credential of type 'Username and password'."
         );
     }
 

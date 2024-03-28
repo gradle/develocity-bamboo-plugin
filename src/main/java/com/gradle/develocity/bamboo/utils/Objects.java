@@ -18,4 +18,5 @@ public final class Objects {
             action.run();
         }
     }
+
 }
