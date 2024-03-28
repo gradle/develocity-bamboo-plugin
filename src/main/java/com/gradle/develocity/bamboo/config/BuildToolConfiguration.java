@@ -9,13 +9,16 @@ public abstract class BuildToolConfiguration {
     public final boolean allowUntrustedServer;
     @Nullable
     public final String sharedCredentialName;
+    public final boolean enforceUrl;
 
     protected BuildToolConfiguration(@Nullable String server,
                                      boolean allowUntrustedServer,
-                                     @Nullable String sharedCredentialName) {
+                                     @Nullable String sharedCredentialName,
+                                     boolean enforceUrl) {
         this.server = server;
         this.allowUntrustedServer = allowUntrustedServer;
         this.sharedCredentialName = sharedCredentialName;
+        this.enforceUrl = enforceUrl;
     }
 
     public abstract boolean isDisabled();

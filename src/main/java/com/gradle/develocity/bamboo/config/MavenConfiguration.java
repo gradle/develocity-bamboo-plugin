@@ -1,5 +1,6 @@
 package com.gradle.develocity.bamboo.config;
 
+import com.gradle.develocity.bamboo.MavenCoordinates;
 import org.jetbrains.annotations.Nullable;
 
 public final class MavenConfiguration extends BuildToolConfiguration {
@@ -7,14 +8,23 @@ public final class MavenConfiguration extends BuildToolConfiguration {
     public boolean injectMavenExtension;
     public boolean injectCcudExtension;
 
+    public MavenCoordinates mavenExtensionCustomCoordinates;
+    public MavenCoordinates ccudExtensionCustomCoordinates;
+
     private MavenConfiguration(@Nullable String server,
                                boolean allowUntrustedServer,
                                @Nullable String sharedCredentialName,
                                boolean injectMavenExtension,
-                               boolean injectCcudExtension) {
-        super(server, allowUntrustedServer, sharedCredentialName);
+                               boolean injectCcudExtension,
+                               @Nullable String mavenExtensionCustomCoordinates,
+                               @Nullable String ccudExtensionCustomCoordinates,
+                               boolean enforceUrl
+                               ) {
+        super(server, allowUntrustedServer, sharedCredentialName, enforceUrl);
         this.injectMavenExtension = injectMavenExtension;
         this.injectCcudExtension = injectCcudExtension;
+        this.mavenExtensionCustomCoordinates = MavenCoordinates.parseCoordinates(mavenExtensionCustomCoordinates);
+        this.ccudExtensionCustomCoordinates = MavenCoordinates.parseCoordinates(ccudExtensionCustomCoordinates);
     }
 
     public static MavenConfiguration of(PersistentConfiguration configuration) {
@@ -23,7 +33,11 @@ public final class MavenConfiguration extends BuildToolConfiguration {
             configuration.isAllowUntrustedServer(),
             configuration.getSharedCredentialName(),
             configuration.isInjectMavenExtension(),
-            configuration.isInjectCcudExtension());
+            configuration.isInjectCcudExtension(),
+            configuration.getMavenExtensionCustomCoordinates(),
+            configuration.getCcudExtensionCustomCoordinates(),
+            configuration.isEnforceUrl()
+            );
     }
 
     @Override

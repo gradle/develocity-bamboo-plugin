@@ -19,6 +19,21 @@ public final class MavenCoordinates {
         this.version = version;
     }
 
+    public static MavenCoordinates parseCoordinates(String groupAndArtifact) {
+        if (groupAndArtifact == null || groupAndArtifact.trim().isEmpty()) {
+            return null;
+        } else {
+            String[] ga = groupAndArtifact.split(":");
+            if (ga.length == 2) {
+                return new MavenCoordinates(ga[0], ga[1]);
+            } else if (ga.length == 3) {
+                return new MavenCoordinates(ga[0], ga[1], ga[2]);
+            } else {
+                return null;
+            }
+        }
+    }
+
     String groupId() {
         return groupId;
     }
