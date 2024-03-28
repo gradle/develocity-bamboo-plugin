@@ -191,6 +191,34 @@ public class MavenInjectionTest extends AbstractInjectionTest {
     }
 
     @Test
+    void extensionAlreadyAppliedAndEnforceUrl() {
+        // given
+        ensurePluginConfiguration(form -> form
+                .setServer("http://localhost:8888")
+                .enableGeExtensionAutoInjection()
+                .enforceUrl()
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPEA");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+
+        assertThat(output, containsString("[WARNING] Unexpected error while contacting Gradle Enterprise server at http://localhost:8888/"));
+    }
+
+    @Test
     void customExtensionAlreadyApplied() {
         // given
         ensurePluginConfiguration(form -> form

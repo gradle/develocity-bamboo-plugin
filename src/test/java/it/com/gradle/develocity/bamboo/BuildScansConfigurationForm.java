@@ -84,6 +84,11 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm enforceUrl() {
+        getEnforceUrlLocator().check();
+        return this;
+    }
+
     public Locator locator(String selector) {
         return page.locator(selector);
     }
@@ -122,5 +127,9 @@ public final class BuildScansConfigurationForm {
 
     public Locator getMavenExtensionCustomCoordinatesLocator() {
         return page.getByText("Develocity Maven Extension Custom Coordinates");
+    }
+
+    public Locator getEnforceUrlLocator() {
+        return page.getByText("Enforce Develocity server URL");
     }
 }

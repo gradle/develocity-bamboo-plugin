@@ -131,15 +131,17 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             registerDevelocityResources(buildContext, classpath.files());
 
             systemProperties.add(MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY.forValue(mavenExtClasspath));
-
-            tasks.forEach(task ->
-                    mavenOptsSetters
-                            .stream()
-                            .filter(setter -> setter.applies(task))
-                            .findFirst()
-                            .ifPresent(setter -> setter.apply(task, systemProperties)));
         } else {
             LOGGER.debug("Maven classpath is empty due to an existing Develocity and CCUD extension");
+        }
+
+        if (!systemProperties.isEmpty()) {
+            tasks.forEach(task ->
+                mavenOptsSetters
+                    .stream()
+                    .filter(setter -> setter.applies(task))
+                    .findFirst()
+                    .ifPresent(setter -> setter.apply(task, systemProperties)));
         }
 
         setupBuildScansLogInterceptor(buildContext);
