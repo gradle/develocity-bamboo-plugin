@@ -39,7 +39,7 @@ class DevelocityPreJobActionTest {
     private final VariableContext variableContext = mock(VariableContext.class);
 
     private final GradleBuildScanInjector gradleBuildScanInjector =
-        new GradleBuildScanInjector(null, null, null, null);
+        new GradleBuildScanInjector(null, null, null, null, null);
 
     private final DevelocityPreJobAction develocityPreJobAction =
         new DevelocityPreJobAction(

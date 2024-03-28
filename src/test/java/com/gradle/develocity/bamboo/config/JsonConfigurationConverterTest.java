@@ -16,6 +16,7 @@ class JsonConfigurationConverterTest {
         .setServer("https://mycompany.com")
         .setDevelocityPluginVersion("3.11")
         .setPluginRepository("https://plugins.mycompany.com")
+        .setPluginRepositoryCredentialName("plugin-creds")
         .setSharedCredentialName("develocity-creds")
         .setAllowUntrustedServer(true)
         .setCcudPluginVersion("1.11")
@@ -24,7 +25,7 @@ class JsonConfigurationConverterTest {
 
     private static final String json = "{\"server\":\"https://mycompany.com\",\"allowUntrustedServer\":true," +
         "\"sharedCredentialName\":\"develocity-creds\",\"develocityPluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
-        "\"pluginRepository\":\"https://plugins.mycompany.com\",\"injectMavenExtension\":true," +
+        "\"pluginRepository\":\"https://plugins.mycompany.com\",\"pluginRepositoryCredentialName\":\"plugin-creds\",\"injectMavenExtension\":true," +
         "\"injectCcudExtension\":true}";
 
     @Test

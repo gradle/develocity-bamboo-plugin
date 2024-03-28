@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableSet;
 import com.gradle.develocity.bamboo.config.GradleConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
+import com.gradle.develocity.bamboo.config.UsernameAndPassword;
+import com.gradle.develocity.bamboo.config.UsernameAndPasswordCredentialsProvider;
 import com.gradle.develocity.bamboo.utils.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,29 +47,32 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
     public static final String ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX = "artifactoryGradleTask";
 
     private static final Set<Predicate<String>> GRADLE_BUILDERS =
-        ImmutableSet.of(
-            eq(SCRIPT_PLUGIN_KEY),
-            eq(COMMAND_PLUGIN_KEY),
-            eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY),
-            eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY),
-            eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY),
-            endsWith(ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX)
-        );
+            ImmutableSet.of(
+                    eq(SCRIPT_PLUGIN_KEY),
+                    eq(COMMAND_PLUGIN_KEY),
+                    eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY),
+                    eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY),
+                    eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY),
+                    endsWith(ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX)
+            );
 
     private final EnvironmentVariableAccessor environmentVariableAccessor;
     private final DevelocityAccessKeyExporter accessKeyExporter;
+    private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final GradleEmbeddedResources gradleEmbeddedResources = new GradleEmbeddedResources();
 
     @Autowired
     public GradleBuildScanInjector(
-        @ComponentImport BuildLoggerManager buildLoggerManager,
-        PersistentConfigurationManager configurationManager,
-        @ComponentImport EnvironmentVariableAccessor environmentVariableAccessor,
-        DevelocityAccessKeyExporter accessKeyExporter
+            @ComponentImport BuildLoggerManager buildLoggerManager,
+            PersistentConfigurationManager configurationManager,
+            @ComponentImport EnvironmentVariableAccessor environmentVariableAccessor,
+            DevelocityAccessKeyExporter accessKeyExporter,
+            UsernameAndPasswordCredentialsProvider credentialsProvider
     ) {
         super(buildLoggerManager, configurationManager);
         this.environmentVariableAccessor = environmentVariableAccessor;
         this.accessKeyExporter = accessKeyExporter;
+        this.credentialsProvider = credentialsProvider;
     }
 
     @Override
@@ -114,7 +119,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         File initScript = gradleEmbeddedResources.copyInitScript(home);
         LOGGER.debug("Gradle init script: {}", initScript.getAbsolutePath());
 
-        prepareEnvironment(buildContext, config);
+        prepareEnvironment(buildContext, config, tasks);
         registerDevelocityResources(buildContext, initScript);
         setupBuildScansLogInterceptor(buildContext);
 
@@ -123,13 +128,30 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         LOGGER.debug("Develocity Gradle auto-injection completed");
     }
 
-    private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config) {
+    private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config, Collection<RuntimeTaskDefinition> tasks) {
         VariableContext variableContext = buildContext.getVariableContext();
 
-        Objects.runIfNotNull(config.server, s -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_URL", s));
+        Objects.runIfNotNull(config.server, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_URL", it));
         Objects.runIfTrue(config.allowUntrustedServer, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ALLOW_UNTRUSTED_SERVER", "true"));
-        Objects.runIfNotNull(config.develocityPluginVersion, v -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_PLUGIN_VERSION", v));
-        Objects.runIfNotNull(config.ccudPluginVersion, v -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", v));
-        Objects.runIfNotNull(config.pluginRepository, r -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", r));
+        Objects.runIfNotNull(config.develocityPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_PLUGIN_VERSION", it));
+        Objects.runIfNotNull(config.ccudPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", it));
+        Objects.runIfNotNull(config.pluginRepository, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", it));
+
+        Objects.runIfNotNull(
+                config.pluginRepositoryCredentialName,
+                it -> {
+                    UsernameAndPassword credentials = credentialsProvider.findByName(it).orElse(null);
+                    if (credentials == null) {
+                        LOGGER.warn("Plugin repository credentials with the name {} are not found.", it);
+                    } else {
+                        if (credentials.getUsername() == null || credentials.getPassword() == null) {
+                            LOGGER.warn("Plugin repository credentials {} do not have username or password set.", it);
+                        } else {
+                            variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_USERNAME", credentials.getUsername());
+                            variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_PASSWORD", credentials.getPassword());
+                        }
+                    }
+                }
+        );
     }
 }

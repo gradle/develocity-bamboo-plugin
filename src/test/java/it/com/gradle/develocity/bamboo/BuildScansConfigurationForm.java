@@ -64,6 +64,11 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm setPluginRepositoryCredentialName(String name) {
+        getPluginRepositoryCredentialNameLocator().fill(name);
+        return this;
+    }
+
     public BuildScansConfigurationForm allowUntrustedServer() {
         getAllowUntrustedServerLocator().check();
         return this;
@@ -101,6 +106,10 @@ public final class BuildScansConfigurationForm {
 
     public Locator getPluginRepositoryLocator() {
         return page.getByLabel("Gradle plugin repository URL");
+    }
+
+    public Locator getPluginRepositoryCredentialNameLocator() {
+        return page.getByLabel("Gradle plugin repository credential name");
     }
 
     public Locator getAllowUntrustedServerLocator() {

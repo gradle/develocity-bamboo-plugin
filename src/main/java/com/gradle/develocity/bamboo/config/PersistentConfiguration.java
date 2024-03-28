@@ -20,6 +20,8 @@ public class PersistentConfiguration {
     private String ccudPluginVersion;
     @Nullable
     private String pluginRepository;
+    @Nullable
+    private String pluginRepositoryCredentialName;
 
     private boolean injectMavenExtension;
     private boolean injectCcudExtension;
@@ -83,6 +85,16 @@ public class PersistentConfiguration {
         return this;
     }
 
+    @Nullable
+    public String getPluginRepositoryCredentialName() {
+        return pluginRepositoryCredentialName;
+    }
+
+    public PersistentConfiguration setPluginRepositoryCredentialName(@Nullable String pluginRepositoryCredentialName) {
+        this.pluginRepositoryCredentialName = StringUtils.trimToNull(pluginRepositoryCredentialName);
+        return this;
+    }
+
     public boolean isInjectMavenExtension() {
         return injectMavenExtension;
     }
@@ -110,6 +122,7 @@ public class PersistentConfiguration {
             .append("develocityPluginVersion", develocityPluginVersion)
             .append("ccudPluginVersion", ccudPluginVersion)
             .append("pluginRepository", pluginRepository)
+            .append("pluginRepositoryCredentialName", pluginRepositoryCredentialName)
             .append("injectMavenExtension", injectMavenExtension)
             .append("injectCcudExtension", injectCcudExtension)
             .toString();
@@ -126,12 +139,13 @@ public class PersistentConfiguration {
             Objects.equals(sharedCredentialName, that.sharedCredentialName) &&
             Objects.equals(develocityPluginVersion, that.develocityPluginVersion) &&
             Objects.equals(ccudPluginVersion, that.ccudPluginVersion) &&
-            Objects.equals(pluginRepository, that.pluginRepository);
+            Objects.equals(pluginRepository, that.pluginRepository) &&
+            Objects.equals(pluginRepositoryCredentialName, that.pluginRepositoryCredentialName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(server, allowUntrustedServer, sharedCredentialName, develocityPluginVersion, ccudPluginVersion,
-            pluginRepository, injectMavenExtension, injectCcudExtension);
+            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension);
     }
 }

@@ -31,6 +31,7 @@
         [@ww.textfield labelKey="develocity.config.develocity-plugin.version" name="develocityPluginVersion"/]
         [@ww.textfield labelKey="develocity.config.ccud-plugin.version" name="ccudPluginVersion"/]
         [@ww.textfield labelKey="develocity.config.plugin-repository" name="pluginRepository"/]
+        [@ww.textfield labelKey="develocity.config.plugin-repository-credential-name" name="pluginRepositoryCredentialName"/]
     [/@ui.bambooSection]
 
     [@ui.bambooSection titleKey="develocity.config.maven-settings.title" headerWeight="h2"]
