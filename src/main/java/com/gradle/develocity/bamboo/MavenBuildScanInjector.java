@@ -9,6 +9,7 @@ import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.MavenConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.utils.Collections;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
         List<SystemProperty> systemProperties = new ArrayList<>();
         if (!existingMavenExtensions.hasExtension(GRADLE_ENTERPRISE_EXTENSION_MAVEN_COORDINATES)
                 && !existingMavenExtensions.hasExtension(DEVELOCITY_EXTENSION_MAVEN_COORDINATES)
+            && !existingMavenExtensions.hasExtension(config.mavenExtensionCustomCoordinates)
         ) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.DEVELOCITY_EXTENSION));
 
@@ -111,8 +113,14 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             if (config.allowUntrustedServer) {
                 systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
             }
+        } else if (!StringUtils.isBlank(config.server) && config.enforceUrl) {
+            systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue(config.server));
+            if (config.allowUntrustedServer) {
+                systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
+            }
         }
-        if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)) {
+        if (config.injectCcudExtension && !existingMavenExtensions.hasExtension(CCUD_EXTENSION_MAVEN_COORDINATES)
+            && !existingMavenExtensions.hasExtension(config.ccudExtensionCustomCoordinates)) {
             classpath.add(mavenEmbeddedResources.copy(MavenEmbeddedResources.Resource.CCUD_EXTENSION));
         }
 
@@ -123,15 +131,17 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             registerDevelocityResources(buildContext, classpath.files());
 
             systemProperties.add(MAVEN_EXT_CLASS_PATH_SYSTEM_PROPERTY.forValue(mavenExtClasspath));
-
-            tasks.forEach(task ->
-                    mavenOptsSetters
-                            .stream()
-                            .filter(setter -> setter.applies(task))
-                            .findFirst()
-                            .ifPresent(setter -> setter.apply(task, systemProperties)));
         } else {
             LOGGER.debug("Maven classpath is empty due to an existing Develocity and CCUD extension");
+        }
+
+        if (!systemProperties.isEmpty()) {
+            tasks.forEach(task ->
+                mavenOptsSetters
+                    .stream()
+                    .filter(setter -> setter.applies(task))
+                    .findFirst()
+                    .ifPresent(setter -> setter.apply(task, systemProperties)));
         }
 
         setupBuildScansLogInterceptor(buildContext);
