@@ -84,12 +84,22 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm setMavenExtensionCustomCoordinates(String coordinates) {
+        getMavenExtensionCustomCoordinatesLocator().fill(coordinates);
+        return this;
+    }
+
+    public BuildScansConfigurationForm enforceUrl() {
+        getEnforceUrlLocator().check();
+        return this;
+    }
+
     public Locator locator(String selector) {
         return page.locator(selector);
     }
 
     public Locator getServerLocator() {
-        return page.getByLabel("Develocity server URL");
+        return page.getByLabel("Develocity server URL", new Page.GetByLabelOptions().setExact(true));
     }
 
     public Locator getSharedCredentialNameLocator() {
@@ -122,5 +132,13 @@ public final class BuildScansConfigurationForm {
 
     public Locator getInjectCcudExtensionLocator() {
         return page.getByText("Enables Common Custom User Data Maven extension auto-injection");
+    }
+
+    public Locator getMavenExtensionCustomCoordinatesLocator() {
+        return page.getByText("Develocity Maven Extension Custom Coordinates");
+    }
+
+    public Locator getEnforceUrlLocator() {
+        return page.getByText("Enforce Develocity server URL");
     }
 }

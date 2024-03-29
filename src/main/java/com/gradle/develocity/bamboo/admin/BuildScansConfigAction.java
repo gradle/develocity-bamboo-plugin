@@ -1,6 +1,7 @@
 package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
+import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.config.UsernameAndPassword;
@@ -19,6 +20,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private String server;
     private boolean allowUntrustedServer;
     private String sharedCredentialName;
+    private boolean enforceUrl;
 
     /* Gradle specific parameters */
     private String develocityPluginVersion;
@@ -29,6 +31,9 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     /* Maven specific parameters */
     private boolean injectMavenExtension;
     private boolean injectCcudExtension;
+
+    private String mavenExtensionCustomCoordinates;
+    private String ccudExtensionCustomCoordinates;
 
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final PersistentConfigurationManager configurationManager;
@@ -51,6 +56,9 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 pluginRepositoryCredentialName = config.getPluginRepositoryCredentialName();
                 injectMavenExtension = config.isInjectMavenExtension();
                 injectCcudExtension = config.isInjectCcudExtension();
+                mavenExtensionCustomCoordinates = config.getMavenExtensionCustomCoordinates();
+                ccudExtensionCustomCoordinates = config.getCcudExtensionCustomCoordinates();
+                enforceUrl = config.isEnforceUrl();
             });
 
         return INPUT;
@@ -94,6 +102,22 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 addFieldError("pluginRepositoryCredentialName", "Please specify the name of the existing repository credential of type 'Username and password'.");
             }
         }
+
+        if (!isBlankOrValidGavc(mavenExtensionCustomCoordinates)) {
+            addFieldError("mavenExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
+        }
+
+        if (!isBlankOrValidGavc(ccudExtensionCustomCoordinates)) {
+            addFieldError("ccudExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
+        }
+
+    }
+
+    private boolean isBlankOrValidGavc(String coordinates) {
+        if (StringUtils.isBlank(coordinates)) {
+            return true;
+        }
+        return MavenCoordinates.parseCoordinates(coordinates) != null;
     }
 
     private static boolean isBlankOrValidUrl(String url) {
@@ -121,12 +145,15 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setServer(server)
                 .setAllowUntrustedServer(allowUntrustedServer)
                 .setSharedCredentialName(sharedCredentialName)
+                .setEnforceUrl(enforceUrl)
                 .setPluginRepository(pluginRepository)
                 .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .setDevelocityPluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
                 .setInjectMavenExtension(injectMavenExtension)
-                .setInjectCcudExtension(injectCcudExtension));
+                .setInjectCcudExtension(injectCcudExtension)
+                .setMavenExtensionCustomCoordinates(mavenExtensionCustomCoordinates)
+                .setCcudExtensionCustomCoordinates(ccudExtensionCustomCoordinates));
 
         return SUCCESS;
     }
@@ -153,6 +180,14 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setSharedCredentialName(String sharedCredentialName) {
         this.sharedCredentialName = sharedCredentialName;
+    }
+
+    public boolean isEnforceUrl() {
+        return enforceUrl;
+    }
+
+    public void setEnforceUrl(boolean enforceUrl) {
+        this.enforceUrl = enforceUrl;
     }
 
     public String getDevelocityPluginVersion() {
@@ -201,5 +236,21 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setInjectCcudExtension(boolean injectCcudExtension) {
         this.injectCcudExtension = injectCcudExtension;
+    }
+
+    public String getMavenExtensionCustomCoordinates() {
+        return mavenExtensionCustomCoordinates;
+    }
+
+    public void setMavenExtensionCustomCoordinates(String mavenExtensionCustomCoordinates) {
+        this.mavenExtensionCustomCoordinates = mavenExtensionCustomCoordinates;
+    }
+
+    public String getCcudExtensionCustomCoordinates() {
+        return ccudExtensionCustomCoordinates;
+    }
+
+    public void setCcudExtensionCustomCoordinates(String ccudExtensionCustomCoordinates) {
+        this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
     }
 }

@@ -13,6 +13,7 @@ public class PersistentConfiguration {
     private boolean allowUntrustedServer;
     @Nullable
     private String sharedCredentialName;
+    private boolean enforceUrl;
 
     @Nullable
     private String develocityPluginVersion;
@@ -25,6 +26,12 @@ public class PersistentConfiguration {
 
     private boolean injectMavenExtension;
     private boolean injectCcudExtension;
+
+    @Nullable
+    private String mavenExtensionCustomCoordinates;
+
+    @Nullable
+    private String ccudExtensionCustomCoordinates;
 
     @Nullable
     public String getServer() {
@@ -52,6 +59,15 @@ public class PersistentConfiguration {
 
     public PersistentConfiguration setSharedCredentialName(@Nullable String sharedCredentialName) {
         this.sharedCredentialName = StringUtils.trimToNull(sharedCredentialName);
+        return this;
+    }
+
+    public boolean isEnforceUrl() {
+        return enforceUrl;
+    }
+
+    public PersistentConfiguration setEnforceUrl(boolean enforceUrl) {
+        this.enforceUrl = enforceUrl;
         return this;
     }
 
@@ -113,11 +129,32 @@ public class PersistentConfiguration {
         return this;
     }
 
+    @Nullable
+    public String getMavenExtensionCustomCoordinates() {
+        return mavenExtensionCustomCoordinates;
+    }
+
+    public PersistentConfiguration setMavenExtensionCustomCoordinates(@Nullable String mavenExtensionCustomCoordinates) {
+        this.mavenExtensionCustomCoordinates = mavenExtensionCustomCoordinates;
+        return this;
+    }
+
+    @Nullable
+    public String getCcudExtensionCustomCoordinates() {
+        return ccudExtensionCustomCoordinates;
+    }
+
+    public PersistentConfiguration setCcudExtensionCustomCoordinates(@Nullable String ccudExtensionCustomCoordinates) {
+        this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
             .append("server", server)
             .append("allowUntrustedServer", allowUntrustedServer)
+            .append("enforceUrl", enforceUrl)
             .append("sharedCredentialName", sharedCredentialName)
             .append("develocityPluginVersion", develocityPluginVersion)
             .append("ccudPluginVersion", ccudPluginVersion)
@@ -125,6 +162,8 @@ public class PersistentConfiguration {
             .append("pluginRepositoryCredentialName", pluginRepositoryCredentialName)
             .append("injectMavenExtension", injectMavenExtension)
             .append("injectCcudExtension", injectCcudExtension)
+            .append("customMavenExtension", mavenExtensionCustomCoordinates)
+            .append("customCcudExtension", ccudExtensionCustomCoordinates)
             .toString();
     }
 
@@ -134,18 +173,22 @@ public class PersistentConfiguration {
         if (o == null || getClass() != o.getClass()) return false;
         PersistentConfiguration that = (PersistentConfiguration) o;
         return allowUntrustedServer == that.allowUntrustedServer &&
+            enforceUrl == that.enforceUrl &&
             injectMavenExtension == that.injectMavenExtension &&
-            injectCcudExtension == that.injectCcudExtension && Objects.equals(server, that.server) &&
+            injectCcudExtension == that.injectCcudExtension &&
+            Objects.equals(server, that.server) &&
             Objects.equals(sharedCredentialName, that.sharedCredentialName) &&
             Objects.equals(develocityPluginVersion, that.develocityPluginVersion) &&
             Objects.equals(ccudPluginVersion, that.ccudPluginVersion) &&
             Objects.equals(pluginRepository, that.pluginRepository) &&
-            Objects.equals(pluginRepositoryCredentialName, that.pluginRepositoryCredentialName);
+            Objects.equals(pluginRepositoryCredentialName, that.pluginRepositoryCredentialName) &&
+            Objects.equals(mavenExtensionCustomCoordinates, that.mavenExtensionCustomCoordinates) &&
+            Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, develocityPluginVersion, ccudPluginVersion,
-            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension);
+        return Objects.hash(server, allowUntrustedServer, sharedCredentialName, enforceUrl, develocityPluginVersion, ccudPluginVersion,
+            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates);
     }
 }
