@@ -4,6 +4,7 @@ import com.atlassian.bamboo.ResultKey;
 import com.atlassian.bamboo.build.BuildLoggerManager;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.v2.build.BuildContext;
+import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -37,7 +38,7 @@ class DevelocityPreBuildActionTest {
 
         DevelocityPreBuildAction develocityPreBuildAction =
             new DevelocityPreBuildAction(
-                Collections.singletonList(mockBuildScanInjector), mockBuildLoggerManager);
+                Collections.singletonList(mockBuildScanInjector), mockBuildLoggerManager, mock(PersistentConfigurationManager.class));
 
         develocityPreBuildAction.init(TestFixtures.getBuildContext());
 
@@ -63,7 +64,7 @@ class DevelocityPreBuildActionTest {
 
         DevelocityPreBuildAction develocityPreBuildAction =
             new DevelocityPreBuildAction(
-                Arrays.asList(mockSuccessfulBuildScanInjector, mockFailedBuildScanInjector), mockBuildLoggerManager);
+                Arrays.asList(mockSuccessfulBuildScanInjector, mockFailedBuildScanInjector), mockBuildLoggerManager, mock(PersistentConfigurationManager.class));
 
         develocityPreBuildAction.init(TestFixtures.getBuildContext());
 

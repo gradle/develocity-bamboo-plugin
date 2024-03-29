@@ -17,8 +17,9 @@ public final class GradleConfiguration extends BuildToolConfiguration {
                                 @Nullable String develocityPluginVersion,
                                 @Nullable String ccudPluginVersion,
                                 @Nullable String pluginRepository,
-                                boolean enforceUrl) {
-        super(server, allowUntrustedServer, sharedCredentialName, enforceUrl);
+                                boolean enforceUrl,
+                                String filter) {
+        super(server, allowUntrustedServer, sharedCredentialName, enforceUrl, filter);
         this.develocityPluginVersion = develocityPluginVersion;
         this.ccudPluginVersion = ccudPluginVersion;
         this.pluginRepository = pluginRepository;
@@ -32,7 +33,8 @@ public final class GradleConfiguration extends BuildToolConfiguration {
             configuration.getDevelocityPluginVersion(),
             configuration.getCcudPluginVersion(),
             configuration.getPluginRepository(),
-            configuration.isEnforceUrl());
+            configuration.isEnforceUrl(),
+            configuration.getVcsRepositoryFilter());
     }
 
     @Override

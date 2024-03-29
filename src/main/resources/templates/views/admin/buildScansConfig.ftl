@@ -27,7 +27,16 @@
             </div>
         </div>
     [/@ui.bambooSection]
-
+    [@ui.bambooSection titleKey="develocity.config.general.title" headerWeight="h2"]
+        [@ww.textarea labelKey='develocity.config.general.vcs-repository-filter' name='vcsRepositoryFilter' /]
+        <div class="field-group">
+            <div style="display: inline-block;">
+                [@ui.messageBox type="info"]
+                    [@ww.text name="develocity.config.general.vcs-repository-filter.info"/]
+                [/@ui.messageBox]
+            </div>
+        </div>
+    [/@ui.bambooSection]
     [@ui.bambooSection titleKey="develocity.config.gradle-settings.title" headerWeight="h2"]
         [@ww.textfield labelKey="develocity.config.develocity-plugin.version" name="develocityPluginVersion"/]
         [@ww.textfield labelKey="develocity.config.ccud-plugin.version" name="ccudPluginVersion"/]
