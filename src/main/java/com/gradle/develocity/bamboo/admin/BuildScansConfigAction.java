@@ -1,6 +1,7 @@
 package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
+import com.atlassian.bamboo.repository.NameValuePair;
 import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
@@ -10,7 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BuildScansConfigAction extends GlobalAdminAction {
 
@@ -111,6 +114,17 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("ccudExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
         }
 
+    }
+
+    public List<NameValuePair> getUsernameAndPasswordCredentialNames() {
+        List<NameValuePair> usernameAndPasswordCredentials = credentialsProvider.getAllUsernameAndPasswordCredentials()
+                .stream()
+                .map(credentialName -> new NameValuePair(credentialName, credentialName))
+                .collect(Collectors.toList());
+
+        usernameAndPasswordCredentials.add(0, new NameValuePair("", "None"));
+
+        return usernameAndPasswordCredentials;
     }
 
     private boolean isBlankOrValidGavc(String coordinates) {
