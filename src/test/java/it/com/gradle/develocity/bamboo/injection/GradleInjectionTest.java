@@ -148,4 +148,32 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), DEVELOCITY_PLUGIN_VERSION)));
         assertThat(output, containsString("Response status code: 502"));
     }
+
+    @GradleProjectTest
+    void skipsAutoInjectionIfRepositoryShouldBeExcluded(String buildKey) {
+        // given
+        ensurePluginConfiguration(form -> form
+            .setServer(mockDevelocityServer.getAddress())
+            .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+            .setVcsRepositoryFilter("-:simple")
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        MockDevelocityServer.ScanTokenRequest scanTokenRequest = mockDevelocityServer.getLastScanTokenRequest();
+        assertThat(scanTokenRequest, nullValue());
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("BUILD SUCCESSFUL"));
+
+        assertThat(output, not(containsString("Publishing build scan...")));
+    }
 }

@@ -89,6 +89,15 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm setVcsRepositoryFilter(String filter) {
+        getVcsRepositoryFilterLocator().fill(filter);
+        return this;
+    }
+
+    private Locator getVcsRepositoryFilterLocator() {
+        return page.getByLabel("Auto-injection Git VCS repository filters");
+    }
+
     public Locator locator(String selector) {
         return page.locator(selector);
     }

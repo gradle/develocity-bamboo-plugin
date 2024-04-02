@@ -16,9 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import static com.gradle.develocity.bamboo.Utils.vcsRepoUrls;
 
 public class DevelocityPreBuildAction extends AbstractBuildTask implements CustomPreBuildAction {
 
@@ -65,7 +64,7 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
         // TODO: we don't need GradleConfiguration
         //  need to remove inheritance and use composition for BuildToolConfiguration, and instantiate that here
         return configurationManager.load().map(GradleConfiguration::of).map(c -> c.vcsRepositoryFilter).map(f -> {
-            for (String url : vcsRepoUrls()) {
+            for (String url : vcsRepoUrls(buildContext)) {
                 switch (f.matches(url)) {
                     case EXCLUDED:
                         return false;
@@ -75,22 +74,6 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
             }
             return false;
         }).orElse(true);
-    }
-
-    private Set<String> vcsRepoUrls() {
-        return buildContext.getRelevantRepositoryIds().stream().map(id -> buildContext.getVcsRepositoryMap().get(id))
-            .map(r -> r.getVcsLocation().getConfiguration())
-            .flatMap(c -> c.keySet().stream().map(k -> {
-                if (k.contains("repositoryUrl")) {
-                    return c.get(k);
-                } else if (k.contains("github.repository")) {
-                    return "https://github.com/" + c.get(k);
-                } else {
-                    return null;
-                }
-            }))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
     }
 
     private void addErrorToBuildLog(BuildScanInjector injector, Exception ex) {
