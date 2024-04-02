@@ -16,11 +16,14 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm clear() {
-        Stream.of(getServerLocator(), getSharedCredentialNameLocator(), getPluginRepositoryLocator(), getDevelocityPluginVersionLocator(), getCcudPluginVersionLocator())
+        Stream.of(getServerLocator(), getPluginRepositoryLocator(), getDevelocityPluginVersionLocator(), getCcudPluginVersionLocator())
             .forEach(Locator::clear);
 
         Stream.of(getAllowUntrustedServerLocator(), getInjectMavenExtensionLocator(), getInjectCcudExtensionLocator())
             .forEach(Locator::uncheck);
+
+        Stream.of(getSharedCredentialNameLocator(), getPluginRepositoryCredentialNameLocator())
+            .forEach(it -> it.selectOption("None"));
 
         return save();
     }
@@ -41,7 +44,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm setSharedCredentialName(String name) {
-        getSharedCredentialNameLocator().fill(name);
+        getSharedCredentialNameLocator().selectOption(name);
         return this;
     }
 
@@ -65,7 +68,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm setPluginRepositoryCredentialName(String name) {
-        getPluginRepositoryCredentialNameLocator().fill(name);
+        getPluginRepositoryCredentialNameLocator().selectOption(name);
         return this;
     }
 

@@ -87,15 +87,6 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
     }
 
     @Test
-    void sharedCredentialDoesNotExist() {
-        assertInvalidInput(
-            form -> form.setSharedCredentialName(randomString()),
-            "#fieldArea_saveBuildScansConfig_sharedCredentialName > div.error.control-form-error",
-            "Please specify the name of the existing shared credential of type 'Username and password'."
-        );
-    }
-
-    @Test
     void invalidDevelocityPluginVersion() {
         assertInvalidInput(
             form -> form.setDevelocityPluginVersion(randomString()),
@@ -119,15 +110,6 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> form.setPluginRepository(randomString()),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
             "Please specify a valid URL of the Gradle plugins repository."
-        );
-    }
-
-    @Test
-    void pluginRepositoryCredentialDoesNotExist() {
-        assertInvalidInput(
-                form -> form.setPluginRepositoryCredentialName(randomString()),
-                "#fieldArea_saveBuildScansConfig_pluginRepositoryCredentialName > div.error.control-form-error",
-                "Please specify the name of the existing repository credential of type 'Username and password'."
         );
     }
 
