@@ -18,7 +18,12 @@
         [@ww.textfield labelKey="develocity.config.server" name="server" autofocus=true/]
         [@ww.checkbox labelKey="develocity.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
         [@ww.checkbox labelKey="develocity.config.enforce-url" name="enforceUrl" toggle="true"/]
-        [@ww.textfield labelKey="develocity.config.shared-credential-name" name="sharedCredentialName"/]
+        [@ww.select labelKey='develocity.config.shared-credential-name' name='sharedCredentialName'
+            toggle='true'
+            list=usernameAndPasswordCredentialNames
+            listKey='name'
+            listValue='label']
+        [/@ww.select]
         <div class="field-group">
             <div style="display: inline-block;">
                 [@ui.messageBox type="info"]
@@ -32,6 +37,12 @@
         [@ww.textfield labelKey="develocity.config.develocity-plugin.version" name="develocityPluginVersion"/]
         [@ww.textfield labelKey="develocity.config.ccud-plugin.version" name="ccudPluginVersion"/]
         [@ww.textfield labelKey="develocity.config.plugin-repository" name="pluginRepository"/]
+        [@ww.select labelKey='develocity.config.plugin-repository-credential-name' name='pluginRepositoryCredentialName'
+            toggle='true'
+            list=usernameAndPasswordCredentialNames
+            listKey='name'
+            listValue='label']
+        [/@ww.select]
     [/@ui.bambooSection]
 
     [@ui.bambooSection titleKey="develocity.config.maven-settings.title" headerWeight="h2"]

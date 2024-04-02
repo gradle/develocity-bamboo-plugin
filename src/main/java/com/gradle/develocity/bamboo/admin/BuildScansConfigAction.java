@@ -1,6 +1,7 @@
 package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
+import com.atlassian.bamboo.repository.NameValuePair;
 import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
@@ -10,7 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BuildScansConfigAction extends GlobalAdminAction {
 
@@ -26,6 +29,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private String develocityPluginVersion;
     private String ccudPluginVersion;
     private String pluginRepository;
+    private String pluginRepositoryCredentialName;
 
     /* Maven specific parameters */
     private boolean injectMavenExtension;
@@ -52,6 +56,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 develocityPluginVersion = config.getDevelocityPluginVersion();
                 ccudPluginVersion = config.getCcudPluginVersion();
                 pluginRepository = config.getPluginRepository();
+                pluginRepositoryCredentialName = config.getPluginRepositoryCredentialName();
                 injectMavenExtension = config.isInjectMavenExtension();
                 injectCcudExtension = config.isInjectCcudExtension();
                 mavenExtensionCustomCoordinates = config.getMavenExtensionCustomCoordinates();
@@ -94,6 +99,13 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("pluginRepository", "Please specify a valid URL of the Gradle plugins repository.");
         }
 
+        if (StringUtils.isNotBlank(pluginRepositoryCredentialName)) {
+            UsernameAndPassword credentials = credentialsProvider.findByName(pluginRepositoryCredentialName).orElse(null);
+            if (credentials == null) {
+                addFieldError("pluginRepositoryCredentialName", "Please specify the name of the existing repository credential of type 'Username and password'.");
+            }
+        }
+
         if (!isBlankOrValidGavc(mavenExtensionCustomCoordinates)) {
             addFieldError("mavenExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
         }
@@ -102,6 +114,17 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("ccudExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
         }
 
+    }
+
+    public List<NameValuePair> getUsernameAndPasswordCredentialNames() {
+        List<NameValuePair> usernameAndPasswordCredentials = credentialsProvider.getAllUsernameAndPasswordCredentials()
+                .stream()
+                .map(credentialName -> new NameValuePair(credentialName, credentialName))
+                .collect(Collectors.toList());
+
+        usernameAndPasswordCredentials.add(0, new NameValuePair("", "None"));
+
+        return usernameAndPasswordCredentials;
     }
 
     private boolean isBlankOrValidGavc(String coordinates) {
@@ -138,6 +161,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setSharedCredentialName(sharedCredentialName)
                 .setEnforceUrl(enforceUrl)
                 .setPluginRepository(pluginRepository)
+                .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .setDevelocityPluginVersion(develocityPluginVersion)
                 .setCcudPluginVersion(ccudPluginVersion)
                 .setInjectMavenExtension(injectMavenExtension)
@@ -202,6 +226,14 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setPluginRepository(String pluginRepository) {
         this.pluginRepository = pluginRepository;
+    }
+
+    public String getPluginRepositoryCredentialName() {
+        return pluginRepositoryCredentialName;
+    }
+
+    public void setPluginRepositoryCredentialName(String pluginRepositoryCredentialName) {
+        this.pluginRepositoryCredentialName = pluginRepositoryCredentialName;
     }
 
     public boolean isInjectMavenExtension() {
