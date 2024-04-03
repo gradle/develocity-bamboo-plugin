@@ -11,6 +11,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.gradle.develocity.bamboo.config.BuildToolConfiguration;
 import com.gradle.develocity.bamboo.config.GradleConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,10 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
     private boolean injectionIsAllowedOnVcsRepo() {
         // TODO: we don't need GradleConfiguration
         //  need to remove inheritance and use composition for BuildToolConfiguration, and instantiate that here
-        return configurationManager.load().map(GradleConfiguration::of).map(c -> c.vcsRepositoryFilter).map(f -> {
+        return configurationManager.load().map(GradleConfiguration::of)
+            .map(c -> c.vcsRepositoryFilter)
+            .filter(f -> StringUtils.isNotBlank(f.getVcsRepositoryFilter()))
+            .map(f -> {
             for (String url : vcsRepoUrls(buildContext)) {
                 switch (f.matches(url)) {
                     case EXCLUDED:
