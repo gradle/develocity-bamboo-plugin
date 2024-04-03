@@ -119,7 +119,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         File initScript = gradleEmbeddedResources.copyInitScript(home);
         LOGGER.debug("Gradle init script: {}", initScript.getAbsolutePath());
 
-        prepareEnvironment(buildContext, config, tasks);
+        prepareEnvironment(buildContext, config);
         registerDevelocityResources(buildContext, initScript);
         setupBuildScansLogInterceptor(buildContext);
 
@@ -128,7 +128,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         LOGGER.debug("Develocity Gradle auto-injection completed");
     }
 
-    private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config, Collection<RuntimeTaskDefinition> tasks) {
+    private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config) {
         VariableContext variableContext = buildContext.getVariableContext();
 
         Objects.runIfNotNull(config.server, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_URL", it));
@@ -136,7 +136,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         Objects.runIfNotNull(config.develocityPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_PLUGIN_VERSION", it));
         Objects.runIfNotNull(config.ccudPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", it));
         Objects.runIfNotNull(config.pluginRepository, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", it));
-
+        Objects.runIfTrue(config.enforceUrl, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ENFORCE_URL", "true"));
         Objects.runIfNotNull(
                 config.pluginRepositoryCredentialName,
                 it -> {

@@ -9,6 +9,7 @@ import com.gradle.develocity.bamboo.model.JobKey;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -148,4 +149,33 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), DEVELOCITY_PLUGIN_VERSION)));
         assertThat(output, containsString("Response status code: 502"));
     }
+
+    @Test
+    void enforceUrlOverridesConfiguredUrlInProject() {
+        // given
+        ensurePluginConfiguration(form -> form
+                .setServer("http://localhost:8888")
+                .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+                .enforceUrl()
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPPA");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+
+        assertThat(output, containsString("[WARNING] Unexpected error while contacting Gradle Enterprise server at http://localhost:8888/"));
+    }
+
 }
