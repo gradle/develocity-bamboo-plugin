@@ -62,8 +62,7 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
     }
 
     private boolean injectionIsAllowedOnVcsRepo() {
-        // TODO: we don't need GradleConfiguration
-        //  need to remove inheritance and use composition for BuildToolConfiguration, and instantiate that here
+        // Loading a GradleConfiguration is not needed, we can refactor this later to load some general settings instead
         return configurationManager.load().map(GradleConfiguration::of)
             .map(c -> c.vcsRepositoryFilter)
             .filter(f -> StringUtils.isNotBlank(f.getVcsRepositoryFilter()))
