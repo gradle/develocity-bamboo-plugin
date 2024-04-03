@@ -9,16 +9,12 @@ import com.atlassian.bamboo.v2.build.task.AbstractBuildTask;
 import com.atlassian.bamboo.ww2.actions.build.admin.create.BuildConfiguration;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.gradle.develocity.bamboo.config.BuildToolConfiguration;
-import com.gradle.develocity.bamboo.config.GradleConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static com.gradle.develocity.bamboo.Utils.vcsRepoUrls;
 
 public class DevelocityPreBuildAction extends AbstractBuildTask implements CustomPreBuildAction {
 
@@ -46,7 +42,7 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
     @NotNull
     @Override
     public BuildContext call() {
-        if (injectionIsAllowedOnVcsRepo()) {
+        if (VcsRepositoryUtils.injectionIsAllowedOnVcsRepo(configurationManager, buildContext)) {
             for (BuildScanInjector<? extends BuildToolConfiguration> injector : injectors) {
                 try {
                     injector.inject(buildContext);
@@ -59,24 +55,6 @@ public class DevelocityPreBuildAction extends AbstractBuildTask implements Custo
         }
 
         return buildContext;
-    }
-
-    private boolean injectionIsAllowedOnVcsRepo() {
-        // Loading a GradleConfiguration is not needed, we can refactor this later to load some general settings instead
-        return configurationManager.load().map(GradleConfiguration::of)
-            .map(c -> c.vcsRepositoryFilter)
-            .filter(f -> StringUtils.isNotBlank(f.getVcsRepositoryFilter()))
-            .map(f -> {
-            for (String url : vcsRepoUrls(buildContext)) {
-                switch (f.matches(url)) {
-                    case EXCLUDED:
-                        return false;
-                    case INCLUDED:
-                        return true;
-                }
-            }
-            return false;
-        }).orElse(true);
     }
 
     private void addErrorToBuildLog(BuildScanInjector injector, Exception ex) {
