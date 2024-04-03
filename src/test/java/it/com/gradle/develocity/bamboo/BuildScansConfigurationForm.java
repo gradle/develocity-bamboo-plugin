@@ -16,11 +16,14 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm clear() {
-        Stream.of(getServerLocator(), getSharedCredentialNameLocator(), getPluginRepositoryLocator(), getDevelocityPluginVersionLocator(), getCcudPluginVersionLocator())
+        Stream.of(getServerLocator(), getPluginRepositoryLocator(), getDevelocityPluginVersionLocator(), getCcudPluginVersionLocator())
             .forEach(Locator::clear);
 
         Stream.of(getAllowUntrustedServerLocator(), getInjectMavenExtensionLocator(), getInjectCcudExtensionLocator())
             .forEach(Locator::uncheck);
+
+        Stream.of(getSharedCredentialNameLocator(), getPluginRepositoryCredentialNameLocator())
+            .forEach(it -> it.selectOption("None"));
 
         return save();
     }
@@ -41,7 +44,7 @@ public final class BuildScansConfigurationForm {
     }
 
     public BuildScansConfigurationForm setSharedCredentialName(String name) {
-        getSharedCredentialNameLocator().fill(name);
+        getSharedCredentialNameLocator().selectOption(name);
         return this;
     }
 
@@ -61,6 +64,11 @@ public final class BuildScansConfigurationForm {
 
     public BuildScansConfigurationForm setPluginRepository(String url) {
         getPluginRepositoryLocator().fill(url);
+        return this;
+    }
+
+    public BuildScansConfigurationForm setPluginRepositoryCredentialName(String name) {
+        getPluginRepositoryCredentialNameLocator().selectOption(name);
         return this;
     }
 
@@ -120,6 +128,10 @@ public final class BuildScansConfigurationForm {
 
     public Locator getPluginRepositoryLocator() {
         return page.getByLabel("Gradle plugin repository URL");
+    }
+
+    public Locator getPluginRepositoryCredentialNameLocator() {
+        return page.getByLabel("Gradle plugin repository credential name");
     }
 
     public Locator getAllowUntrustedServerLocator() {

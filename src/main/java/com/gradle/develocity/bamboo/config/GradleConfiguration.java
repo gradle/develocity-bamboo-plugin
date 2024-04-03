@@ -10,19 +10,25 @@ public final class GradleConfiguration extends BuildToolConfiguration {
     public final String ccudPluginVersion;
     @Nullable
     public final String pluginRepository;
+    @Nullable
+    public final String pluginRepositoryCredentialName;
 
-    private GradleConfiguration(@Nullable String server,
-                                boolean allowUntrustedServer,
-                                @Nullable String sharedCredentialName,
-                                @Nullable String develocityPluginVersion,
-                                @Nullable String ccudPluginVersion,
-                                @Nullable String pluginRepository,
-                                boolean enforceUrl,
-                                String filter) {
+    private GradleConfiguration(
+            @Nullable String server,
+            boolean allowUntrustedServer,
+            @Nullable String sharedCredentialName,
+            @Nullable String develocityPluginVersion,
+            @Nullable String ccudPluginVersion,
+            @Nullable String pluginRepository,
+            @Nullable String pluginRepositoryCredentialName,
+            boolean enforceUrl,
+            String filter
+    ) {
         super(server, allowUntrustedServer, sharedCredentialName, enforceUrl, filter);
         this.develocityPluginVersion = develocityPluginVersion;
         this.ccudPluginVersion = ccudPluginVersion;
         this.pluginRepository = pluginRepository;
+        this.pluginRepositoryCredentialName = pluginRepositoryCredentialName;
     }
 
     public static GradleConfiguration of(PersistentConfiguration configuration) {
@@ -33,8 +39,10 @@ public final class GradleConfiguration extends BuildToolConfiguration {
             configuration.getDevelocityPluginVersion(),
             configuration.getCcudPluginVersion(),
             configuration.getPluginRepository(),
+            configuration.getPluginRepositoryCredentialName(),
             configuration.isEnforceUrl(),
-            configuration.getVcsRepositoryFilter());
+            configuration.getVcsRepositoryFilter()
+        );
     }
 
     @Override

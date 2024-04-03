@@ -107,7 +107,15 @@ public abstract class BrowserTest {
         page.locator("#loginForm_save").click();
     }
 
+    public final String storePluginCredentialInSharedCredentials(String username, String password) {
+        return storeSharedCredential(username, password);
+    }
+
     public final String storeAccessKeyInSharedCredentials(@Nullable String accessKey) {
+        return storeSharedCredential("develocity", accessKey);
+    }
+
+    private String storeSharedCredential(String username, String password) {
         gotoAdminPage();
 
         String credentialsName = randomString();
@@ -121,9 +129,9 @@ public abstract class BrowserTest {
         }
 
         page.getByLabel("Credential name (required)").fill(credentialsName);
-        page.getByLabel("Username (required)").fill("develocity"); // Hardcoded value, because it's not used
-        if (accessKey != null) {
-            page.getByLabel("Password").fill("test");
+        page.getByLabel("Username (required)").fill(username);
+        if (password != null) {
+            page.getByLabel("Password").fill(password);
         }
         page.locator("#createSharedCredentials_save").click();
         page.reload();
