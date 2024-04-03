@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class GradleInjectionTest extends AbstractInjectionTest {
 
     private static final String GRADLE_ENTERPRISE_PLUGIN_VERSION = "3.16.2";
-    private static final String DEVELOCITY_PLUGIN_VERSION = "3.17-rc-5";
+    private static final String DEVELOCITY_PLUGIN_VERSION = "3.17";
 
     private static RemoteAgentProcess bambooAgent;
 
