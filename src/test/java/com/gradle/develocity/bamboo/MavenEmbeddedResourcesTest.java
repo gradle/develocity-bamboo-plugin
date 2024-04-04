@@ -24,13 +24,13 @@ public class MavenEmbeddedResourcesTest {
 
     /**
      * Expected checksums can be found at:
-     * https://repo1.maven.org/maven2/com/gradle/gradle-enterprise-maven-extension/<version>/gradle-enterprise-maven-extension-<version>.jar.md5
+     * https://repo1.maven.org/maven2/com/gradle/develocity-maven-extension/<version>/develocity-maven-extension-<version>.jar.md5
      * https://repo1.maven.org/maven2/com/gradle/common-custom-user-data-maven-extension/<version>/common-custom-user-data-maven-extension-<version>.jar.md5
      * https://repo1.maven.org/maven2/com/gradle/common-custom-user-data-maven-extension/<version>/common-custom-user-data-maven-extension-<version>.jar.md5
      */
     @ParameterizedTest
     @CsvSource({
-            "DEVELOCITY_EXTENSION, 4fca7e03271d9cca9fea301804178f86",
+            "DEVELOCITY_EXTENSION, eb1a081631a03507f2e54182dea4e791",
             "CCUD_EXTENSION, 4354a9f78ea1803e97e342c296a1ded5"
     })
     void copiesEmbeddedExtension(MavenEmbeddedResources.Resource resource, String expectedChecksum) throws Exception {
