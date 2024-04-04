@@ -205,23 +205,23 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
                 ext.buildScan.publishAlways()
             }
+        }
 
+        if (develocityUrl && develocityEnforceUrl) {
+            logger.lifecycle("Enforcing Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
+        }
+
+        eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
             if (develocityUrl && develocityEnforceUrl) {
-                logger.lifecycle("Enforcing Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
+                ext.server = develocityUrl
+                ext.allowUntrustedServer = develocityAllowUntrustedServer
             }
+        }
 
-            eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
-                if (develocityUrl && develocityEnforceUrl) {
-                    ext.server = develocityUrl
-                    ext.allowUntrustedServer = develocityAllowUntrustedServer
-                }
-            }
-
-            eachDevelocitySettingsExtension(settings, [DEVELOCITY_CONFIGURATION_CLASS]) { ext ->
-                if (develocityUrl && develocityEnforceUrl) {
-                    ext.server = develocityUrl
-                    ext.allowUntrustedServer = develocityAllowUntrustedServer
-                }
+        eachDevelocitySettingsExtension(settings, [DEVELOCITY_CONFIGURATION_CLASS]) { ext ->
+            if (develocityUrl && develocityEnforceUrl) {
+                ext.server = develocityUrl
+                ext.allowUntrustedServer = develocityAllowUntrustedServer
             }
         }
 
