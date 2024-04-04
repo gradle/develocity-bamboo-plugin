@@ -97,6 +97,11 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm doNotEnforceUrl() {
+        getEnforceUrlLocator().uncheck();
+        return this;
+    }
+
     public BuildScansConfigurationForm setVcsRepositoryFilter(String filter) {
         getVcsRepositoryFilterLocator().fill(filter);
         return this;

@@ -9,6 +9,7 @@ import com.gradle.develocity.bamboo.model.JobKey;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -176,4 +177,34 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, not(containsString("Publishing build scan...")));
     }
+
+    @Test
+    void enforceUrlOverridesConfiguredUrlInProject() {
+        // given
+        ensurePluginConfiguration(form -> form
+                .setServer("http://localhost:8888")
+                .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+                .enforceUrl()
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPPA");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("BUILD SUCCESSFUL"));
+
+        assertThat(output, containsString("Publishing build scan failed due to network error"));
+        assertThat(output, containsString("http://localhost:8888/"));
+    }
+
 }

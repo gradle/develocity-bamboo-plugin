@@ -37,6 +37,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 .setPluginRepository("https://plugins.gradle.org")
                 .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .allowUntrustedServer()
+                .enforceUrl()
                 .enableGeExtensionAutoInjection()
                 .enableCcudExtensionAutoInjection(),
 
@@ -49,6 +50,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 assertThat(form.getPluginRepositoryCredentialNameLocator()).hasValue(pluginRepositoryCredentialName);
 
                 assertThat(form.getAllowUntrustedServerLocator()).isChecked();
+                assertThat(form.getEnforceUrlLocator()).isChecked();
                 assertThat(form.getInjectMavenExtensionLocator()).isChecked();
                 assertThat(form.getInjectCcudExtensionLocator()).isChecked();
             }
