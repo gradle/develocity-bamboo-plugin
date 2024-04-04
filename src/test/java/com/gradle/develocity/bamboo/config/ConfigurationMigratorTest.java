@@ -34,7 +34,7 @@ class ConfigurationMigratorTest {
         new ConfigurationMigrator(bandanaManager).onPluginEnabled(pluginEnabledEvent);
 
         verify(bandanaManager, times(1)).setValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.develocity.config.v1"),
-            eq("{\"server\":\"https://mycomp\",\"allowUntrustedServer\":false,\"sharedCredentialName\":null,\"enforceUrl\":false,\"develocityPluginVersion\":null,\"ccudPluginVersion\":null,\"pluginRepository\":null,\"pluginRepositoryCredentialName\":null,\"injectMavenExtension\":false,\"injectCcudExtension\":false,\"mavenExtensionCustomCoordinates\":null,\"ccudExtensionCustomCoordinates\":null}"));
+            eq("{\"server\":\"https://mycomp\",\"allowUntrustedServer\":false,\"sharedCredentialName\":null,\"enforceUrl\":false,\"develocityPluginVersion\":null,\"ccudPluginVersion\":null,\"pluginRepository\":null,\"pluginRepositoryCredentialName\":null,\"injectMavenExtension\":false,\"injectCcudExtension\":false,\"mavenExtensionCustomCoordinates\":null,\"ccudExtensionCustomCoordinates\":null,\"vcsRepositoryFilter\":null}"));
         verify(bandanaManager, times(1)).removeValue(any(BandanaContext.class), eq("com.gradle.bamboo.plugins.develocity.config"));
     }
 

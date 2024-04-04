@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class GradleInjectionTest extends AbstractInjectionTest {
 
     private static final String GRADLE_ENTERPRISE_PLUGIN_VERSION = "3.16.2";
-    private static final String DEVELOCITY_PLUGIN_VERSION = "3.17-rc-5";
+    private static final String DEVELOCITY_PLUGIN_VERSION = "3.17";
 
     private static RemoteAgentProcess bambooAgent;
 
@@ -147,5 +147,33 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         assertThat(output, containsString("Plugin version: " + DEVELOCITY_PLUGIN_VERSION));
         assertThat(output, containsString("Request URL: " + String.format("%sscans/publish/gradle/%s/upload", mockDevelocityServer.getAddress(), DEVELOCITY_PLUGIN_VERSION)));
         assertThat(output, containsString("Response status code: 502"));
+    }
+
+    @GradleProjectTest
+    void skipsAutoInjectionIfRepositoryShouldBeExcluded(String buildKey) {
+        // given
+        ensurePluginConfiguration(form -> form
+            .setServer(mockDevelocityServer.getAddress())
+            .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+            .setVcsRepositoryFilter("-:simple")
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, buildKey);
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        MockDevelocityServer.ScanTokenRequest scanTokenRequest = mockDevelocityServer.getLastScanTokenRequest();
+        assertThat(scanTokenRequest, nullValue());
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("BUILD SUCCESSFUL"));
+
+        assertThat(output, not(containsString("Publishing build scan...")));
     }
 }

@@ -246,4 +246,32 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         assertThat(output, not(containsString("[INFO] The Gradle Terms of Use have not been agreed to.")));
     }
 
+    @Test
+    void skipsAutoInjectionIfRepositoryShouldBeExcluded() {
+        // given
+        ensurePluginConfiguration(form -> form
+            .setServer(PUBLIC_DEVELOCITY_SERVER)
+            .enableGeExtensionAutoInjection()
+            .setVcsRepositoryFilter("-:simple")
+        );
+
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPCE");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, equalTo(null));
+
+        // and
+        String output = bambooApi.getLog(planResultKey);
+
+        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+
+        assertThat(output, not(containsString("[INFO] The Gradle Terms of Use have not been agreed to.")));
+    }
+
 }

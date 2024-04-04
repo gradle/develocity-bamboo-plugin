@@ -34,6 +34,9 @@ public class PersistentConfiguration {
     private String ccudExtensionCustomCoordinates;
 
     @Nullable
+    private String vcsRepositoryFilter;
+
+    @Nullable
     public String getServer() {
         return server;
     }
@@ -149,6 +152,16 @@ public class PersistentConfiguration {
         return this;
     }
 
+    @Nullable
+    public String getVcsRepositoryFilter() {
+        return vcsRepositoryFilter;
+    }
+
+    public PersistentConfiguration setVcsRepositoryFilter(@Nullable String vcsRepositoryFilter) {
+        this.vcsRepositoryFilter = vcsRepositoryFilter;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -164,6 +177,7 @@ public class PersistentConfiguration {
             .append("injectCcudExtension", injectCcudExtension)
             .append("customMavenExtension", mavenExtensionCustomCoordinates)
             .append("customCcudExtension", ccudExtensionCustomCoordinates)
+            .append("vcsRepositoryFilter", vcsRepositoryFilter)
             .toString();
     }
 
@@ -183,12 +197,13 @@ public class PersistentConfiguration {
             Objects.equals(pluginRepository, that.pluginRepository) &&
             Objects.equals(pluginRepositoryCredentialName, that.pluginRepositoryCredentialName) &&
             Objects.equals(mavenExtensionCustomCoordinates, that.mavenExtensionCustomCoordinates) &&
-            Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates);
+            Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates) &&
+            Objects.equals(vcsRepositoryFilter, that.vcsRepositoryFilter);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(server, allowUntrustedServer, sharedCredentialName, enforceUrl, develocityPluginVersion, ccudPluginVersion,
-            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates);
+            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates, vcsRepositoryFilter);
     }
 }

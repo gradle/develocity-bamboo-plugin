@@ -27,6 +27,7 @@ abstract class AbstractInjectionTest extends BrowserTest {
     @BeforeEach
     void login() {
         loginAs(TestUser.ADMIN);
+        ensurePluginConfiguration(form -> form.setVcsRepositoryFilter(""));
     }
 
     public final PlanResultKey triggerBuild(PlanKey planKey, JobKey jobKey) {
