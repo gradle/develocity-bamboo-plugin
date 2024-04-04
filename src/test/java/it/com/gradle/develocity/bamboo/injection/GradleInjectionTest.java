@@ -201,7 +201,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         // and
         String output = bambooApi.getLog(planResultKey);
 
-        assertThat(output, containsString("[INFO] BUILD SUCCESS"));
+        assertThat(output, containsString("[INFO] BUILD SUCCESSFUL"));
 
         assertThat(output, containsString("Publishing build scan failed due to network error"));
         assertThat(output, containsString("http://localhost:8888/"));
