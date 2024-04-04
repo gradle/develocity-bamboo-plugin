@@ -203,7 +203,8 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, containsString("[WARNING] Unexpected error while contacting Gradle Enterprise server at http://localhost:8888/"));
+        assertThat(output, containsString("Publishing build scan failed due to network error"));
+        assertThat(output, containsString("http://localhost:8888/"));
     }
 
 }
