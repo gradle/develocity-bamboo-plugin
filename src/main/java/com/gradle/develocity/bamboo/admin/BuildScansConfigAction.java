@@ -3,6 +3,7 @@ package com.gradle.develocity.bamboo.admin;
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
 import com.atlassian.bamboo.repository.NameValuePair;
 import com.gradle.develocity.bamboo.MavenCoordinates;
+import com.gradle.develocity.bamboo.VcsRepositoryFilter;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.config.UsernameAndPassword;
@@ -41,6 +42,8 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final PersistentConfigurationManager configurationManager;
 
+    private String vcsRepositoryFilter;
+
     public BuildScansConfigAction(UsernameAndPasswordCredentialsProvider credentialsProvider,
                                   PersistentConfigurationManager configurationManager) {
         this.credentialsProvider = credentialsProvider;
@@ -62,6 +65,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 mavenExtensionCustomCoordinates = config.getMavenExtensionCustomCoordinates();
                 ccudExtensionCustomCoordinates = config.getCcudExtensionCustomCoordinates();
                 enforceUrl = config.isEnforceUrl();
+                vcsRepositoryFilter = config.getVcsRepositoryFilter();
             });
 
         return INPUT;
@@ -114,6 +118,17 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("ccudExtensionCustomCoordinates", "Please specify a valid Maven groupId:artifactId(:version).");
         }
 
+        if (!isBlankOrValidVcsFilter(vcsRepositoryFilter)) {
+            addFieldError("vcsRepositoryFilter", "Please specify a valid vcs filter, ie lines of: +|-:repository_matching_keyword");
+        }
+
+    }
+
+    private boolean isBlankOrValidVcsFilter(String vcsRepositoryFilter) {
+        if (StringUtils.isBlank(vcsRepositoryFilter)) {
+            return true;
+        }
+        return !VcsRepositoryFilter.of(vcsRepositoryFilter).isEmpty();
     }
 
     public List<NameValuePair> getUsernameAndPasswordCredentialNames() {
@@ -167,7 +182,8 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setInjectMavenExtension(injectMavenExtension)
                 .setInjectCcudExtension(injectCcudExtension)
                 .setMavenExtensionCustomCoordinates(mavenExtensionCustomCoordinates)
-                .setCcudExtensionCustomCoordinates(ccudExtensionCustomCoordinates));
+                .setCcudExtensionCustomCoordinates(ccudExtensionCustomCoordinates)
+                .setVcsRepositoryFilter(vcsRepositoryFilter));
 
         return SUCCESS;
     }
@@ -266,5 +282,13 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     public void setCcudExtensionCustomCoordinates(String ccudExtensionCustomCoordinates) {
         this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
+    }
+
+    public String getVcsRepositoryFilter() {
+        return vcsRepositoryFilter;
+    }
+
+    public void setVcsRepositoryFilter(String vcsRepositoryFilter) {
+        this.vcsRepositoryFilter = vcsRepositoryFilter;
     }
 }

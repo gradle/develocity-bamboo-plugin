@@ -41,10 +41,6 @@ initscript {
                     }
                 }
             }
-            // TODO remove before merge
-            maven {
-                url "https://repo.grdev.net/artifactory/public"
-            }
         }
     }
 
