@@ -79,7 +79,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
-            .enableGeExtensionAutoInjection()
+            .enableDevelocityExtensionAutoInjection()
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPA");
@@ -88,25 +88,17 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // when
         PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
         waitForBuildToFinish(planResultKey);
+        // then
+        String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
+        assertThat(buildScans, startsWith("https://gradle.com/s/"));
+
+        // and
         String output = bambooApi.getLog(planResultKey);
 
-        // CLEANUP: Remove isRc condition when Maven extension is released
-        boolean isRc = output.contains("Release candidate versions are not accepted by this Develocity server");
-
-        // then
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        // and
-        if (!isRc) {
-            String buildScans = getBuildScansFromMetadata(planResultKey).orElse(null);
-            assertThat(buildScans, startsWith("https://gradle.com/s/"));
-        }
-
-        // and
-        if (!isRc) {
-            assertThat(output, containsString("[INFO] Publishing build scan..."));
-            assertThat(output, containsString("[INFO] https://gradle.com/s/"));
-        }
+        assertThat(output, containsString("[INFO] Publishing build scan..."));
+        assertThat(output, containsString("[INFO] https://gradle.com/s/"));
     }
 
     @Test
@@ -141,7 +133,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
-            .enableGeExtensionAutoInjection()
+            .enableDevelocityExtensionAutoInjection()
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPM");
@@ -168,7 +160,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
                 .setServer(PUBLIC_DEVELOCITY_SERVER)
-                .enableGeExtensionAutoInjection()
+                .enableDevelocityExtensionAutoInjection()
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "MPEA");
@@ -195,7 +187,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
                 .setServer("http://localhost:8888")
-                .enableGeExtensionAutoInjection()
+                .enableDevelocityExtensionAutoInjection()
                 .enforceUrl()
         );
 
@@ -223,7 +215,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
-            .enableGeExtensionAutoInjection()
+            .enableDevelocityExtensionAutoInjection()
             .setMavenExtensionCustomCoordinates("org.apache.maven.extensions:maven-enforcer-extension")
         );
 
@@ -251,7 +243,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
         // given
         ensurePluginConfiguration(form -> form
             .setServer(PUBLIC_DEVELOCITY_SERVER)
-            .enableGeExtensionAutoInjection()
+            .enableDevelocityExtensionAutoInjection()
             .setVcsRepositoryFilter("-:simple")
         );
 

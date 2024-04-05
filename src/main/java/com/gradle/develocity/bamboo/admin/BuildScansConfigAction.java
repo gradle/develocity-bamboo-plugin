@@ -31,10 +31,12 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private String ccudPluginVersion;
     private String pluginRepository;
     private String pluginRepositoryCredentialName;
+    private boolean gradleCaptureFileFingerprints;
 
     /* Maven specific parameters */
     private boolean injectMavenExtension;
     private boolean injectCcudExtension;
+    private boolean mavenCaptureFileFingerprints;
 
     private String mavenExtensionCustomCoordinates;
     private String ccudExtensionCustomCoordinates;
@@ -42,6 +44,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final PersistentConfigurationManager configurationManager;
 
+    /* General settings */
     private String vcsRepositoryFilter;
 
     public BuildScansConfigAction(UsernameAndPasswordCredentialsProvider credentialsProvider,
@@ -66,6 +69,8 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 ccudExtensionCustomCoordinates = config.getCcudExtensionCustomCoordinates();
                 enforceUrl = config.isEnforceUrl();
                 vcsRepositoryFilter = config.getVcsRepositoryFilter();
+                gradleCaptureFileFingerprints = config.isGradleCaptureFileFingerprints();
+                mavenCaptureFileFingerprints = config.isMavenCaptureFileFingerprints();
             });
 
         return INPUT;
@@ -183,7 +188,10 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setInjectCcudExtension(injectCcudExtension)
                 .setMavenExtensionCustomCoordinates(mavenExtensionCustomCoordinates)
                 .setCcudExtensionCustomCoordinates(ccudExtensionCustomCoordinates)
-                .setVcsRepositoryFilter(vcsRepositoryFilter));
+                .setVcsRepositoryFilter(vcsRepositoryFilter)
+                .setGradleCaptureFileFingerprints(gradleCaptureFileFingerprints)
+                .setMavenCaptureFileFingerprints(mavenCaptureFileFingerprints)
+        );
 
         return SUCCESS;
     }
@@ -291,4 +299,21 @@ public class BuildScansConfigAction extends GlobalAdminAction {
     public void setVcsRepositoryFilter(String vcsRepositoryFilter) {
         this.vcsRepositoryFilter = vcsRepositoryFilter;
     }
+
+    public boolean isGradleCaptureFileFingerprints() {
+        return gradleCaptureFileFingerprints;
+    }
+
+    public void setGradleCaptureFileFingerprints(boolean gradleCaptureFileFingerprints) {
+        this.gradleCaptureFileFingerprints = gradleCaptureFileFingerprints;
+    }
+
+    public boolean isMavenCaptureFileFingerprints() {
+        return mavenCaptureFileFingerprints;
+    }
+
+    public void setMavenCaptureFileFingerprints(boolean mavenCaptureFileFingerprints) {
+        this.mavenCaptureFileFingerprints = mavenCaptureFileFingerprints;
+    }
+
 }

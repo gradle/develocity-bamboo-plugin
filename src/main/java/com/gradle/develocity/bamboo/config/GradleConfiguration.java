@@ -12,6 +12,7 @@ public final class GradleConfiguration extends BuildToolConfiguration {
     public final String pluginRepository;
     @Nullable
     public final String pluginRepositoryCredentialName;
+    public final boolean gradleCaptureFileFingerprints;
 
     private GradleConfiguration(
             @Nullable String server,
@@ -22,13 +23,15 @@ public final class GradleConfiguration extends BuildToolConfiguration {
             @Nullable String pluginRepository,
             @Nullable String pluginRepositoryCredentialName,
             boolean enforceUrl,
-            String filter
+            String filter,
+            boolean gradleCaptureFileFingerprints
     ) {
         super(server, allowUntrustedServer, sharedCredentialName, enforceUrl, filter);
         this.develocityPluginVersion = develocityPluginVersion;
         this.ccudPluginVersion = ccudPluginVersion;
         this.pluginRepository = pluginRepository;
         this.pluginRepositoryCredentialName = pluginRepositoryCredentialName;
+        this.gradleCaptureFileFingerprints = gradleCaptureFileFingerprints;
     }
 
     public static GradleConfiguration of(PersistentConfiguration configuration) {
@@ -41,7 +44,8 @@ public final class GradleConfiguration extends BuildToolConfiguration {
             configuration.getPluginRepository(),
             configuration.getPluginRepositoryCredentialName(),
             configuration.isEnforceUrl(),
-            configuration.getVcsRepositoryFilter()
+            configuration.getVcsRepositoryFilter(),
+            configuration.isGradleCaptureFileFingerprints()
         );
     }
 

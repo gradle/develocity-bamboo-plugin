@@ -113,6 +113,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
             if (config.allowUntrustedServer) {
                 systemProperties.addAll(ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES.forValue(true));
             }
+            systemProperties.addAll(DEVELOCITY_CAPTURE_FILE_FINGERPRINTS_PROPERTY_KEY.forValue(config.mavenCaptureFileFingerprints));
         } else if (!StringUtils.isBlank(config.server) && config.enforceUrl) {
             systemProperties.addAll(SERVER_URL_SYSTEM_PROPERTIES.forValue(config.server));
             if (config.allowUntrustedServer) {

@@ -137,6 +137,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
         Objects.runIfNotNull(config.ccudPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", it));
         Objects.runIfNotNull(config.pluginRepository, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", it));
         Objects.runIfTrue(config.enforceUrl, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ENFORCE_URL", "true"));
+        Objects.runIfTrue(config.gradleCaptureFileFingerprints, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_CAPTURE_FILE_FINGERPRINTS", "true"));
         Objects.runIfNotNull(
                 config.pluginRepositoryCredentialName,
                 it -> {

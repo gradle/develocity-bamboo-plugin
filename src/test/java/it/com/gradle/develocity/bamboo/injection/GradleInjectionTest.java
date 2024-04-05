@@ -86,6 +86,8 @@ public class GradleInjectionTest extends AbstractInjectionTest {
         // and
         String output = bambooApi.getLog(planResultKey);
 
+        assertThat(output, containsString("Setting captureFileFingerprints: true")); // default setting is true
+
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
         assertThat(output, containsString("Publishing build scan..."));
