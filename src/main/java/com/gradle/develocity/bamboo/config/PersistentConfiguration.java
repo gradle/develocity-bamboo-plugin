@@ -36,6 +36,9 @@ public class PersistentConfiguration {
     @Nullable
     private String vcsRepositoryFilter;
 
+    private boolean gradleCaptureFileFingerprints;
+    private boolean mavenCaptureFileFingerprints;
+
     @Nullable
     public String getServer() {
         return server;
@@ -162,6 +165,24 @@ public class PersistentConfiguration {
         return this;
     }
 
+    public boolean isGradleCaptureFileFingerprints() {
+        return gradleCaptureFileFingerprints;
+    }
+
+    public PersistentConfiguration setGradleCaptureFileFingerprints(boolean gradleCaptureFileFingerprints) {
+        this.gradleCaptureFileFingerprints = gradleCaptureFileFingerprints;
+        return this;
+    }
+
+    public boolean isMavenCaptureFileFingerprints() {
+        return mavenCaptureFileFingerprints;
+    }
+
+    public PersistentConfiguration setMavenCaptureFileFingerprints(boolean mavenCaptureFileFingerprints) {
+        this.mavenCaptureFileFingerprints = mavenCaptureFileFingerprints;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -178,6 +199,8 @@ public class PersistentConfiguration {
             .append("customMavenExtension", mavenExtensionCustomCoordinates)
             .append("customCcudExtension", ccudExtensionCustomCoordinates)
             .append("vcsRepositoryFilter", vcsRepositoryFilter)
+            .append("gradleCaptureFileFingerprints", gradleCaptureFileFingerprints)
+            .append("mavenCaptureFileFingerprints", mavenCaptureFileFingerprints)
             .toString();
     }
 
@@ -198,12 +221,17 @@ public class PersistentConfiguration {
             Objects.equals(pluginRepositoryCredentialName, that.pluginRepositoryCredentialName) &&
             Objects.equals(mavenExtensionCustomCoordinates, that.mavenExtensionCustomCoordinates) &&
             Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates) &&
-            Objects.equals(vcsRepositoryFilter, that.vcsRepositoryFilter);
+            Objects.equals(vcsRepositoryFilter, that.vcsRepositoryFilter) &&
+            Objects.equals(gradleCaptureFileFingerprints, that.gradleCaptureFileFingerprints) &&
+            Objects.equals(mavenCaptureFileFingerprints, that.mavenCaptureFileFingerprints);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(server, allowUntrustedServer, sharedCredentialName, enforceUrl, develocityPluginVersion, ccudPluginVersion,
-            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates, ccudExtensionCustomCoordinates, vcsRepositoryFilter);
+            pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates,
+                ccudExtensionCustomCoordinates, vcsRepositoryFilter, gradleCaptureFileFingerprints, mavenCaptureFileFingerprints
+        );
     }
+
 }

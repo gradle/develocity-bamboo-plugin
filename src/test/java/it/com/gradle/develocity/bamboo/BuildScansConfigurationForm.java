@@ -77,7 +77,7 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
-    public BuildScansConfigurationForm enableGeExtensionAutoInjection() {
+    public BuildScansConfigurationForm enableDevelocityExtensionAutoInjection() {
         getInjectMavenExtensionLocator().check();
         return this;
     }

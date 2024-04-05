@@ -38,7 +38,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .allowUntrustedServer()
                 .enforceUrl()
-                .enableGeExtensionAutoInjection()
+                .enableDevelocityExtensionAutoInjection()
                 .enableCcudExtensionAutoInjection(),
 
             form -> {

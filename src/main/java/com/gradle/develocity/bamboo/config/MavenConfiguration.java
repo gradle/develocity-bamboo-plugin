@@ -5,27 +5,30 @@ import org.jetbrains.annotations.Nullable;
 
 public final class MavenConfiguration extends BuildToolConfiguration {
 
-    public boolean injectMavenExtension;
-    public boolean injectCcudExtension;
+    public final boolean injectMavenExtension;
+    public final boolean injectCcudExtension;
+    public final MavenCoordinates mavenExtensionCustomCoordinates;
+    public final MavenCoordinates ccudExtensionCustomCoordinates;
+    public final boolean mavenCaptureFileFingerprints;
 
-    public MavenCoordinates mavenExtensionCustomCoordinates;
-    public MavenCoordinates ccudExtensionCustomCoordinates;
-
-    private MavenConfiguration(@Nullable String server,
-                               boolean allowUntrustedServer,
-                               @Nullable String sharedCredentialName,
-                               boolean injectMavenExtension,
-                               boolean injectCcudExtension,
-                               @Nullable String mavenExtensionCustomCoordinates,
-                               @Nullable String ccudExtensionCustomCoordinates,
-                               boolean enforceUrl,
-                               String filter
-                               ) {
+    private MavenConfiguration(
+            @Nullable String server,
+            boolean allowUntrustedServer,
+            @Nullable String sharedCredentialName,
+            boolean injectMavenExtension,
+            boolean injectCcudExtension,
+            @Nullable String mavenExtensionCustomCoordinates,
+            @Nullable String ccudExtensionCustomCoordinates,
+            boolean enforceUrl,
+            String filter,
+            boolean mavenCaptureFileFingerprints
+    ) {
         super(server, allowUntrustedServer, sharedCredentialName, enforceUrl, filter);
         this.injectMavenExtension = injectMavenExtension;
         this.injectCcudExtension = injectCcudExtension;
         this.mavenExtensionCustomCoordinates = MavenCoordinates.parseCoordinates(mavenExtensionCustomCoordinates);
         this.ccudExtensionCustomCoordinates = MavenCoordinates.parseCoordinates(ccudExtensionCustomCoordinates);
+        this.mavenCaptureFileFingerprints = mavenCaptureFileFingerprints;
     }
 
     public static MavenConfiguration of(PersistentConfiguration configuration) {
@@ -38,8 +41,9 @@ public final class MavenConfiguration extends BuildToolConfiguration {
             configuration.getMavenExtensionCustomCoordinates(),
             configuration.getCcudExtensionCustomCoordinates(),
             configuration.isEnforceUrl(),
-            configuration.getVcsRepositoryFilter()
-            );
+            configuration.getVcsRepositoryFilter(),
+            configuration.isMavenCaptureFileFingerprints()
+        );
     }
 
     @Override

@@ -14,11 +14,13 @@ public abstract class BuildToolConfiguration {
     @Nullable
     public VcsRepositoryFilter vcsRepositoryFilter;
 
-    protected BuildToolConfiguration(@Nullable String server,
-                                     boolean allowUntrustedServer,
-                                     @Nullable String sharedCredentialName,
-                                     boolean enforceUrl,
-                                     @Nullable String filter) {
+    protected BuildToolConfiguration(
+            @Nullable String server,
+            boolean allowUntrustedServer,
+            @Nullable String sharedCredentialName,
+            boolean enforceUrl,
+            @Nullable String filter
+    ) {
         this.server = server;
         this.allowUntrustedServer = allowUntrustedServer;
         this.sharedCredentialName = sharedCredentialName;
