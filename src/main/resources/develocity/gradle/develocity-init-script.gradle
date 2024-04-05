@@ -196,56 +196,58 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
     }
 } else {
     gradle.settingsEvaluated { settings ->
-        if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) && !settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) {
-            def pluginClass = dvOrGe(DEVELOCITY_PLUGIN_CLASS, GRADLE_ENTERPRISE_PLUGIN_CLASS)
-            logger.lifecycle("Applying $pluginClass via init script")
-            applyPluginExternally(settings.pluginManager, pluginClass)
-            if (develocityUrl) {
-                logger.lifecycle("Connection to Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
+        if (develocityPluginVersion) {
+            if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) && !settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) {
+                def pluginClass = dvOrGe(DEVELOCITY_PLUGIN_CLASS, GRADLE_ENTERPRISE_PLUGIN_CLASS)
+                logger.lifecycle("Applying $pluginClass via init script")
+                applyPluginExternally(settings.pluginManager, pluginClass)
+                if (develocityUrl) {
+                    logger.lifecycle("Connection to Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
+                    eachDevelocitySettingsExtension(settings, SETTINGS_EXTENSION_CLASSES) { ext ->
+                        ext.server = develocityUrl
+                        ext.allowUntrustedServer = develocityAllowUntrustedServer
+                    }
+                }
+
                 eachDevelocitySettingsExtension(settings, SETTINGS_EXTENSION_CLASSES) { ext ->
+                    ext.buildScan.uploadInBackground = false
+                    ext.buildScan.value CI_AUTO_INJECTION_CUSTOM_VALUE_NAME, CI_AUTO_INJECTION_CUSTOM_VALUE_VALUE
+                }
+
+                eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
+                    ext.buildScan.publishAlways()
+                    if (isAtLeast(develocityPluginVersion, '2.1')) {
+                        if (isAtLeast(develocityPluginVersion, '3.7')) {
+                            logger.lifecycle("Setting captureFileFingerprints: $develocityCaptureFileFingerprints")
+                            ext.buildScan.capture.taskInputFiles = develocityCaptureFileFingerprints
+                        } else {
+                            ext.buildScan.captureTaskInputFiles = develocityCaptureFileFingerprints
+                        }
+                    }
+                }
+
+                eachDevelocitySettingsExtension(settings, [DEVELOCITY_CONFIGURATION_CLASS]) { ext ->
+                    logger.lifecycle("Setting captureFileFingerprints: $develocityCaptureFileFingerprints")
+                    ext.buildScan.capture.fileFingerprints = develocityCaptureFileFingerprints
+                }
+            }
+
+            if (develocityUrl && develocityEnforceUrl) {
+                logger.lifecycle("Enforcing Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
+            }
+
+            eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
+                if (develocityUrl && develocityEnforceUrl) {
                     ext.server = develocityUrl
                     ext.allowUntrustedServer = develocityAllowUntrustedServer
                 }
             }
 
-            eachDevelocitySettingsExtension(settings, SETTINGS_EXTENSION_CLASSES) { ext ->
-                ext.buildScan.uploadInBackground = false
-                ext.buildScan.value CI_AUTO_INJECTION_CUSTOM_VALUE_NAME, CI_AUTO_INJECTION_CUSTOM_VALUE_VALUE
-            }
-
-            eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
-                ext.buildScan.publishAlways()
-                if (isAtLeast(develocityPluginVersion, '2.1')) {
-                    if (isAtLeast(develocityPluginVersion, '3.7')) {
-                        logger.lifecycle("Setting captureFileFingerprints: $develocityCaptureFileFingerprints")
-                        ext.buildScan.capture.taskInputFiles = develocityCaptureFileFingerprints
-                    } else {
-                        ext.buildScan.captureTaskInputFiles = develocityCaptureFileFingerprints
-                    }
-                }
-            }
-
             eachDevelocitySettingsExtension(settings, [DEVELOCITY_CONFIGURATION_CLASS]) { ext ->
-                logger.lifecycle("Setting captureFileFingerprints: $develocityCaptureFileFingerprints")
-                ext.buildScan.capture.fileFingerprints = develocityCaptureFileFingerprints
-            }
-        }
-
-        if (develocityUrl && develocityEnforceUrl) {
-            logger.lifecycle("Enforcing Develocity: $develocityUrl, allowUntrustedServer: $develocityAllowUntrustedServer")
-        }
-
-        eachDevelocitySettingsExtension(settings, [GRADLE_ENTERPRISE_EXTENSION_CLASS]) { ext ->
-            if (develocityUrl && develocityEnforceUrl) {
-                ext.server = develocityUrl
-                ext.allowUntrustedServer = develocityAllowUntrustedServer
-            }
-        }
-
-        eachDevelocitySettingsExtension(settings, [DEVELOCITY_CONFIGURATION_CLASS]) { ext ->
-            if (develocityUrl && develocityEnforceUrl) {
-                ext.server = develocityUrl
-                ext.allowUntrustedServer = develocityAllowUntrustedServer
+                if (develocityUrl && develocityEnforceUrl) {
+                    ext.server = develocityUrl
+                    ext.allowUntrustedServer = develocityAllowUntrustedServer
+                }
             }
         }
 
@@ -285,10 +287,6 @@ static def eachDevelocitySettingsExtension(def settings, List<String> publicType
     settings.extensions.extensionsSchema.elements.findAll { publicTypes.contains(it.publicType.concreteClass.name) }
             .collect { settings[it.name] }
             .each(action)
-}
-
-static def extensionsWithPublicType(def container, String publicType) {
-    container.extensions.extensionsSchema.elements.findAll { it.publicType.concreteClass.name == publicType }
 }
 
 static boolean isAtLeast(String versionUnderTest, String referenceVersion) {
