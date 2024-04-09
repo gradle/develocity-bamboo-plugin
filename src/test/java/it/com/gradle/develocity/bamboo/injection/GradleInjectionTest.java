@@ -92,7 +92,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("Publishing build scan..."));
         assertThat(output, containsString(mockDevelocityServer.publicBuildScanId()));
-        assertThat(output, not(containsString("WARNING: The following functionality has been deprecated")));
+        assertThat(output, not(containsString("The deprecated \"gradleEnterprise.")));
     }
 
     @GradleProjectTest
