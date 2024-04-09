@@ -1,4 +1,4 @@
-package com.gradle.develocity.bamboo.admin;
+package com.gradle.develocity.bamboo;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class AccessKeyValidatorTest {
+class DevelocityAccessKeyTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -23,7 +23,7 @@ class AccessKeyValidatorTest {
         " server1= secret1; server2 , sever3 = secret2 ;"
     })
     void validAccessKeys(String accessKey) {
-        assertThat(AccessKeyValidator.isValid(accessKey), is(true));
+        assertThat(DevelocityAccessKey.isValid(accessKey), is(true));
     }
 
     @ParameterizedTest
@@ -38,6 +38,6 @@ class AccessKeyValidatorTest {
         "server1, server2,, server3 = secret "
     })
     void invalidAccessKeys(String accessKey) {
-        assertThat(AccessKeyValidator.isValid(accessKey), is(false));
+        assertThat(DevelocityAccessKey.isValid(accessKey), is(false));
     }
 }

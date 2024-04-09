@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -38,15 +39,18 @@ class DevelocityPreJobActionTest {
     private final BuildContext buildContext = mock(BuildContext.class);
     private final VariableContext variableContext = mock(VariableContext.class);
 
+    private final ShortLivedTokenClient mockShortLivedTokenClient = mock(ShortLivedTokenClient.class);
+
     private final GradleBuildScanInjector gradleBuildScanInjector =
-        new GradleBuildScanInjector(null, null, null, null, null);
+            new GradleBuildScanInjector(null, null, null, null, null);
 
     private final DevelocityPreJobAction develocityPreJobAction =
-        new DevelocityPreJobAction(
-            new PersistentConfigurationManager(bandanaManager),
-            new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
-            Collections.singletonList(gradleBuildScanInjector)
-        );
+            new DevelocityPreJobAction(
+                    new PersistentConfigurationManager(bandanaManager),
+                    new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
+                    Collections.singletonList(gradleBuildScanInjector),
+                    mockShortLivedTokenClient
+            );
 
     @Test
     void doesNothingIfNoConfiguration() {
@@ -62,7 +66,7 @@ class DevelocityPreJobActionTest {
     void doesNothingIfNoSharedCredentials() {
         // given
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{}");
+                .thenReturn("{}");
 
         // when
         develocityPreJobAction.execute(stageExecution, buildContext);
@@ -77,7 +81,7 @@ class DevelocityPreJobActionTest {
         // given
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
+                .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
 
         // when
         develocityPreJobAction.execute(stageExecution, buildContext);
@@ -96,9 +100,9 @@ class DevelocityPreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
+                .thenReturn("{\"sharedCredentialName\":\"" + credentialsName + "\"}");
         when(credentialsAccessor.getCredentialsByName(credentialsName))
-            .thenReturn(credentialsData);
+                .thenReturn(credentialsData);
 
         // when
         develocityPreJobAction.execute(stageExecution, buildContext);
@@ -118,11 +122,11 @@ class DevelocityPreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
-                "\"develocityPluginVersion\": \"3.12\"}");
+                .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
+                        "\"develocityPluginVersion\": \"3.12\"}");
 
         when(credentialsAccessor.getCredentialsByName(credentialsName))
-            .thenReturn(credentialsData);
+                .thenReturn(credentialsData);
 
         RuntimeTaskDefinition runtimeTaskDefinition = mock(RuntimeTaskDefinition.class);
         when(runtimeTaskDefinition.isEnabled()).thenReturn(true);
@@ -147,9 +151,9 @@ class DevelocityPreJobActionTest {
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\"}");
+                .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\"}");
         when(credentialsAccessor.getCredentialsByName(credentialsName))
-            .thenReturn(credentialsData);
+                .thenReturn(credentialsData);
 
         RuntimeTaskDefinition runtimeTaskDefinition = mock(RuntimeTaskDefinition.class);
         when(runtimeTaskDefinition.isEnabled()).thenReturn(true);
@@ -164,29 +168,61 @@ class DevelocityPreJobActionTest {
         verify(buildContext, never()).getVariableContext();
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY,
-        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY,
-        GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY,
-        GradleBuildScanInjector.SCRIPT_PLUGIN_KEY,
-        GradleBuildScanInjector.COMMAND_PLUGIN_KEY,
-        "org.jfrog.bamboo." + GradleBuildScanInjector.ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX
-    })
-    void addsAccessKeyToContext(String pluginKey) {
+    @Test
+    void doesNothingIfNoShortLivedTokenRetrieved() {
         // given
         String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
         CredentialsData credentialsData = mock(CredentialsData.class);
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
+        when(mockShortLivedTokenClient.get(anyString(), any())).thenReturn(Optional.empty());
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
-            .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
-                "\"develocityPluginVersion\": \"3.12\"}");
+                .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\"}");
+        when(credentialsAccessor.getCredentialsByName(credentialsName))
+                .thenReturn(credentialsData);
+
+        RuntimeTaskDefinition runtimeTaskDefinition = mock(RuntimeTaskDefinition.class);
+        when(runtimeTaskDefinition.isEnabled()).thenReturn(true);
+        when(runtimeTaskDefinition.getPluginKey()).thenReturn(GradleBuildScanInjector.SCRIPT_PLUGIN_KEY);
+        when(buildContext.getRuntimeTaskDefinitions()).thenReturn(Collections.singletonList(runtimeTaskDefinition));
+
+        // when
+        develocityPreJobAction.execute(stageExecution, buildContext);
+
+        // then
+        assertThat(gradleBuildScanInjector.hasSupportedTasks(buildContext), is(true));
+        verify(buildContext, never()).getVariableContext();
+        verify(variableContext, never()).addLocalVariable(anyString(), anyString());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY,
+            GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_WRAPPER_KEY,
+            GradleBuildScanInjector.BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLEW_KEY,
+            GradleBuildScanInjector.SCRIPT_PLUGIN_KEY,
+            GradleBuildScanInjector.COMMAND_PLUGIN_KEY,
+            "org.jfrog.bamboo." + GradleBuildScanInjector.ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX
+    })
+    void addsAccessKeyToContext(String pluginKey) {
+        // given
+        String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
+        String shortLivedToken = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
+
+        CredentialsData credentialsData = mock(CredentialsData.class);
+        when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
+        when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
+        when(mockShortLivedTokenClient.get(anyString(), any())).thenReturn(Optional.of(DevelocityAccessKey.of(shortLivedToken)));
+
+        String credentialsName = RandomStringUtils.randomAlphanumeric(10);
+        when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
+                .thenReturn("{\"server\":\"https://scans.gradle.com\",\"sharedCredentialName\":\"" + credentialsName + "\", " +
+                        "\"develocityPluginVersion\": \"3.12\"}");
 
         when(credentialsAccessor.getCredentialsByName(credentialsName))
-            .thenReturn(credentialsData);
+                .thenReturn(credentialsData);
 
         RuntimeTaskDefinition runtimeTaskDefinition = mock(RuntimeTaskDefinition.class);
         when(runtimeTaskDefinition.isEnabled()).thenReturn(true);
@@ -198,6 +234,6 @@ class DevelocityPreJobActionTest {
         develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
-        verify(variableContext, times(1)).addLocalVariable(Constants.ACCESS_KEY, accessKey);
+        verify(variableContext, times(1)).addLocalVariable(Constants.ACCESS_KEY, shortLivedToken);
     }
 }

@@ -2,6 +2,7 @@ package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
 import com.atlassian.bamboo.repository.NameValuePair;
+import com.gradle.develocity.bamboo.DevelocityAccessKey;
 import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.VcsRepositoryFilter;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
@@ -90,7 +91,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
             } else {
                 String accessKey = credentials.getPassword();
-                if (!AccessKeyValidator.isValid(accessKey)) {
+                if (!DevelocityAccessKey.isValid(accessKey)) {
                     addFieldError("sharedCredentialName", "Shared credential contains an invalid access key.");
                 }
             }

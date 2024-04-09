@@ -22,13 +22,18 @@ public class DevelocityPreJobAction implements PreJobAction {
     private final PersistentConfigurationManager configurationManager;
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final List<BuildScanInjector<? extends BuildToolConfiguration>> injectors;
+    private final ShortLivedTokenClient shortLivedTokenClient;
 
-    public DevelocityPreJobAction(PersistentConfigurationManager configurationManager,
-                                  UsernameAndPasswordCredentialsProvider credentialsProvider,
-                                  List<BuildScanInjector<? extends BuildToolConfiguration>> injectors) {
+    public DevelocityPreJobAction(
+            PersistentConfigurationManager configurationManager,
+            UsernameAndPasswordCredentialsProvider credentialsProvider,
+            List<BuildScanInjector<? extends BuildToolConfiguration>> injectors,
+            ShortLivedTokenClient shortLivedTokenClient
+    ) {
         this.configurationManager = configurationManager;
         this.credentialsProvider = credentialsProvider;
         this.injectors = injectors;
+        this.shortLivedTokenClient = shortLivedTokenClient;
     }
 
     @Override
@@ -46,8 +51,8 @@ public class DevelocityPreJobAction implements PreJobAction {
         UsernameAndPassword credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
         if (credentials == null) {
             LOGGER.warn(
-                "Shared credentials with the name {} are not found. Environment variable {} will not be set",
-                sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} are not found. Environment variable {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
             );
             return;
         }
@@ -56,20 +61,25 @@ public class DevelocityPreJobAction implements PreJobAction {
         String accessKey = credentials.getPassword();
         if (StringUtils.isBlank(accessKey)) {
             LOGGER.warn(
-                "Shared credentials with the name {} do not have password set. Environment variable {} will not be set",
-                sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} do not have password set. Environment variable {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
             );
             return;
         }
 
         injectors.stream()
-            .filter(i -> i.hasSupportedTasks(buildContext))
-            .map(i -> i.buildToolConfiguration(configuration))
-            .filter(BuildToolConfiguration::isEnabled)
-            .findFirst()
-            .ifPresent(__ ->
-                buildContext
-                    .getVariableContext()
-                    .addLocalVariable(Constants.ACCESS_KEY, accessKey));
+                .filter(i -> i.hasSupportedTasks(buildContext))
+                .map(i -> i.buildToolConfiguration(configuration))
+                .filter(BuildToolConfiguration::isEnabled)
+                .findFirst()
+                .flatMap(__ ->
+                        shortLivedTokenClient.get(configuration.getServer(), DevelocityAccessKey.of(accessKey))
+                                .map(DevelocityAccessKey::getRawAccessKey)
+                )
+                .ifPresent(shortLivedToken ->
+                        buildContext
+                                .getVariableContext()
+                                .addLocalVariable(Constants.ACCESS_KEY, shortLivedToken)
+                );
     }
 }
