@@ -175,7 +175,7 @@ class DevelocityPreJobActionTest {
         CredentialsData credentialsData = mock(CredentialsData.class);
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
-        when(mockShortLivedTokenClient.get(anyString(), any())).thenReturn(Optional.empty());
+        when(mockShortLivedTokenClient.get(anyString(), any(), anyString())).thenReturn(Optional.empty());
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -214,7 +214,7 @@ class DevelocityPreJobActionTest {
         CredentialsData credentialsData = mock(CredentialsData.class);
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
-        when(mockShortLivedTokenClient.get(anyString(), any())).thenReturn(Optional.of(DevelocityAccessKey.of(shortLivedToken)));
+        when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessKey.of(shortLivedToken)));
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))

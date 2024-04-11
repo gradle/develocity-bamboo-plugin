@@ -73,13 +73,16 @@ public class DevelocityPreJobAction implements PreJobAction {
                 .filter(BuildToolConfiguration::isEnabled)
                 .findFirst()
                 .flatMap(__ ->
-                        shortLivedTokenClient.get(configuration.getServer(), DevelocityAccessKey.of(accessKey))
-                                .map(DevelocityAccessKey::getRawAccessKey)
+                        shortLivedTokenClient.get(
+                                configuration.getServer(),
+                                DevelocityAccessKey.of(accessKey),
+                                configuration.getShortLivedTokenExpiry()
+                        )
                 )
                 .ifPresent(shortLivedToken ->
                         buildContext
                                 .getVariableContext()
-                                .addLocalVariable(Constants.ACCESS_KEY, shortLivedToken)
+                                .addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRawAccessKey())
                 );
     }
 }

@@ -36,6 +36,9 @@ public class PersistentConfiguration {
     @Nullable
     private String vcsRepositoryFilter;
 
+    @Nullable
+    private String shortLivedTokenExpiry;
+
     private boolean gradleCaptureFileFingerprints;
     private boolean mavenCaptureFileFingerprints;
 
@@ -183,6 +186,16 @@ public class PersistentConfiguration {
         return this;
     }
 
+    @Nullable
+    public String getShortLivedTokenExpiry() {
+        return shortLivedTokenExpiry;
+    }
+
+    public PersistentConfiguration setShortLivedTokenExpiry(String shortLivedTokenExpiry) {
+        this.shortLivedTokenExpiry = shortLivedTokenExpiry;
+        return this;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -201,6 +214,7 @@ public class PersistentConfiguration {
             .append("vcsRepositoryFilter", vcsRepositoryFilter)
             .append("gradleCaptureFileFingerprints", gradleCaptureFileFingerprints)
             .append("mavenCaptureFileFingerprints", mavenCaptureFileFingerprints)
+            .append("shortLivedTokenExpiry", shortLivedTokenExpiry)
             .toString();
     }
 
@@ -223,14 +237,15 @@ public class PersistentConfiguration {
             Objects.equals(ccudExtensionCustomCoordinates, that.ccudExtensionCustomCoordinates) &&
             Objects.equals(vcsRepositoryFilter, that.vcsRepositoryFilter) &&
             Objects.equals(gradleCaptureFileFingerprints, that.gradleCaptureFileFingerprints) &&
-            Objects.equals(mavenCaptureFileFingerprints, that.mavenCaptureFileFingerprints);
+            Objects.equals(mavenCaptureFileFingerprints, that.mavenCaptureFileFingerprints) &&
+            Objects.equals(shortLivedTokenExpiry, that.shortLivedTokenExpiry);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(server, allowUntrustedServer, sharedCredentialName, enforceUrl, develocityPluginVersion, ccudPluginVersion,
             pluginRepository, pluginRepositoryCredentialName, injectMavenExtension, injectCcudExtension, mavenExtensionCustomCoordinates,
-                ccudExtensionCustomCoordinates, vcsRepositoryFilter, gradleCaptureFileFingerprints, mavenCaptureFileFingerprints
+                ccudExtensionCustomCoordinates, vcsRepositoryFilter, gradleCaptureFileFingerprints, mavenCaptureFileFingerprints, shortLivedTokenExpiry
         );
     }
 

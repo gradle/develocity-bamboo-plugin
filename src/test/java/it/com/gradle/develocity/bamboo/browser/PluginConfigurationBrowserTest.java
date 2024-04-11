@@ -38,6 +38,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 .setPluginRepositoryCredentialName(pluginRepositoryCredentialName)
                 .allowUntrustedServer()
                 .enforceUrl()
+                .setShortLivedTokenExpiry("6")
                 .enableDevelocityExtensionAutoInjection()
                 .enableCcudExtensionAutoInjection(),
 
@@ -48,6 +49,7 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
                 assertThat(form.getCcudPluginVersionLocator()).hasValue("1.8.2");
                 assertThat(form.getPluginRepositoryLocator()).hasValue("https://plugins.gradle.org");
                 assertThat(form.getPluginRepositoryCredentialNameLocator()).hasValue(pluginRepositoryCredentialName);
+                assertThat(form.getShortLivedTokenExpiry()).hasValue("6");
 
                 assertThat(form.getAllowUntrustedServerLocator()).isChecked();
                 assertThat(form.getEnforceUrlLocator()).isChecked();
@@ -112,6 +114,15 @@ public class PluginConfigurationBrowserTest extends BrowserTest {
             form -> form.setPluginRepository(randomString()),
             "#fieldArea_saveBuildScansConfig_pluginRepository > div.error.control-form-error",
             "Please specify a valid URL of the Gradle plugins repository."
+        );
+    }
+
+    @Test
+    void invalidShortLivedTokenExpiry() {
+        assertInvalidInput(
+            form -> form.setShortLivedTokenExpiry(randomString()),
+            "#fieldArea_saveBuildScansConfig_shortLivedTokenExpiry > div.error.control-form-error",
+            "Please specify a valid short-lived token expiry in hours between 1 and 24, i.e. 6"
         );
     }
 

@@ -1,5 +1,6 @@
 package com.gradle.develocity.bamboo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import okhttp3.OkHttpClient;
@@ -30,8 +31,11 @@ public class ShortLivedTokenClient {
                 .build();
     }
 
-    public Optional<DevelocityAccessKey> get(String server, DevelocityAccessKey accessKey) {
-        String url = server + "/api/auth/token";
+    public Optional<DevelocityAccessKey> get(String server, DevelocityAccessKey accessKey, String expiryInHours) {
+        String url = normalize(server) + "api/auth/token";
+        if (StringUtils.isNotBlank(expiryInHours)) {
+            url += "?expiresInHours=" + expiryInHours;
+        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -51,6 +55,10 @@ public class ShortLivedTokenClient {
             LOGGER.warn("Short lived token request failed {}", url, e);
             return Optional.empty();
         }
+    }
+
+    private static String normalize(String server) {
+        return server.endsWith("/") ? server : server + "/";
     }
 
 }
