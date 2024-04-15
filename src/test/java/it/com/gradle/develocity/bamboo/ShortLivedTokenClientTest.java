@@ -4,12 +4,16 @@ import com.gradle.develocity.bamboo.DevelocityAccessCredential;
 import com.gradle.develocity.bamboo.ShortLivedTokenClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import ratpack.test.embed.EmbeddedApp;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,17 +21,27 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
-public class ShortLivedTokenClientTest {
-
-    @RegisterExtension
-    public final MockDevelocityServer mockDevelocityServer = new MockDevelocityServer();
+public class ShortLivedTokenClientTest implements AfterEachCallback {
 
     private final ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient();
+
+    private EmbeddedApp mockDevelocityServer;
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+        if (mockDevelocityServer != null) {
+            mockDevelocityServer.close();
+        }
+    }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"2"})
     void shortLivedTokenIsRetrieved(String expiryInHours) {
+        mockDevelocityServer = EmbeddedApp.fromHandlers(
+                c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(RandomStringUtils.randomAlphanumeric(50)))
+        );
+
         DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
                 DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
@@ -40,7 +54,13 @@ public class ShortLivedTokenClientTest {
 
     @Test
     void shortLivedTokenIsNotRetrievedIfResponseIsNotSuccessful() {
-        mockDevelocityServer.rejectShortLivedTokenCreation();
+        AtomicInteger requestCount = new AtomicInteger(0);
+        mockDevelocityServer = EmbeddedApp.fromHandlers(
+                c -> c.post("api/auth/token", ctx -> {
+                    requestCount.incrementAndGet();
+                    ctx.getResponse().status(503);
+                })
+        );
 
         Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
@@ -49,10 +69,11 @@ public class ShortLivedTokenClientTest {
         );
 
         assertThat(develocityAccessKey.isPresent(), is(false));
+        assertThat(requestCount.get(), equalTo(3));
     }
 
     @Test
-    void shortLivedTokenRetrievalFailsWithExceotion() {
+    void shortLivedTokenRetrievalFailsWithException() {
         Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
                 "http://localhost:8888",
                 DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
@@ -60,6 +81,29 @@ public class ShortLivedTokenClientTest {
         );
 
         assertThat(develocityAccessKey.isPresent(), is(false));
+    }
+
+    @Test
+    void shortLivedTokenRetrievalSuccedsAfterRetry() {
+        AtomicBoolean firstRequest = new AtomicBoolean(true);
+        mockDevelocityServer = EmbeddedApp.fromHandlers(
+                c -> c.post("api/auth/token", ctx -> {
+                    if (firstRequest.get()) {
+                        firstRequest.set(false);
+                        ctx.getResponse().status(503);
+                    } else {
+                        ctx.getResponse().status(200).send(RandomStringUtils.randomAlphanumeric(50));
+                    }
+                })
+        );
+        DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
+                mockDevelocityServer.getAddress().toString(),
+                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
+                null
+        ).orElseThrow(() -> new IllegalStateException("Short lived token value is expected"));
+
+        assertThat(develocityAccessCredential.getHostname(), equalTo("localhost"));
+        assertThat(develocityAccessCredential.getKey(), not(isEmptyOrNullString()));
     }
 
 }

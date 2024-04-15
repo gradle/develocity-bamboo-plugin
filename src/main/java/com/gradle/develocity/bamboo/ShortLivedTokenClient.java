@@ -1,15 +1,13 @@
 package com.gradle.develocity.bamboo;
 
-import com.gradle.develocity.bamboo.utils.Objects;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -24,15 +22,13 @@ public class ShortLivedTokenClient {
     private static final RequestBody EMPTY_BODY = RequestBody.create(new byte[]{});
 
     private static final int MAX_RETRIES = 3;
-    private static final Duration RETRY_INTERVAL = Duration.ofSeconds(2);
+    private static final Duration RETRY_INTERVAL = Duration.ofSeconds(1);
 
     private final OkHttpClient httpClient;
 
     public ShortLivedTokenClient() {
         this.httpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .callTimeout(10, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -55,14 +51,19 @@ public class ShortLivedTokenClient {
             try (Response response = httpClient.newCall(request).execute()) {
                 if (response.code() == 200 && response.body() != null) {
                     return Optional.of(DevelocityAccessCredential.of(accessKey.getHostname(), response.body().string()));
+                } else if (response.code() == 401) {
+                    LOGGER.warn("Short lived token request failed {} with status code 401", url);
+                    return Optional.empty();
                 } else {
                     tryCount++;
                     errorCode = response.code();
-                    Objects.run(() -> Thread.sleep(RETRY_INTERVAL.toMillis()));
+                    Thread.sleep(RETRY_INTERVAL.toMillis());
                 }
             } catch (IOException e) {
                 LOGGER.warn("Short lived token request failed {}", url, e);
                 return Optional.empty();
+            } catch (InterruptedException e) {
+                // Ignore sleep exception as
             }
         }
 

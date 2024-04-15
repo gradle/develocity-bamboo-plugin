@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -40,7 +39,6 @@ public final class MockDevelocityServer implements BeforeEachCallback, AfterEach
     private final List<ScanTokenRequest> scanTokenRequests = Collections.synchronizedList(new LinkedList<>());
 
     private boolean rejectUpload;
-    private boolean rejectShortLivedTokenCreation;
     private EmbeddedApp mockDevelocityServer;
 
     @Override
@@ -52,7 +50,6 @@ public final class MockDevelocityServer implements BeforeEachCallback, AfterEach
                                 .post("gradle/:pluginVersion/upload", this::handleUpload)
                                 .notFound()
                         )
-                        .post("api/auth/token", this::handleShortLivedToken)
         );
     }
 
@@ -103,14 +100,6 @@ public final class MockDevelocityServer implements BeforeEachCallback, AfterEach
                 });
     }
 
-    private void handleShortLivedToken(Context context) {
-        if (rejectShortLivedTokenCreation) {
-            context.getResponse().status(401).send();
-        } else {
-            context.getResponse().status(200).send(RandomStringUtils.randomAlphanumeric(50));
-        }
-    }
-
     private String scanUploadUrl(Context ctx) {
         String pluginVersion = ctx.getPathTokens().get("pluginVersion");
         return String.format("%sscans/publish/gradle/%s/upload", getAddress(), pluginVersion);
@@ -132,10 +121,6 @@ public final class MockDevelocityServer implements BeforeEachCallback, AfterEach
 
     public void rejectUpload() {
         this.rejectUpload = true;
-    }
-
-    public void rejectShortLivedTokenCreation() {
-        this.rejectShortLivedTokenCreation = true;
     }
 
     public static final class ScanTokenRequest {
