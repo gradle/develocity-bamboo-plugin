@@ -1,5 +1,6 @@
 package com.gradle.develocity.bamboo;
 
+import com.gradle.develocity.bamboo.utils.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +22,9 @@ public class ShortLivedTokenClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShortLivedTokenClient.class);
 
     private static final RequestBody EMPTY_BODY = RequestBody.create(new byte[]{});
+
+    private static final int MAX_RETRIES = 3;
+    private static final Duration RETRY_INTERVAL = Duration.ofSeconds(2);
 
     private final OkHttpClient httpClient;
 
@@ -31,7 +36,7 @@ public class ShortLivedTokenClient {
                 .build();
     }
 
-    public Optional<DevelocityAccessKey> get(String server, DevelocityAccessKey accessKey, String expiryInHours) {
+    public Optional<DevelocityAccessCredential> get(String server, DevelocityAccessCredential accessKey, String expiryInHours) {
         String url = normalize(server) + "api/auth/token";
         if (StringUtils.isNotBlank(expiryInHours)) {
             url += "?expiresInHours=" + expiryInHours;
@@ -44,17 +49,25 @@ public class ShortLivedTokenClient {
                 .post(EMPTY_BODY)
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (response.code() == 200 && response.body() != null) {
-                return Optional.of(DevelocityAccessKey.of(accessKey.getHostname(), response.body().string()));
-            } else {
-                LOGGER.warn("Develocity short lived token request failed {} with status code {}", url, response.code());
+        long tryCount = 0;
+        Integer errorCode = null;
+        while (tryCount < MAX_RETRIES) {
+            try (Response response = httpClient.newCall(request).execute()) {
+                if (response.code() == 200 && response.body() != null) {
+                    return Optional.of(DevelocityAccessCredential.of(accessKey.getHostname(), response.body().string()));
+                } else {
+                    tryCount++;
+                    errorCode = response.code();
+                    Objects.run(() -> Thread.sleep(RETRY_INTERVAL.toMillis()));
+                }
+            } catch (IOException e) {
+                LOGGER.warn("Short lived token request failed {}", url, e);
                 return Optional.empty();
             }
-        } catch (IOException e) {
-            LOGGER.warn("Short lived token request failed {}", url, e);
-            return Optional.empty();
         }
+
+        LOGGER.warn("Develocity short lived token request failed {} with status code {}", url, errorCode);
+        return Optional.empty();
     }
 
     private static String normalize(String server) {

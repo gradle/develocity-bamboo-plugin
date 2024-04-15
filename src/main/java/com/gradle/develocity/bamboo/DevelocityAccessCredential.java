@@ -2,26 +2,30 @@ package com.gradle.develocity.bamboo;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
-public final class DevelocityAccessKey {
+public final class DevelocityAccessCredential {
 
     private final String hostname;
     private final String key;
 
-    private DevelocityAccessKey(String hostname, String key) {
+    private DevelocityAccessCredential(String hostname, String key) {
         this.hostname = hostname;
         this.key = key;
     }
 
-    public static DevelocityAccessKey of(String hostname, String key) {
-        return new DevelocityAccessKey(hostname, key);
+    public static DevelocityAccessCredential of(String hostname, String key) {
+        return new DevelocityAccessCredential(hostname, key);
     }
 
-    public static DevelocityAccessKey of(String rawAccessKey) {
-        String[] parts = rawAccessKey.split("=");
-
-        return new DevelocityAccessKey(parts[0], parts[1]);
+    public static Optional<DevelocityAccessCredential> parse(String rawAccessKey, String host) {
+        return Arrays.stream(rawAccessKey.split(";"))
+                .map(k -> k.split("="))
+                .filter(hostKey -> hostKey[0].equals(host))
+                .map(hostKey -> new DevelocityAccessCredential(hostKey[0], hostKey[1]))
+                .findFirst();
     }
 
     public static boolean isValid(String value) {
@@ -70,7 +74,7 @@ public final class DevelocityAccessKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DevelocityAccessKey that = (DevelocityAccessKey) o;
+        DevelocityAccessCredential that = (DevelocityAccessCredential) o;
         return Objects.equals(hostname, that.hostname) && Objects.equals(key, that.key);
     }
 

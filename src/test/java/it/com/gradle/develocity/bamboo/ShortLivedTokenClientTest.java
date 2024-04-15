@@ -1,13 +1,12 @@
 package it.com.gradle.develocity.bamboo;
 
-import com.gradle.develocity.bamboo.DevelocityAccessKey;
+import com.gradle.develocity.bamboo.DevelocityAccessCredential;
 import com.gradle.develocity.bamboo.ShortLivedTokenClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Optional;
@@ -29,23 +28,23 @@ public class ShortLivedTokenClientTest {
     @NullAndEmptySource
     @ValueSource(strings = {"2"})
     void shortLivedTokenIsRetrieved(String expiryInHours) {
-        DevelocityAccessKey develocityAccessKey = shortLivedTokenClient.get(
+        DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
-                DevelocityAccessKey.of("localhost=" + RandomStringUtils.randomAlphanumeric(30)),
+                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
                 expiryInHours
         ).orElseThrow(() -> new IllegalStateException("Short lived token value is expected"));
 
-        assertThat(develocityAccessKey.getHostname(), equalTo("localhost"));
-        assertThat(develocityAccessKey.getKey(), not(isEmptyOrNullString()));
+        assertThat(develocityAccessCredential.getHostname(), equalTo("localhost"));
+        assertThat(develocityAccessCredential.getKey(), not(isEmptyOrNullString()));
     }
 
     @Test
     void shortLivedTokenIsNotRetrievedIfResponseIsNotSuccessful() {
         mockDevelocityServer.rejectShortLivedTokenCreation();
 
-        Optional<DevelocityAccessKey> develocityAccessKey = shortLivedTokenClient.get(
+        Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
-                DevelocityAccessKey.of("localhost=" + RandomStringUtils.randomAlphanumeric(30)),
+                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
                 null
         );
 
@@ -54,9 +53,9 @@ public class ShortLivedTokenClientTest {
 
     @Test
     void shortLivedTokenRetrievalFailsWithExceotion() {
-        Optional<DevelocityAccessKey> develocityAccessKey = shortLivedTokenClient.get(
+        Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
                 "http://localhost:8888",
-                DevelocityAccessKey.of("localhost=" + RandomStringUtils.randomAlphanumeric(30)),
+                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
                 null
         );
 

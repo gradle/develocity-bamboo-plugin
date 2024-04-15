@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class DevelocityPreJobAction implements PreJobAction {
@@ -67,22 +69,21 @@ public class DevelocityPreJobAction implements PreJobAction {
             return;
         }
 
-        injectors.stream()
-                .filter(i -> i.hasSupportedTasks(buildContext))
-                .map(i -> i.buildToolConfiguration(configuration))
-                .filter(BuildToolConfiguration::isEnabled)
-                .findFirst()
-                .flatMap(__ ->
-                        shortLivedTokenClient.get(
-                                configuration.getServer(),
-                                DevelocityAccessKey.of(accessKey),
-                                configuration.getShortLivedTokenExpiry()
-                        )
-                )
-                .ifPresent(shortLivedToken ->
-                        buildContext
-                                .getVariableContext()
-                                .addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRawAccessKey())
-                );
+        DevelocityAccessCredential.parse(accessKey, getHostnameFromServerUrl(configuration.getServer()))
+                .flatMap(parsedKey -> injectors.stream()
+                        .filter(i -> i.hasSupportedTasks(buildContext))
+                        .map(i -> i.buildToolConfiguration(configuration))
+                        .filter(BuildToolConfiguration::isEnabled)
+                        .findFirst()
+                        .flatMap(__ -> shortLivedTokenClient.get(configuration.getServer(), parsedKey, configuration.getShortLivedTokenExpiry())))
+                .ifPresent(shortLivedToken -> buildContext.getVariableContext().addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRawAccessKey()));
+    }
+
+    private static String getHostnameFromServerUrl(String serverUrl) {
+        try {
+            return new URL(serverUrl).getHost();
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 }
