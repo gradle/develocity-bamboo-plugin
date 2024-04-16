@@ -1,5 +1,6 @@
 package com.gradle.develocity.bamboo;
 
+import com.atlassian.bamboo.bandana.BambooBandanaContextImpl;
 import com.atlassian.bamboo.build.BuildOutputLogEntry;
 import com.atlassian.bamboo.build.DefaultBuildDefinition;
 import com.atlassian.bamboo.chains.ChainStorageTag;
@@ -45,13 +46,14 @@ public final class TestFixtures {
                 null,
                 null,
                 Collections.emptyMap(),
-                Collections.singleton(RandomUtils.nextLong()),
+                Collections.emptySet(),
                 Collections.singletonMap(RandomUtils.nextLong(), RandomStringUtils.randomAscii(10)),
                 false,
                 false,
                 false,
-                null,
-                Collections.singletonList(new CredentialsDataEntity("key", "name", Collections.singletonMap("key", "value"), null)),
+                false,
+                new BambooBandanaContextImpl(null, null),
+                Collections.singletonList(new CredentialsDataEntity("key", "name", Collections.singletonMap("key", "value"), null, null)),
                 Collections.singletonMap(PlanKeys.getPlanKey("SOME-KEY"), new ChainStorageTag("tag")),
                 new BuildKey()
         );
