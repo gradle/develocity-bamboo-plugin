@@ -45,7 +45,7 @@ public class ShortLivedTokenClient {
                 .post(EMPTY_BODY)
                 .build();
 
-        long tryCount = 0;
+        int tryCount = 0;
         Integer errorCode = null;
         while (tryCount < MAX_RETRIES) {
             try (Response response = httpClient.newCall(request).execute()) {

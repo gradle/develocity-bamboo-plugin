@@ -38,8 +38,9 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
     @NullAndEmptySource
     @ValueSource(strings = {"2"})
     void shortLivedTokenIsRetrieved(String expiryInHours) {
+        String shortLivedToken = RandomStringUtils.randomAlphanumeric(50);
         mockDevelocityServer = EmbeddedApp.fromHandlers(
-                c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(RandomStringUtils.randomAlphanumeric(50)))
+                c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(shortLivedToken))
         );
 
         DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
@@ -49,7 +50,7 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
         ).orElseThrow(() -> new IllegalStateException("Short lived token value is expected"));
 
         assertThat(develocityAccessCredential.getHostname(), equalTo("localhost"));
-        assertThat(develocityAccessCredential.getKey(), not(isEmptyOrNullString()));
+        assertThat(develocityAccessCredential.getKey(), equalTo(shortLivedToken));
     }
 
     @Test
