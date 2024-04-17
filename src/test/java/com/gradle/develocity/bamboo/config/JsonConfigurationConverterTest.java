@@ -31,7 +31,7 @@ class JsonConfigurationConverterTest {
         "\"sharedCredentialName\":\"develocity-creds\",\"enforceUrl\":false,\"develocityPluginVersion\":\"3.11\",\"ccudPluginVersion\":\"1.11\"," +
         "\"pluginRepository\":\"https://plugins.mycompany.com\",\"pluginRepositoryCredentialName\":\"plugin-creds\",\"injectMavenExtension\":true," +
         "\"injectCcudExtension\":true," +
-        "\"mavenExtensionCustomCoordinates\":\"foo:bar\",\"ccudExtensionCustomCoordinates\":\"foo:ccud-bar\",\"vcsRepositoryFilter\":null,\"gradleCaptureFileFingerprints\":true,\"mavenCaptureFileFingerprints\":true}";
+        "\"mavenExtensionCustomCoordinates\":\"foo:bar\",\"ccudExtensionCustomCoordinates\":\"foo:ccud-bar\",\"vcsRepositoryFilter\":null,\"shortLivedTokenExpiry\":null,\"gradleCaptureFileFingerprints\":true,\"mavenCaptureFileFingerprints\":true}";
 
     @Test
     void toJson() throws JsonProcessingException {

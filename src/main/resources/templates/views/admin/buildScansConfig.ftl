@@ -33,6 +33,7 @@
         </div>
     [/@ui.bambooSection]
     [@ui.bambooSection titleKey="develocity.config.general.title" headerWeight="h2"]
+        [@ww.textfield labelKey="develocity.config.general.short-lived-token-expiry" name="shortLivedTokenExpiry"/]
         [@ww.textarea labelKey='develocity.config.general.vcs-repository-filter' name='vcsRepositoryFilter' /]
         <div class="field-group">
             <div style="display: inline-block;">

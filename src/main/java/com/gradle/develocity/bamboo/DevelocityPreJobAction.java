@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class DevelocityPreJobAction implements PreJobAction {
@@ -22,13 +24,18 @@ public class DevelocityPreJobAction implements PreJobAction {
     private final PersistentConfigurationManager configurationManager;
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final List<BuildScanInjector<? extends BuildToolConfiguration>> injectors;
+    private final ShortLivedTokenClient shortLivedTokenClient;
 
-    public DevelocityPreJobAction(PersistentConfigurationManager configurationManager,
-                                  UsernameAndPasswordCredentialsProvider credentialsProvider,
-                                  List<BuildScanInjector<? extends BuildToolConfiguration>> injectors) {
+    public DevelocityPreJobAction(
+            PersistentConfigurationManager configurationManager,
+            UsernameAndPasswordCredentialsProvider credentialsProvider,
+            List<BuildScanInjector<? extends BuildToolConfiguration>> injectors,
+            ShortLivedTokenClient shortLivedTokenClient
+    ) {
         this.configurationManager = configurationManager;
         this.credentialsProvider = credentialsProvider;
         this.injectors = injectors;
+        this.shortLivedTokenClient = shortLivedTokenClient;
     }
 
     @Override
@@ -46,8 +53,8 @@ public class DevelocityPreJobAction implements PreJobAction {
         UsernameAndPassword credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
         if (credentials == null) {
             LOGGER.warn(
-                "Shared credentials with the name {} are not found. Environment variable {} will not be set",
-                sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} are not found. Environment variable {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
             );
             return;
         }
@@ -56,20 +63,27 @@ public class DevelocityPreJobAction implements PreJobAction {
         String accessKey = credentials.getPassword();
         if (StringUtils.isBlank(accessKey)) {
             LOGGER.warn(
-                "Shared credentials with the name {} do not have password set. Environment variable {} will not be set",
-                sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} do not have password set. Environment variable {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
             );
             return;
         }
 
-        injectors.stream()
-            .filter(i -> i.hasSupportedTasks(buildContext))
-            .map(i -> i.buildToolConfiguration(configuration))
-            .filter(BuildToolConfiguration::isEnabled)
-            .findFirst()
-            .ifPresent(__ ->
-                buildContext
-                    .getVariableContext()
-                    .addLocalVariable(Constants.ACCESS_KEY, accessKey));
+        DevelocityAccessCredential.parse(accessKey, getHostnameFromServerUrl(configuration.getServer()))
+                .flatMap(parsedKey -> injectors.stream()
+                        .filter(i -> i.hasSupportedTasks(buildContext))
+                        .map(i -> i.buildToolConfiguration(configuration))
+                        .filter(BuildToolConfiguration::isEnabled)
+                        .findFirst()
+                        .flatMap(__ -> shortLivedTokenClient.get(configuration.getServer(), parsedKey, configuration.getShortLivedTokenExpiry())))
+                .ifPresent(shortLivedToken -> buildContext.getVariableContext().addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRawAccessKey()));
+    }
+
+    private static String getHostnameFromServerUrl(String serverUrl) {
+        try {
+            return new URL(serverUrl).getHost();
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 }

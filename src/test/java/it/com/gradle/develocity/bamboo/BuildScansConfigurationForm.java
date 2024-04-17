@@ -107,6 +107,11 @@ public final class BuildScansConfigurationForm {
         return this;
     }
 
+    public BuildScansConfigurationForm setShortLivedTokenExpiry(String expiry) {
+        getShortLivedTokenExpiry().fill(expiry);
+        return this;
+    }
+
     private Locator getVcsRepositoryFilterLocator() {
         return page.getByLabel("Auto-injection Git VCS repository filters");
     }
@@ -158,4 +163,9 @@ public final class BuildScansConfigurationForm {
     public Locator getEnforceUrlLocator() {
         return page.getByText("Enforce Develocity server URL");
     }
+
+    public Locator getShortLivedTokenExpiry() {
+        return page.getByText("Develocity short-lived access token expiry");
+    }
+
 }

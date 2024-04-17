@@ -2,6 +2,7 @@ package com.gradle.develocity.bamboo.admin;
 
 import com.atlassian.bamboo.configuration.GlobalAdminAction;
 import com.atlassian.bamboo.repository.NameValuePair;
+import com.gradle.develocity.bamboo.DevelocityAccessCredential;
 import com.gradle.develocity.bamboo.MavenCoordinates;
 import com.gradle.develocity.bamboo.VcsRepositoryFilter;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class BuildScansConfigAction extends GlobalAdminAction {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("^\\d+\\.\\d+(\\.\\d+)?(-[-\\w]+)?$");
+    private static final Pattern SHORT_LIVED_TOKEN_EXPIRY_PATTERN = Pattern.compile("^(?:[1-9]|1\\d?|2[0-4]?)$");
 
     /* Common parameters for all build systems */
     private String server;
@@ -46,6 +48,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
 
     /* General settings */
     private String vcsRepositoryFilter;
+    private String shortLivedTokenExpiry;
 
     public BuildScansConfigAction(UsernameAndPasswordCredentialsProvider credentialsProvider,
                                   PersistentConfigurationManager configurationManager) {
@@ -71,6 +74,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 vcsRepositoryFilter = config.getVcsRepositoryFilter();
                 gradleCaptureFileFingerprints = config.isGradleCaptureFileFingerprints();
                 mavenCaptureFileFingerprints = config.isMavenCaptureFileFingerprints();
+                shortLivedTokenExpiry = config.getShortLivedTokenExpiry();
             });
 
         return INPUT;
@@ -90,17 +94,17 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 addFieldError("sharedCredentialName", "Please specify the name of the existing shared credential of type 'Username and password'.");
             } else {
                 String accessKey = credentials.getPassword();
-                if (!AccessKeyValidator.isValid(accessKey)) {
+                if (!DevelocityAccessCredential.isValid(accessKey)) {
                     addFieldError("sharedCredentialName", "Shared credential contains an invalid access key.");
                 }
             }
         }
 
-        if (!isBlankOrValidVersion(develocityPluginVersion)) {
+        if (!isBlankOrValid(VERSION_PATTERN, develocityPluginVersion)) {
             addFieldError("develocityPluginVersion", "Please specify a valid version of the Develocity Gradle plugin.");
         }
 
-        if (!isBlankOrValidVersion(ccudPluginVersion)) {
+        if (!isBlankOrValid(VERSION_PATTERN, ccudPluginVersion)) {
             addFieldError("ccudPluginVersion", "Please specify a valid version of the Common Custom User Data Gradle plugin.");
         }
 
@@ -127,6 +131,9 @@ public class BuildScansConfigAction extends GlobalAdminAction {
             addFieldError("vcsRepositoryFilter", "Please specify a valid vcs filter, ie lines of: +|-:repository_matching_keyword");
         }
 
+        if (!isBlankOrValid(SHORT_LIVED_TOKEN_EXPIRY_PATTERN, shortLivedTokenExpiry)) {
+            addFieldError("shortLivedTokenExpiry", "Please specify a valid short-lived token expiry in hours between 1 and 24, i.e. 6");
+        }
     }
 
     private boolean isBlankOrValidVcsFilter(String vcsRepositoryFilter) {
@@ -166,11 +173,11 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         }
     }
 
-    private static boolean isBlankOrValidVersion(String version) {
-        if (StringUtils.isBlank(version)) {
+    private static boolean isBlankOrValid(Pattern pattern, String value) {
+        if (StringUtils.isBlank(value)) {
             return true;
         }
-        return VERSION_PATTERN.matcher(version).matches();
+        return pattern.matcher(value).matches();
     }
 
     public String save() {
@@ -191,6 +198,7 @@ public class BuildScansConfigAction extends GlobalAdminAction {
                 .setVcsRepositoryFilter(vcsRepositoryFilter)
                 .setGradleCaptureFileFingerprints(gradleCaptureFileFingerprints)
                 .setMavenCaptureFileFingerprints(mavenCaptureFileFingerprints)
+                .setShortLivedTokenExpiry(shortLivedTokenExpiry)
         );
 
         return SUCCESS;
@@ -316,4 +324,11 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         this.mavenCaptureFileFingerprints = mavenCaptureFileFingerprints;
     }
 
+    public String getShortLivedTokenExpiry() {
+        return shortLivedTokenExpiry;
+    }
+
+    public void setShortLivedTokenExpiry(String shortLivedTokenExpiry) {
+        this.shortLivedTokenExpiry = shortLivedTokenExpiry;
+    }
 }
