@@ -41,7 +41,7 @@
             ${basedir}/src/test/resources/generated-test-resources-692-license-723.zip
         </bamboo.product.data.path>
         <amps.version>8.13.6</amps.version>
-        <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>5.0.1</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
 
