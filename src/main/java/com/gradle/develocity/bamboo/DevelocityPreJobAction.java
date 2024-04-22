@@ -87,7 +87,7 @@ public class DevelocityPreJobAction implements PreJobAction {
 
         if (isInjectionEnabled) {
             // If we know the URL or there's only one access key configured corresponding to the right URL
-            if (allKeys.isSingleKey() && configuration.isEnforceUrl()) {
+            if (allKeys.isSingleKey() || configuration.isEnforceUrl()) {
                 String hostnameFromServerUrl = getHostnameFromServerUrl(configuration.getServer());
                 if (hostnameFromServerUrl == null) {
                     LOGGER.warn("Could not extract hostname from Develocity server URL");
