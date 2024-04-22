@@ -32,7 +32,11 @@ public class ShortLivedTokenClient {
                 .build();
     }
 
-    public Optional<DevelocityAccessCredential> get(String server, DevelocityAccessCredential accessKey, String expiryInHours) {
+    public Optional<DevelocityAccessCredentials.HostnameAccessKey> get(
+            String server,
+            DevelocityAccessCredentials.HostnameAccessKey accessKey,
+            String expiryInHours
+    ) {
         String url = normalize(server) + "api/auth/token";
         if (StringUtils.isNotBlank(expiryInHours)) {
             url += "?expiresInHours=" + expiryInHours;
@@ -50,7 +54,7 @@ public class ShortLivedTokenClient {
         while (tryCount < MAX_RETRIES) {
             try (Response response = httpClient.newCall(request).execute()) {
                 if (response.code() == 200 && response.body() != null) {
-                    return Optional.of(DevelocityAccessCredential.of(accessKey.getHostname(), response.body().string()));
+                    return Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of(accessKey.getHostname(), response.body().string()));
                 } else if (response.code() == 401) {
                     LOGGER.warn("Short lived token request failed {} with status code 401", url);
                     return Optional.empty();

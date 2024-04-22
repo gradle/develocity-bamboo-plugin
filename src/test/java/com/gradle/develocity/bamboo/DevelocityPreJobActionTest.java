@@ -209,12 +209,12 @@ class DevelocityPreJobActionTest {
     void addsAccessKeyToContext(String pluginKey) {
         // given
         String accessKey = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
-        String shortLivedToken = String.format("scans.gradle.com=%s", RandomStringUtils.randomAlphanumeric(10));
+        String shortLivedToken = String.format(RandomStringUtils.randomAlphanumeric(10));
 
         CredentialsData credentialsData = mock(CredentialsData.class);
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
-        when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessCredential.parse(shortLivedToken, "scans.gradle.com").get()));
+        when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("scans.gradle.com", shortLivedToken)));
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -234,6 +234,6 @@ class DevelocityPreJobActionTest {
         develocityPreJobAction.execute(stageExecution, buildContext);
 
         // then
-        verify(variableContext, times(1)).addLocalVariable(Constants.ACCESS_KEY, shortLivedToken);
+        verify(variableContext, times(1)).addLocalVariable(Constants.ACCESS_KEY, "scans.gradle.com=" + shortLivedToken);
     }
 }

@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class DevelocityAccessCredentialTest {
+class DevelocityAccessCredentialsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -24,17 +24,17 @@ class DevelocityAccessCredentialTest {
         " server1= secret1; server2 , sever3 = secret2 ;"
     })
     void validAccessKeys(String accessKey) {
-        assertThat(DevelocityAccessCredential.isValid(accessKey), is(true));
+        assertThat(DevelocityAccessCredentials.isValid(accessKey), is(true));
     }
 
     @ParameterizedTest
     @CsvSource({
-        "host1=secret,true",
-        "host1=secret;host2=secret,true",
-        "host2=secret;host3=secret,false",
+        "host1=secret",
+        "host1=secret;host2=secret",
+        "host2=secret;host3=secret",
     })
-    void canParseAccessKeys(String accessKey, boolean isPresent) {
-        assertThat(DevelocityAccessCredential.parse(accessKey, "host1").isPresent(), is(isPresent));
+    void canParseAccessKeys(String accessKey) {
+        assertThat(DevelocityAccessCredentials.parse(accessKey).isEmpty(), is(false));
     }
 
     @ParameterizedTest
@@ -49,6 +49,6 @@ class DevelocityAccessCredentialTest {
         "server1, server2,, server3 = secret "
     })
     void invalidAccessKeys(String accessKey) {
-        assertThat(DevelocityAccessCredential.isValid(accessKey), is(false));
+        assertThat(DevelocityAccessCredentials.isValid(accessKey), is(false));
     }
 }

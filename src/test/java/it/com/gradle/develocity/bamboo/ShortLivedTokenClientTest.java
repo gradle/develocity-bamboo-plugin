@@ -1,6 +1,6 @@
 package it.com.gradle.develocity.bamboo;
 
-import com.gradle.develocity.bamboo.DevelocityAccessCredential;
+import com.gradle.develocity.bamboo.DevelocityAccessCredentials;
 import com.gradle.develocity.bamboo.ShortLivedTokenClient;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -43,14 +43,14 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
                 c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(shortLivedToken))
         );
 
-        DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
+        DevelocityAccessCredentials.HostnameAccessKey hostnameAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
-                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
+                DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
                 expiryInHours
         ).orElseThrow(() -> new IllegalStateException("Short lived token value is expected"));
 
-        assertThat(develocityAccessCredential.getHostname(), equalTo("localhost"));
-        assertThat(develocityAccessCredential.getKey(), equalTo(shortLivedToken));
+        assertThat(hostnameAccessKey.getHostname(), equalTo("localhost"));
+        assertThat(hostnameAccessKey.getKey(), equalTo(shortLivedToken));
     }
 
     @Test
@@ -63,25 +63,25 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
                 })
         );
 
-        Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
+        Optional<DevelocityAccessCredentials.HostnameAccessKey> hostnameAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
-                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
+                DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
                 null
         );
 
-        assertThat(develocityAccessKey.isPresent(), is(false));
+        assertThat(hostnameAccessKey.isPresent(), is(false));
         assertThat(requestCount.get(), equalTo(3));
     }
 
     @Test
     void shortLivedTokenRetrievalFailsWithException() {
-        Optional<DevelocityAccessCredential> develocityAccessKey = shortLivedTokenClient.get(
+        Optional<DevelocityAccessCredentials.HostnameAccessKey> hostnameAccessKey = shortLivedTokenClient.get(
                 "http://localhost:8888",
-                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
+                DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
                 null
         );
 
-        assertThat(develocityAccessKey.isPresent(), is(false));
+        assertThat(hostnameAccessKey.isPresent(), is(false));
     }
 
     @Test
@@ -97,14 +97,14 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
                     }
                 })
         );
-        DevelocityAccessCredential develocityAccessCredential = shortLivedTokenClient.get(
+        DevelocityAccessCredentials.HostnameAccessKey hostnameAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
-                DevelocityAccessCredential.parse("localhost=" + RandomStringUtils.randomAlphanumeric(30), "localhost").get(),
+                DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
                 null
         ).orElseThrow(() -> new IllegalStateException("Short lived token value is expected"));
 
-        assertThat(develocityAccessCredential.getHostname(), equalTo("localhost"));
-        assertThat(develocityAccessCredential.getKey(), not(isEmptyOrNullString()));
+        assertThat(hostnameAccessKey.getHostname(), equalTo("localhost"));
+        assertThat(hostnameAccessKey.getKey(), not(isEmptyOrNullString()));
     }
 
 }
