@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DevelocityPreJobAction implements PreJobAction {
 
@@ -69,14 +71,46 @@ public class DevelocityPreJobAction implements PreJobAction {
             return;
         }
 
-        DevelocityAccessCredential.parse(accessKey, getHostnameFromServerUrl(configuration.getServer()))
-                .flatMap(parsedKey -> injectors.stream()
-                        .filter(i -> i.hasSupportedTasks(buildContext))
-                        .map(i -> i.buildToolConfiguration(configuration))
-                        .filter(BuildToolConfiguration::isEnabled)
-                        .findFirst()
-                        .flatMap(__ -> shortLivedTokenClient.get(configuration.getServer(), parsedKey, configuration.getShortLivedTokenExpiry())))
-                .ifPresent(shortLivedToken -> buildContext.getVariableContext().addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRawAccessKey()));
+        DevelocityAccessCredentials allKeys = DevelocityAccessCredentials.parse(accessKey);
+        if (allKeys.isEmpty()) {
+            LOGGER.warn(
+                    "Cannot parse access keys from {} shared credential. Environment variable {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+            );
+            return;
+        }
+
+        boolean isInjectionEnabled = injectors.stream()
+                .filter(i -> i.hasSupportedTasks(buildContext))
+                .map(i -> i.buildToolConfiguration(configuration))
+                .anyMatch(BuildToolConfiguration::isEnabled);
+
+        if (isInjectionEnabled) {
+            // If we know the URL or there's only one access key configured corresponding to the right URL
+            if (allKeys.isSingleKey() || configuration.isEnforceUrl()) {
+                String hostnameFromServerUrl = getHostnameFromServerUrl(configuration.getServer());
+                if (hostnameFromServerUrl == null) {
+                    LOGGER.warn("Could not extract hostname from Develocity server URL");
+                    return;
+                }
+
+                allKeys.find(hostnameFromServerUrl)
+                        .flatMap(parsedKey -> shortLivedTokenClient.get(configuration.getServer(), parsedKey, configuration.getShortLivedTokenExpiry()))
+                        .ifPresent(shortLivedToken -> buildContext.getVariableContext().addLocalVariable(Constants.ACCESS_KEY, shortLivedToken.getRaw()));
+            } else {
+                // We're not sure exactly which Develocity URL will be effectively used so as best effort:
+                // let's translate all access keys to short-lived tokens
+                List<DevelocityAccessCredentials.HostnameAccessKey> shortLivedTokens = allKeys.stream()
+                        .map(key -> shortLivedTokenClient.get("https://" + key.getHostname(), key, configuration.getShortLivedTokenExpiry()))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+
+                if (!shortLivedTokens.isEmpty()) {
+                    buildContext.getVariableContext().addLocalVariable(Constants.ACCESS_KEY, DevelocityAccessCredentials.of(shortLivedTokens).getRaw());
+                }
+            }
+        }
     }
 
     private static String getHostnameFromServerUrl(String serverUrl) {
