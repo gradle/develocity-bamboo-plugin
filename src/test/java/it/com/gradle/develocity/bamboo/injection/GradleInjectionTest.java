@@ -13,13 +13,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class GradleInjectionTest extends AbstractInjectionTest {
@@ -186,9 +184,9 @@ public class GradleInjectionTest extends AbstractInjectionTest {
     void enforceUrlOverridesConfiguredUrlInProject() {
         // given
         ensurePluginConfiguration(form -> form
-                .setServer("http://localhost:8888")
-                .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
-                .enforceUrl()
+            .setServer("http://localhost:8888")
+            .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+            .enforceUrl()
         );
 
         PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPPA");
@@ -209,6 +207,29 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("Publishing build scan failed due to network error"));
         assertThat(output, containsString("http://localhost:8888/"));
+    }
+
+    @Test
+    void buildScanLinksAreDetectedForMultipleTasks() {
+        // given
+        ensurePluginConfiguration(form -> form
+            .setServer(mockDevelocityServer.getAddress())
+            .setDevelocityPluginVersion(DEVELOCITY_PLUGIN_VERSION)
+        );
+
+        // Project with 2 tasks
+        PlanKey planKey = PlanKeys.getPlanKey(PROJECT_KEY, "GPMT");
+        JobKey jobKey = Iterables.getOnlyElement(bambooApi.getJobs(planKey)).getKey();
+
+        // when
+        PlanResultKey planResultKey = triggerBuild(planKey, jobKey);
+        waitForBuildToFinish(planResultKey);
+
+        // then
+        List<String> buildScans = getBuildScansFromMetadata(planResultKey).map(s -> Arrays.asList(s.split(","))).orElse(null);
+        assertThat(buildScans, notNullValue());
+        assertThat(buildScans.size(), equalTo(2));
+        assertThat(buildScans, everyItem(containsString(mockDevelocityServer.getAddress().toString())));
     }
 
 }
