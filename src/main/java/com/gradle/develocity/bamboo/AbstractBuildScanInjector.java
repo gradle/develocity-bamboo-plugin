@@ -33,7 +33,7 @@ abstract class AbstractBuildScanInjector<C extends BuildToolConfiguration> imple
         BuildLogger buildLogger = buildLoggerManager.getLogger(buildContext.getPlanResultKey());
         buildLogger
             .getInterceptorStack()
-            .add(new BuildScanLogScanner(new BuildScanCollector(buildContext)));
+            .addForJob(new BuildScanLogScanner(new BuildScanCollector(buildContext)));
     }
 
     protected final void registerDevelocityResources(BuildContext buildContext, File... resources) {

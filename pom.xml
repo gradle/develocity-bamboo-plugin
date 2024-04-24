@@ -35,10 +35,10 @@
     </scm>
 
     <properties>
-        <bamboo.version>7.2.10</bamboo.version>
+        <bamboo.version>8.2.9</bamboo.version>
         <bamboo.data.version>${bamboo.version}</bamboo.data.version>
         <bamboo.product.data.path>
-            ${basedir}/src/test/resources/generated-test-resources-692-license-723.zip
+            ${basedir}/src/test/resources/generated-test-resources-8_2_9.zip
         </bamboo.product.data.path>
         <amps.version>8.13.6</amps.version>
         <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
@@ -405,19 +405,23 @@
     </build>
 
     <profiles>
+        <!--
+            - Bamboo 9.2.4 introduced a db schema breaking change, requiring to generate specific test resources
+            - Bamboo 9.3.0 requires Java 11 or 12
+        -->
         <profile>
             <id>bamboo924OrLater</id>
             <properties>
                 <bamboo.product.data.path>
-                    ${basedir}/src/test/resources/generated-test-resources-923.zip
+                    ${basedir}/src/test/resources/generated-test-resources-9_2_13.zip
                 </bamboo.product.data.path>
             </properties>
         </profile>
         <profile>
-            <id>bamboo93OrLater</id> <!-- same as bamboo924OrLater, but requires Java 11 -->
+            <id>bamboo93OrLater</id>
             <properties>
                 <bamboo.product.data.path>
-                    ${basedir}/src/test/resources/generated-test-resources-923.zip
+                    ${basedir}/src/test/resources/generated-test-resources-9_2_13.zip
                 </bamboo.product.data.path>
                 <required.java.version>[11,12)</required.java.version>
             </properties>
