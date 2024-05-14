@@ -20,7 +20,7 @@ To upgrade from `1.3.0` to `2.0.0` follow these steps:
 
 [IMPORTANT]
 =====
-Develocity 2024.1 or above is required starting from version `2.2.0` and above. See <<_short_lived_access_tokens>> for more infos.
+Develocity `2024.1` or above is required starting from version `2.2.0` and above. See <<_short_lived_access_tokens>> for more infos.
 =====
 
 == Overview
