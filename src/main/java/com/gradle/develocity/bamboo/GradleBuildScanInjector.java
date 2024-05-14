@@ -131,13 +131,17 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
     private void prepareEnvironment(BuildContext buildContext, GradleConfiguration config) {
         VariableContext variableContext = buildContext.getVariableContext();
 
-        Objects.runIfNotNull(config.server, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_URL", it));
-        Objects.runIfTrue(config.allowUntrustedServer, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ALLOW_UNTRUSTED_SERVER", "true"));
-        Objects.runIfNotNull(config.develocityPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_PLUGIN_VERSION", it));
-        Objects.runIfNotNull(config.ccudPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_CCUD_PLUGIN_VERSION", it));
-        Objects.runIfNotNull(config.pluginRepository, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_URL", it));
-        Objects.runIfTrue(config.enforceUrl, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_ENFORCE_URL", "true"));
-        Objects.runIfTrue(config.gradleCaptureFileFingerprints, () -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_DEVELOCITY_CAPTURE_FILE_FINGERPRINTS", "true"));
+        variableContext.addLocalVariable("DEVELOCITY_INJECTION_ENABLED", "true");
+        variableContext.addLocalVariable("DEVELOCITY_INJECTION_INIT_SCRIPT_NAME", GradleEmbeddedResources.INIT_SCRIPT_NAME);
+        variableContext.addLocalVariable("DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE", "Bamboo");
+        Objects.runIfNotNull(config.server, it -> variableContext.addLocalVariable("DEVELOCITY_URL", it));
+        Objects.runIfTrue(config.enforceUrl, () -> variableContext.addLocalVariable("DEVELOCITY_ENFORCE_URL", "true"));
+        Objects.runIfTrue(config.allowUntrustedServer, () -> variableContext.addLocalVariable("DEVELOCITY_ALLOW_UNTRUSTED_SERVER", "true"));
+        Objects.runIfNotNull(config.develocityPluginVersion, it -> variableContext.addLocalVariable("DEVELOCITY_PLUGIN_VERSION", it));
+        Objects.runIfNotNull(config.ccudPluginVersion, it -> variableContext.addLocalVariable("CCUD_PLUGIN_VERSION", it));
+        Objects.runIfTrue(config.gradleCaptureFileFingerprints, () -> variableContext.addLocalVariable("DEVELOCITY_CAPTURE_FILE_FINGERPRINTS", "true"));
+
+        Objects.runIfNotNull(config.pluginRepository, it -> variableContext.addLocalVariable("GRADLE_PLUGIN_REPOSITORY_URL", it));
         Objects.runIfNotNull(
                 config.pluginRepositoryCredentialName,
                 it -> {
@@ -148,8 +152,8 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
                         if (credentials.getUsername() == null || credentials.getPassword() == null) {
                             LOGGER.warn("Plugin repository credentials {} do not have username or password set.", it);
                         } else {
-                            variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_USERNAME", credentials.getUsername());
-                            variableContext.addLocalVariable("DEVELOCITY_PLUGIN_GRADLE_PLUGIN_REPOSITORY_PASSWORD", credentials.getPassword());
+                            variableContext.addLocalVariable("GRADLE_PLUGIN_REPOSITORY_USERNAME", credentials.getUsername());
+                            variableContext.addLocalVariable("GRADLE_PLUGIN_REPOSITORY_PASSWORD", credentials.getPassword());
                         }
                     }
                 }

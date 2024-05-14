@@ -10,7 +10,7 @@ import java.nio.file.StandardCopyOption;
 
 public final class GradleEmbeddedResources {
 
-    private static final String INIT_SCRIPT_NAME = "develocity-init-script.gradle";
+    public static final String INIT_SCRIPT_NAME = "develocity-init-script.gradle";
 
     File copyInitScript(String home) {
         try (InputStream is = GradleEmbeddedResources.class.getResourceAsStream(String.format("/develocity/gradle/%s", INIT_SCRIPT_NAME))) {
