@@ -1,3 +1,8 @@
+/*
+ * Initscript for injection of Develocity into Gradle builds.
+ * Version: v0.4.0
+ */
+
 import org.gradle.util.GradleVersion
 
 // note that there is no mechanism to share code between the initscript{} block and the main script, so some logic is duplicated
@@ -141,7 +146,7 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
     return
 }
 
-// register buildScanPublished listener and optionally apply the Develocity plugin
+// Conditionally apply and configure the Develocity plugin
 if (GradleVersion.current() < GradleVersion.version('6.0')) {
     rootProject {
         buildscript.configurations.getByName("classpath").incoming.afterResolve { ResolvableDependencies incoming ->
@@ -205,7 +210,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                         buildScan.termsOfServiceUrl = buildScanTermsOfUseUrl
                         buildScan.termsOfServiceAgree = buildScanTermsOfUseAgree
                     }
-
                 }
 
                 pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
