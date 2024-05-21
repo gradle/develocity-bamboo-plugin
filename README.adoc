@@ -18,6 +18,11 @@ To upgrade from `1.3.0` to `2.0.0` follow these steps:
 3. Install the new version as mentioned https://confluence.atlassian.com/bamboo/installing-a-plugin-289277265.html[here].
 4. Configure the plugin again using the configuration settings from step #1.
 
+[IMPORTANT]
+=====
+Develocity `2024.1` or above is required starting from version `2.2.0` and above. See <<_short_lived_access_tokens>> for more infos.
+=====
+
 == Overview
 
 This plugin integrates with Develocity for Gradle and Maven builds run via Bamboo.
@@ -57,8 +62,15 @@ Fill the form as following:
 
 * _Credential name_ - this is the name of the credential that you’ll be referencing in the “Shared credential name” field of the Develocity integration page.
 * _Username_ - you can specify any username value here, as it will not be used by the plugin
-* _Password_ - this should be the value of the access key which is used to authenticate against the Develocity server.
+* _Password_ - this should be the value of the access key which is used during the build execution to get a short-lived access token from the Develocity server.
 It has a format of a key value pair (e.g. `host=value`)
+
+[#_short_lived_access_tokens]
+==== Short-lived access tokens
+Develocity access keys are long-lived, creating risks if they are leaked. To avoid this, users can use short-lived access tokens to authenticate with Develocity. Access tokens can be used wherever an access key would be used. Access tokens are only valid for the Develocity instance that created them.
+If a short-lived token fails to be retrieved (for example, if the Develocity server version is lower than `2024.1`), no access key will be set.
+In that case, Develocity authenticated operations like build cache read/write and build scan publication will fail without failing the build.
+For more information on short-lived tokens, see https://docs.gradle.com/develocity/api-manual/#short_lived_access_tokens[Develocity API documentation].
 
 === Gradle Auto-instrumentation
 
@@ -111,6 +123,7 @@ The following table shows the compatibility of the plugin version with Develocit
 |===
 |Bamboo Plugin version  | Develocity Maven extension version        | Common Custom User Data Maven extension version  | Minimum supported Develocity version
 |Next version           | 1.21.3                                    | 2.0                                              | 2024.1
+|2.2.0                  | 1.21.2                                    | 2.0                                              | 2024.1
 |2.1.0                  | 1.21.1                                    | 2.0                                              | 2024.1
 |2.0.0                  | 1.20.1                                    | 1.12.4                                           | 2023.4
 |1.3.0                  | 1.20.1                                    | 1.12.4                                           | 2023.4

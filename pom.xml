@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gradle.develocity</groupId>
     <artifactId>develocity-bamboo-plugin</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.2.0</version>
     <packaging>atlassian-plugin</packaging>
 
     <name>Develocity Bamboo plugin</name>
@@ -163,7 +163,7 @@
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
-            <version>1.43.0</version>
+            <version>1.44.0</version>
             <scope>test</scope>
         </dependency>
 
