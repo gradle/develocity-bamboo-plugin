@@ -40,7 +40,7 @@
         <bamboo.product.data.path>
             ${basedir}/src/test/resources/generated-test-resources-8_2_9.zip
         </bamboo.product.data.path>
-        <amps.version>8.13.6</amps.version>
+        <amps.version>9.0.1</amps.version>
         <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
@@ -118,12 +118,6 @@
             <artifactId>jsr311-api</artifactId>
             <version>1.1.1</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.9</version>
         </dependency>
 
         <dependency>
