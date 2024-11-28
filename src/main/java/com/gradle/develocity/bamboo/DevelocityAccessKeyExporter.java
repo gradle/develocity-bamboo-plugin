@@ -33,7 +33,10 @@ public class DevelocityAccessKeyExporter {
                         .stream()
                         .filter(setter -> setter.applies(task))
                         .findFirst()
-                        .ifPresent(setter -> setter.apply(task, Constants.DEVELOCITY_ACCESS_KEY, accessKey))));
+                        .ifPresent(setter -> {
+                            setter.apply(task, Constants.DEVELOCITY_ACCESS_KEY, accessKey);
+                            setter.apply(task, Constants.GRADLE_ENTERPRISE_ACCESS_KEY, accessKey);
+                        })));
     }
 
     private boolean isDevelocityAccessKey(VariableDefinitionContext context) {

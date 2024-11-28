@@ -55,8 +55,8 @@ public class DevelocityPreJobAction implements PreJobAction {
         UsernameAndPassword credentials = credentialsProvider.findByName(sharedCredentialName).orElse(null);
         if (credentials == null) {
             LOGGER.warn(
-                    "Shared credentials with the name {} are not found. Environment variable {} will not be set",
-                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} are not found. Environment variables {} and {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY, Constants.GRADLE_ENTERPRISE_ACCESS_KEY
             );
             return;
         }
@@ -65,8 +65,8 @@ public class DevelocityPreJobAction implements PreJobAction {
         String accessKey = credentials.getPassword();
         if (StringUtils.isBlank(accessKey)) {
             LOGGER.warn(
-                    "Shared credentials with the name {} do not have password set. Environment variable {} will not be set",
-                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Shared credentials with the name {} do not have password set. Environment variables {} and {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY, Constants.GRADLE_ENTERPRISE_ACCESS_KEY
             );
             return;
         }
@@ -74,8 +74,8 @@ public class DevelocityPreJobAction implements PreJobAction {
         DevelocityAccessCredentials allKeys = DevelocityAccessCredentials.parse(accessKey);
         if (allKeys.isEmpty()) {
             LOGGER.warn(
-                    "Cannot parse access keys from {} shared credential. Environment variable {} will not be set",
-                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY
+                    "Cannot parse access keys from {} shared credential. Environment variables {} and {} will not be set",
+                    sharedCredentialName, Constants.DEVELOCITY_ACCESS_KEY, Constants.GRADLE_ENTERPRISE_ACCESS_KEY
             );
             return;
         }
