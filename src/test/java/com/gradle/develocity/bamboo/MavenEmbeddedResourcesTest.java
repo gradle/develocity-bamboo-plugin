@@ -30,7 +30,7 @@ public class MavenEmbeddedResourcesTest {
      */
     @ParameterizedTest
     @CsvSource({
-            "DEVELOCITY_EXTENSION, fedfada9c9054055cd18351999c804c9",
+            "DEVELOCITY_EXTENSION, 060f4cf55ee6cbe6bfefd3bab5bf20cd",
             "CCUD_EXTENSION, 976c5592e4d7035a785aab2b8eb13610"
     })
     void copiesEmbeddedExtension(MavenEmbeddedResources.Resource resource, String expectedChecksum) throws Exception {
