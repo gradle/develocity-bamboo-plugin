@@ -2,6 +2,11 @@ package it.com.gradle.develocity.bamboo;
 
 import com.gradle.develocity.bamboo.DevelocityAccessCredentials;
 import com.gradle.develocity.bamboo.ShortLivedTokenClient;
+import com.gradle.develocity.bamboo.config.PersistentConfiguration;
+import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -9,8 +14,11 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import ratpack.server.ServerConfig;
 import ratpack.test.embed.EmbeddedApp;
 
+import javax.net.ssl.SSLException;
+import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,10 +28,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ShortLivedTokenClientTest implements AfterEachCallback {
 
-    private final ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient();
+    private final ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mock(PersistentConfigurationManager.class));
 
     private EmbeddedApp mockDevelocityServer;
 
@@ -105,6 +115,48 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
 
         assertThat(hostnameAccessKey.getHostname(), equalTo("localhost"));
         assertThat(hostnameAccessKey.getKey(), not(isEmptyOrNullString()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void shortLivedTokenForUntrustedServer(boolean allowUntrusted) throws CertificateException, SSLException {
+        String shortLivedToken = RandomStringUtils.randomAlphanumeric(50);
+        SelfSignedCertificate selfSignedCertificate = new SelfSignedCertificate("localhost");
+        mockDevelocityServer = EmbeddedApp.fromServer(
+                ServerConfig.builder().ssl(
+                        SslContextBuilder.forServer(selfSignedCertificate.certificate(), selfSignedCertificate.privateKey())
+                                .sslProvider(SslProvider.JDK)
+                                .build()),
+                serverSpec -> serverSpec
+                        .handlers(c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(shortLivedToken)))
+        );
+
+        PersistentConfigurationManager mockPersistentConfigurationManager = mock(PersistentConfigurationManager.class);
+        if (allowUntrusted) {
+            PersistentConfiguration mockPersistentConfiguration = mock(PersistentConfiguration.class);
+            when(mockPersistentConfiguration.isAllowUntrustedServer()).thenReturn(true);
+            when(mockPersistentConfigurationManager.load()).thenReturn(Optional.of(mockPersistentConfiguration));
+        } else {
+            PersistentConfiguration mockPersistentConfiguration = mock(PersistentConfiguration.class);
+            when(mockPersistentConfiguration.isAllowUntrustedServer()).thenReturn(false);
+            when(mockPersistentConfigurationManager.load()).thenReturn(Optional.of(mockPersistentConfiguration));
+        }
+
+        ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mockPersistentConfigurationManager);
+        DevelocityAccessCredentials.HostnameAccessKey hostnameAccessKey = shortLivedTokenClient.get(
+                mockDevelocityServer.getAddress().toString(),
+                DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
+                null
+        ).orElse(null);
+
+        mockDevelocityServer.close();
+
+        if (allowUntrusted) {
+            assertThat(hostnameAccessKey.getHostname(), equalTo("localhost"));
+            assertThat(hostnameAccessKey.getKey(), equalTo(shortLivedToken));
+        } else {
+            assertThat(hostnameAccessKey, equalTo(null));
+        }
     }
 
 }
