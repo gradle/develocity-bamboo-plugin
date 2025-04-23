@@ -1,5 +1,7 @@
 package com.gradle.develocity.bamboo;
 
+import com.gradle.develocity.bamboo.config.PersistentConfiguration;
+import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -9,7 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -26,10 +34,26 @@ public class ShortLivedTokenClient {
 
     private final OkHttpClient httpClient;
 
-    public ShortLivedTokenClient() {
-        this.httpClient = new OkHttpClient().newBuilder()
-                .callTimeout(10, TimeUnit.SECONDS)
-                .build();
+    public ShortLivedTokenClient(PersistentConfigurationManager configurationManager) {
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder().callTimeout(10, TimeUnit.SECONDS);
+
+        boolean allowUntrusted = configurationManager.load()
+                .map(PersistentConfiguration::isAllowUntrustedServer)
+                .orElse(false);
+        if (allowUntrusted) {
+            builder.hostnameVerifier((hostname, session) -> true);
+            try {
+                TrustManager[] allTrustingTrustManager = createAllTrustingTrustManager();
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, allTrustingTrustManager, null);
+
+                builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) allTrustingTrustManager[0]);
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        this.httpClient = builder.build();
     }
 
     public Optional<DevelocityAccessCredentials.HostnameAccessKey> get(
@@ -77,6 +101,25 @@ public class ShortLivedTokenClient {
 
     private static String normalize(String server) {
         return server.endsWith("/") ? server : server + "/";
+    }
+
+    private static TrustManager[] createAllTrustingTrustManager() {
+        return new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[]{};
+                    }
+
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
     }
 
 }
