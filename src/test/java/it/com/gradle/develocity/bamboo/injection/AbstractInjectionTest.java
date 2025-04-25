@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 abstract class AbstractInjectionTest extends BrowserTest {
 
@@ -79,9 +80,9 @@ abstract class AbstractInjectionTest extends BrowserTest {
     }
 
     protected void assertScanNotPublished(String output) {
-        assertThat(output, Matchers.anyOf(
-                containsString("Publishing build scan..."),
-                containsString("Publishing Build Scan...")
+        assertThat(output, Matchers.allOf(
+                not(containsString("Publishing build scan...")),
+                not(containsString("Publishing Build Scan..."))
             )
         );
     }
