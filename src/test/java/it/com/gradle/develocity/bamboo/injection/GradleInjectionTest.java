@@ -8,6 +8,7 @@ import com.gradle.develocity.bamboo.RemoteAgentProcess;
 import com.gradle.develocity.bamboo.model.JobKey;
 import it.com.gradle.develocity.bamboo.MockDevelocityServer;
 import org.apache.commons.lang3.SystemUtils;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -89,7 +90,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
-        assertThat(output, containsString("Publishing build scan..."));
+        assertScanPublished(output);
         assertThat(output, containsString(mockDevelocityServer.publicBuildScanId()));
         assertThat(output, not(containsString("The deprecated \"gradleEnterprise.")));
     }
@@ -117,7 +118,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
-        assertThat(output, not(containsString("Publishing build scan...")));
+        assertScanNotPublished(output);
         assertThat(output, not(containsString(mockDevelocityServer.publicBuildScanId())));
     }
 
@@ -143,7 +144,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
-        assertThat(output, containsString("Publishing build scan..."));
+        assertScanPublished(output);
         assertThat(output, not(containsString(mockDevelocityServer.publicBuildScanId())));
         assertThat(output, containsString("Publishing failed."));
 
@@ -177,7 +178,7 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
-        assertThat(output, not(containsString("Publishing build scan...")));
+        assertScanNotPublished(output);
     }
 
     @Test
@@ -205,7 +206,11 @@ public class GradleInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("BUILD SUCCESSFUL"));
 
-        assertThat(output, containsString("Publishing build scan failed due to network error"));
+        assertThat(output, Matchers.anyOf(
+            containsString("Publishing build scan failed due to network error"),
+            containsString("Publishing Build Scan failed due to network error")
+            )
+        );
         assertThat(output, containsString("http://localhost:8888/"));
     }
 
