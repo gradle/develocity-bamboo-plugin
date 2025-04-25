@@ -64,19 +64,23 @@ public class BuildScanLogScannerTest {
     void multipleBuildScansAreCollected() {
         String buildScanUrl = TestFixtures.randomBuildScanUrl();
         String anotherBuildScanUrl = TestFixtures.randomBuildScanUrl();
+        String andAnotherBuildScanUrl = TestFixtures.randomBuildScanUrl();
 
         Stream.of(
                 TestFixtures.randomLogEntries(10),
                 Arrays.asList(new BuildOutputLogEntry("Publishing build scan..."), new BuildOutputLogEntry(buildScanUrl)),
                 TestFixtures.randomLogEntries(20),
                 Arrays.asList(new BuildOutputLogEntry("Publishing build information..."), new BuildOutputLogEntry(anotherBuildScanUrl)),
-                TestFixtures.randomLogEntries(30))
+                TestFixtures.randomLogEntries(30),
+                Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan..."), new BuildOutputLogEntry(andAnotherBuildScanUrl)),
+                TestFixtures.randomLogEntries(30)
+            )
             .flatMap(Collection::stream)
             .forEach(buildScanLogScanner::intercept);
 
         assertThat(
             buildContext.getCurrentResult().getCustomBuildData().get(Constants.BUILD_SCANS_KEY),
-            is(equalTo(buildScanUrl + Constants.BUILD_SCANS_SEPARATOR + anotherBuildScanUrl))
+            is(equalTo(buildScanUrl + Constants.BUILD_SCANS_SEPARATOR + anotherBuildScanUrl + Constants.BUILD_SCANS_SEPARATOR + andAnotherBuildScanUrl))
         );
     }
 

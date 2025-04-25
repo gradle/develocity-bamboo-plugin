@@ -11,6 +11,7 @@ import com.gradle.develocity.bamboo.model.TestUser;
 import com.gradle.develocity.bamboo.model.TriggeredBuild;
 import it.com.gradle.develocity.bamboo.BrowserTest;
 import org.awaitility.pollinterval.FibonacciPollInterval;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.Duration;
@@ -19,6 +20,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 abstract class AbstractInjectionTest extends BrowserTest {
 
@@ -65,5 +68,21 @@ abstract class AbstractInjectionTest extends BrowserTest {
             .filter(metadataItem -> metadataItem.getKey().equals(Constants.BUILD_SCANS_KEY))
             .findFirst()
             .map(BuildResultDetails.Metadata.Item::getValue);
+    }
+
+    protected void assertScanPublished(String output) {
+        assertThat(output, Matchers.anyOf(
+                containsString("Publishing build scan..."),
+                containsString("Publishing Build Scan...")
+            )
+        );
+    }
+
+    protected void assertScanNotPublished(String output) {
+        assertThat(output, Matchers.anyOf(
+                containsString("Publishing build scan..."),
+                containsString("Publishing Build Scan...")
+            )
+        );
     }
 }

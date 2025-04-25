@@ -8,6 +8,7 @@ import com.gradle.develocity.bamboo.RemoteAgentProcess;
 import com.gradle.develocity.bamboo.model.JobKey;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,7 +98,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, containsString("[INFO] Publishing build scan..."));
+        assertScanPublished(output);
         assertThat(output, containsString("[INFO] https://gradle.com/s/"));
     }
 
@@ -124,7 +125,7 @@ public class MavenInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, not(containsString("[INFO] Publishing build scan...")));
+        assertScanNotPublished(output);
         assertThat(output, not(containsString("[INFO] https://gradle.com/s/")));
     }
 
@@ -152,7 +153,11 @@ public class MavenInjectionTest extends AbstractInjectionTest {
 
         assertThat(output, containsString("[INFO] BUILD SUCCESS"));
 
-        assertThat(output, containsString("[INFO] The build scan was not published due to a configuration problem."));
+        assertThat(output, Matchers.anyOf(
+                containsString("[INFO] The build scan was not published due to a configuration problem."),
+                containsString("[INFO] The Build Scan was not published due to a configuration problem.")
+            )
+        );
         assertThat(output, containsString("[INFO] The Gradle Terms of Use have not been agreed to."));
     }
     @Test
