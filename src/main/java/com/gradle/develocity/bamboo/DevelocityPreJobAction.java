@@ -80,12 +80,9 @@ public class DevelocityPreJobAction implements PreJobAction {
             return;
         }
 
-        boolean isInjectionEnabled = injectors.stream()
-                .filter(i -> i.hasSupportedTasks(buildContext))
-                .map(i -> i.buildToolConfiguration(configuration))
-                .anyMatch(BuildToolConfiguration::isEnabled);
-
-        if (isInjectionEnabled) {
+        boolean isInjectionSupportedBuild = injectors.stream()
+                .anyMatch(i -> i.hasSupportedTasks(buildContext));
+        if (isInjectionSupportedBuild) {
             // If we know the URL or there's only one access key configured corresponding to the right URL
             if (allKeys.isSingleKey() || configuration.isEnforceUrl()) {
                 String hostnameFromServerUrl = getHostnameFromServerUrl(configuration.getServer());

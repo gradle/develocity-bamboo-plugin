@@ -9,6 +9,7 @@ import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
@@ -34,6 +35,7 @@ public class ShortLivedTokenClient {
 
     private final OkHttpClient httpClient;
 
+    @Autowired
     public ShortLivedTokenClient(PersistentConfigurationManager configurationManager) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder().callTimeout(10, TimeUnit.SECONDS);
 
