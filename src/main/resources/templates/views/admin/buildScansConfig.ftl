@@ -15,9 +15,6 @@
     </div>
     <div class="paddedClearer"></div>
     [@ui.bambooSection titleKey="develocity.config.connection-settings.title" headerWeight="h2"]
-        [@ww.textfield labelKey="develocity.config.server" name="server" autofocus=true/]
-        [@ww.checkbox labelKey="develocity.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
-        [@ww.checkbox labelKey="develocity.config.enforce-url" name="enforceUrl" toggle="true"/]
         [@ww.select labelKey='develocity.config.shared-credential-name' name='sharedCredentialName'
             toggle='true'
             list=usernameAndPasswordCredentialNames
@@ -31,9 +28,12 @@
                 [/@ui.messageBox]
             </div>
         </div>
+        [@ww.textfield labelKey="develocity.config.general.short-lived-token-expiry" name="shortLivedTokenExpiry"/]
     [/@ui.bambooSection]
     [@ui.bambooSection titleKey="develocity.config.general.title" headerWeight="h2"]
-        [@ww.textfield labelKey="develocity.config.general.short-lived-token-expiry" name="shortLivedTokenExpiry"/]
+        [@ww.textfield labelKey="develocity.config.server" name="server" autofocus=true/]
+        [@ww.checkbox labelKey="develocity.config.allow-untrusted-server" name="allowUntrustedServer" toggle="true"/]
+        [@ww.checkbox labelKey="develocity.config.enforce-url" name="enforceUrl" toggle="true"/]
         [@ww.textarea labelKey='develocity.config.general.vcs-repository-filter' name='vcsRepositoryFilter' /]
         <div class="field-group">
             <div style="display: inline-block;">
