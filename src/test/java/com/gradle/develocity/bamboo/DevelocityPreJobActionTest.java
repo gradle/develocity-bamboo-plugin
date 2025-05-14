@@ -40,6 +40,7 @@ class DevelocityPreJobActionTest {
     private final VariableContext variableContext = mock(VariableContext.class);
 
     private final ShortLivedTokenClient mockShortLivedTokenClient = mock(ShortLivedTokenClient.class);
+    private final ShortLivedTokenClientFactory mockShortLivedTokenClientFactory = mock(ShortLivedTokenClientFactory.class);
 
     private final GradleBuildScanInjector gradleBuildScanInjector =
             new GradleBuildScanInjector(null, null, null, null, null);
@@ -49,7 +50,7 @@ class DevelocityPreJobActionTest {
                     new PersistentConfigurationManager(bandanaManager),
                     new UsernameAndPasswordCredentialsProvider(credentialsAccessor),
                     Collections.singletonList(gradleBuildScanInjector),
-                    mockShortLivedTokenClient
+                    mockShortLivedTokenClientFactory
             );
 
     @Test
@@ -149,6 +150,7 @@ class DevelocityPreJobActionTest {
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
         when(mockShortLivedTokenClient.get(anyString(), any(), anyString())).thenReturn(Optional.empty());
+        when(mockShortLivedTokenClientFactory.create(any())).thenReturn(mockShortLivedTokenClient);
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -180,6 +182,7 @@ class DevelocityPreJobActionTest {
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
         when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("scans.gradle.com", shortLivedToken)));
+        when(mockShortLivedTokenClientFactory.create(any())).thenReturn(mockShortLivedTokenClient);
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -218,6 +221,7 @@ class DevelocityPreJobActionTest {
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
         when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("scans.gradle.com", shortLivedToken)));
+        when(mockShortLivedTokenClientFactory.create(any())).thenReturn(mockShortLivedTokenClient);
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -250,6 +254,7 @@ class DevelocityPreJobActionTest {
         when(credentialsData.getPluginKey()).thenReturn(UsernameAndPassword.SHARED_USERNAME_PASSWORD_PLUGIN_KEY);
         when(credentialsData.getConfiguration()).thenReturn(Collections.singletonMap(UsernameAndPassword.PASSWORD, accessKey));
         when(mockShortLivedTokenClient.get(anyString(), any(), any())).thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("scans.gradle.com", shortLivedToken)));
+        when(mockShortLivedTokenClientFactory.create(any())).thenReturn(mockShortLivedTokenClient);
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))
@@ -285,6 +290,7 @@ class DevelocityPreJobActionTest {
         when(mockShortLivedTokenClient.get(anyString(), any(), any()))
                 .thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("scans.gradle.com", shortLivedTokenA)))
                 .thenReturn(Optional.of(DevelocityAccessCredentials.HostnameAccessKey.of("localhost", shortLivedTokenB)));
+        when(mockShortLivedTokenClientFactory.create(any())).thenReturn(mockShortLivedTokenClient);
 
         String credentialsName = RandomStringUtils.randomAlphanumeric(10);
         when(bandanaManager.getValue(any(BandanaContext.class), anyString()))

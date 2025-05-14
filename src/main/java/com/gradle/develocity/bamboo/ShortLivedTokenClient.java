@@ -1,7 +1,6 @@
 package com.gradle.develocity.bamboo;
 
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
-import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -9,8 +8,6 @@ import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -23,7 +20,6 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Component
 public class ShortLivedTokenClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShortLivedTokenClient.class);
@@ -35,14 +31,9 @@ public class ShortLivedTokenClient {
 
     private final OkHttpClient httpClient;
 
-    @Autowired
-    public ShortLivedTokenClient(PersistentConfigurationManager configurationManager) {
+    public ShortLivedTokenClient(PersistentConfiguration persistentConfiguration) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder().callTimeout(10, TimeUnit.SECONDS);
-
-        boolean allowUntrusted = configurationManager.load()
-                .map(PersistentConfiguration::isAllowUntrustedServer)
-                .orElse(false);
-        if (allowUntrusted) {
+        if (persistentConfiguration.isAllowUntrustedServer()) {
             builder.hostnameVerifier((hostname, session) -> true);
             try {
                 TrustManager[] allTrustingTrustManager = createAllTrustingTrustManager();

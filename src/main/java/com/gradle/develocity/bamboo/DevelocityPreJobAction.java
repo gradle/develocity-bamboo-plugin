@@ -26,18 +26,18 @@ public class DevelocityPreJobAction implements PreJobAction {
     private final PersistentConfigurationManager configurationManager;
     private final UsernameAndPasswordCredentialsProvider credentialsProvider;
     private final List<BuildScanInjector<? extends BuildToolConfiguration>> injectors;
-    private final ShortLivedTokenClient shortLivedTokenClient;
+    private final ShortLivedTokenClientFactory shortLivedTokenClientFactory;
 
     public DevelocityPreJobAction(
             PersistentConfigurationManager configurationManager,
             UsernameAndPasswordCredentialsProvider credentialsProvider,
             List<BuildScanInjector<? extends BuildToolConfiguration>> injectors,
-            ShortLivedTokenClient shortLivedTokenClient
+            ShortLivedTokenClientFactory shortLivedTokenClientFactory
     ) {
         this.configurationManager = configurationManager;
         this.credentialsProvider = credentialsProvider;
         this.injectors = injectors;
-        this.shortLivedTokenClient = shortLivedTokenClient;
+        this.shortLivedTokenClientFactory = shortLivedTokenClientFactory;
     }
 
     @Override
@@ -83,6 +83,7 @@ public class DevelocityPreJobAction implements PreJobAction {
         boolean isInjectionSupportedBuild = injectors.stream()
                 .anyMatch(i -> i.hasSupportedTasks(buildContext));
         if (isInjectionSupportedBuild) {
+            ShortLivedTokenClient shortLivedTokenClient = shortLivedTokenClientFactory.create(configuration);
             // If we know the URL or there's only one access key configured corresponding to the right URL
             if (allKeys.isSingleKey() || configuration.isEnforceUrl()) {
                 String hostnameFromServerUrl = getHostnameFromServerUrl(configuration.getServer());
