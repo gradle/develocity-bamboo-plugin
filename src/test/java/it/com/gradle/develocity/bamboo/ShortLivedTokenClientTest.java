@@ -3,7 +3,6 @@ package it.com.gradle.develocity.bamboo;
 import com.gradle.develocity.bamboo.DevelocityAccessCredentials;
 import com.gradle.develocity.bamboo.ShortLivedTokenClient;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
-import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -33,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class ShortLivedTokenClientTest implements AfterEachCallback {
 
-    private final ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mock(PersistentConfigurationManager.class));
+    private final ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mock(PersistentConfiguration.class));
 
     private EmbeddedApp mockDevelocityServer;
 
@@ -131,18 +130,10 @@ public class ShortLivedTokenClientTest implements AfterEachCallback {
                         .handlers(c -> c.post("api/auth/token", ctx -> ctx.getResponse().status(200).send(shortLivedToken)))
         );
 
-        PersistentConfigurationManager mockPersistentConfigurationManager = mock(PersistentConfigurationManager.class);
-        if (allowUntrusted) {
-            PersistentConfiguration mockPersistentConfiguration = mock(PersistentConfiguration.class);
-            when(mockPersistentConfiguration.isAllowUntrustedServer()).thenReturn(true);
-            when(mockPersistentConfigurationManager.load()).thenReturn(Optional.of(mockPersistentConfiguration));
-        } else {
-            PersistentConfiguration mockPersistentConfiguration = mock(PersistentConfiguration.class);
-            when(mockPersistentConfiguration.isAllowUntrustedServer()).thenReturn(false);
-            when(mockPersistentConfigurationManager.load()).thenReturn(Optional.of(mockPersistentConfiguration));
-        }
+        PersistentConfiguration mockPersistentConfiguration = mock(PersistentConfiguration.class);
+        when(mockPersistentConfiguration.isAllowUntrustedServer()).thenReturn(allowUntrusted);
 
-        ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mockPersistentConfigurationManager);
+        ShortLivedTokenClient shortLivedTokenClient = new ShortLivedTokenClient(mockPersistentConfiguration);
         DevelocityAccessCredentials.HostnameAccessKey hostnameAccessKey = shortLivedTokenClient.get(
                 mockDevelocityServer.getAddress().toString(),
                 DevelocityAccessCredentials.HostnameAccessKey.of("localhost", "localhost=" + RandomStringUtils.randomAlphanumeric(30)),
