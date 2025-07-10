@@ -4,7 +4,6 @@ import com.atlassian.bamboo.build.BuildLoggerManager;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.google.common.collect.ImmutableSet;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.MavenConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
@@ -38,7 +37,7 @@ public class MavenBuildScanInjector extends AbstractBuildScanInjector<MavenConfi
     public static final String ARTIFACTORY_MAVEN_3_TASK_KEY_SUFFIX = "maven3Task";
 
     private static final Set<Predicate<String>> MAVEN_3_BUILDERS =
-        ImmutableSet.of(
+        Set.of(
             eq(MAVEN_3_PLUGIN_KEY),
             endsWith(ARTIFACTORY_MAVEN_3_TASK_KEY_SUFFIX)
         );

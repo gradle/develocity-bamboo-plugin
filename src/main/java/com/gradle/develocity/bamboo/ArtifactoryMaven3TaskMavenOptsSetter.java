@@ -1,7 +1,6 @@
 package com.gradle.develocity.bamboo;
 
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
-import com.google.common.annotations.VisibleForTesting;
 import com.gradle.develocity.bamboo.utils.TaskPredicates;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import static com.gradle.develocity.bamboo.DevelocityMavenOptsSetter.mergeMavenO
 public class ArtifactoryMaven3TaskMavenOptsSetter implements DevelocityMavenOptsSetter {
 
     // https://github.com/jfrog/bamboo-artifactory-plugin/blob/master/src/main/java/org/jfrog/bamboo/context/Maven3BuildContext.java#L61
-    @VisibleForTesting
     static final String MAVEN_OPTS_KEY = "builder.artifactoryMaven3Builder.mavenOpts";
 
     private static final Predicate<RuntimeTaskDefinition> ARTIFACTORY_MAVEN_3_TASK_TESTER = TaskPredicates.artifactoryMaven3TaskTester();
