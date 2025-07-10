@@ -4,6 +4,7 @@ import com.atlassian.bamboo.bandana.BambooBandanaContextImpl;
 import com.atlassian.bamboo.build.BuildOutputLogEntry;
 import com.atlassian.bamboo.build.DefaultBuildDefinition;
 import com.atlassian.bamboo.chains.ChainStorageTag;
+import com.atlassian.bamboo.chains.branches.MergeResultContextImpl;
 import com.atlassian.bamboo.credentials.CredentialsDataEntity;
 import com.atlassian.bamboo.plan.PlanKeys;
 import com.atlassian.bamboo.v2.build.BuildContext;
@@ -55,7 +56,9 @@ public final class TestFixtures {
                 new BambooBandanaContextImpl(null, null),
                 Collections.singletonList(new CredentialsDataEntity("key", "name", Collections.singletonMap("key", "value"), null, null)),
                 Collections.singletonMap(PlanKeys.getPlanKey("SOME-KEY"), new ChainStorageTag("tag")),
-                new BuildKey()
+                new BuildKey(),
+                new MergeResultContextImpl(),
+                false
         );
     }
 

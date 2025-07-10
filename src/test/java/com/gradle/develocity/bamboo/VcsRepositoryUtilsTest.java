@@ -3,8 +3,6 @@ package com.gradle.develocity.bamboo;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
 import com.atlassian.bamboo.vcs.configuration.VcsLocationDefinition;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import org.hamcrest.Matchers;
@@ -13,10 +11,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +31,8 @@ class VcsRepositoryUtilsTest {
         ",true"
     })
     void injectionIsAllowedOnVcsRepoAccordingToPattern(String pattern, boolean expected) {
-        when(buildContext.getRelevantRepositoryIds()).thenReturn(Sets.newHashSet(1L));
-        ImmutableMap<Long, PlanRepositoryDefinition> repoMap = ImmutableMap.of(1L, mockPlanRepo("http://foo.git", "repositoryUrl"));
+        when(buildContext.getRelevantRepositoryIds()).thenReturn(Set.of(1L));
+        Map<Long, PlanRepositoryDefinition> repoMap = Map.of(1L, mockPlanRepo("http://foo.git", "repositoryUrl"));
         when(buildContext.getVcsRepositoryMap()).thenReturn(repoMap);
         PersistentConfiguration config = mock(PersistentConfiguration.class);
         when(config.getVcsRepositoryFilter()).thenReturn(pattern);
@@ -57,8 +56,8 @@ class VcsRepositoryUtilsTest {
     @Test
     void vcsRepoUrls() {
         when(buildContext.getRelevantRepositoryIds())
-            .thenReturn(Sets.newHashSet(1L, 2L, 3L));
-        ImmutableMap<Long, PlanRepositoryDefinition> repoMap = ImmutableMap.of(
+            .thenReturn(Set.of(1L, 2L, 3L));
+        Map<Long, PlanRepositoryDefinition> repoMap = Map.of(
             1L, mockPlanRepo("http://foo.git", "repositoryUrl"),
             2L, mockPlanRepo("bar", "github.repository"),
             3L, mockPlanRepo("http://random", "random"));
@@ -66,13 +65,13 @@ class VcsRepositoryUtilsTest {
 
         Set<String> repoUrls = VcsRepositoryUtils.vcsRepoUrls(buildContext);
 
-        assertThat(repoUrls, Matchers.equalTo(Sets.newHashSet("http://foo.git", "https://github.com/bar")));
+        assertThat(repoUrls, Matchers.equalTo(Set.of("http://foo.git", "https://github.com/bar")));
     }
 
     private PlanRepositoryDefinition mockPlanRepo(String url, String key) {
         PlanRepositoryDefinition mockRepo = mock(PlanRepositoryDefinition.class);
         VcsLocationDefinition mockLoc = mock(VcsLocationDefinition.class);
-        when(mockLoc.getConfiguration()).thenReturn(ImmutableMap.of(key, url));
+        when(mockLoc.getConfiguration()).thenReturn(Map.of(key, url));
         when(mockRepo.getVcsLocation()).thenReturn(mockLoc);
         return mockRepo;
     }

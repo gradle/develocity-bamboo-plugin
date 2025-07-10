@@ -1,6 +1,5 @@
 package com.gradle.develocity.bamboo;
 
-import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -55,8 +54,8 @@ public final class VcsRepositoryFilter {
 
         return new VcsRepositoryFilter(
             filter,
-            ImmutableList.copyOf(inclusionFilters),
-            ImmutableList.copyOf(exclusionFilters)
+            List.copyOf(inclusionFilters),
+            List.copyOf(exclusionFilters)
         );
     }
 

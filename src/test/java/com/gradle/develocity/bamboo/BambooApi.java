@@ -3,7 +3,6 @@ package com.gradle.develocity.bamboo;
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.atlassian.bamboo.util.Version;
-import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,8 +63,7 @@ public final class BambooApi implements AutoCloseable {
         this.client =
             HttpClients.custom()
                 .setDefaultHeaders(
-                    ImmutableList.of(
-                        new BasicHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())))
+                    List.of(new BasicHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())))
                 .build();
 
         CredentialsProvider credentialsProvider = basicCredentialsProvider(user);
