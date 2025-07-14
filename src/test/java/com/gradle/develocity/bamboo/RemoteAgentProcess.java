@@ -92,7 +92,7 @@ public final class RemoteAgentProcess implements AutoCloseable {
                 })
                 .start();
 
-            boolean started = Uninterruptibles.awaitUninterruptibly(latch, 1, TimeUnit.MINUTES);
+            boolean started = Uninterruptibles.awaitUninterruptibly(latch, 3, TimeUnit.MINUTES);
             if (!started) {
                 throw new RuntimeException("Build agent failed to start");
             }

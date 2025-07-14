@@ -150,7 +150,7 @@ public abstract class BrowserTest {
     public final void setupJavaHome(String javaHome) {
         openSharedRemoteCapabilities();
 
-        page.getByRole(AriaRole.ROW, new Page.GetByRoleOptions().setName("JDK 1.8")).getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Edit")).click();
+        page.getByRole(AriaRole.ROW, new Page.GetByRoleOptions().setName("JDK 17")).getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Edit")).click();
         page.getByLabel("Java home").fill(javaHome);
         page.locator("#updateSharedCapability_save").click();
     }
