@@ -20,6 +20,10 @@ public final class TestUser {
         return password;
     }
 
+    public boolean isAdmin() {
+        return this == ADMIN;
+    }
+
     @Override
     public String toString() {
         return "TestUser{" +

@@ -68,12 +68,10 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions();
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(50);
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
-            launchOptions
-                .setHeadless(false)
-                .setSlowMo(50);
+            launchOptions.setHeadless(false);
         }
 
         return browserType.launch(launchOptions);
@@ -102,9 +100,16 @@ public abstract class BrowserTest {
 
         // Login
         page.locator("#login").click();
-        page.locator("#loginForm_os_username").fill(user.getUsername());
-        page.locator("#loginForm_os_password").fill(user.getPassword());
-        page.locator("#loginForm_save").click();
+        page.locator("#username-field").fill(user.getUsername());
+        page.locator("#password-field").fill(user.getPassword());
+        page.locator("#login-button").click();
+
+        // Validate Administrator access
+        if (user.isAdmin()) {
+            page.navigate(BAMBOO + "/admin/webSudoRequired.action");
+            page.locator("#webSudoForm_password").fill(user.getPassword());
+            page.locator("#webSudoForm_save").click();
+        }
     }
 
     public final String storePluginCredentialInSharedCredentials(String username, String password) {
@@ -116,17 +121,12 @@ public abstract class BrowserTest {
     }
 
     private String storeSharedCredential(String username, String password) {
-        gotoAdminPage();
+        gotoCredentialsPage();
 
         String credentialsName = randomString();
-        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared credentials")).click();
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add new credentials")).click();
 
-        if (isBamboo9OrLater()) {
-            page.locator("#credentials-dropdown2-select").getByText("Username and password").click();
-        } else {
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Username and password")).click();
-        }
+        page.locator("#credentials-dropdown2-select").getByText("Username and password").click();
 
         page.getByLabel("Credential name (required)").fill(credentialsName);
         page.getByLabel("Username (required)").fill(username);
@@ -193,7 +193,8 @@ public abstract class BrowserTest {
         page.navigate(BAMBOO + "/admin/administer.action");
     }
 
-    private static boolean isBamboo9OrLater() {
-        return bambooApi.getBambooVersion().getMajor() >= 9;
+    private void gotoCredentialsPage() {
+        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
     }
+
 }
