@@ -142,7 +142,7 @@ public abstract class BrowserTest {
     public final void setupMaven3(String mavenHome) {
         openSharedRemoteCapabilities();
 
-        page.getByRole(AriaRole.ROW, new Page.GetByRoleOptions().setName("Maven 3 (Maven 3.x)")).getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Edit")).click();
+        page.getByRole(AriaRole.ROW, new Page.GetByRoleOptions().setName("Maven (Maven 3.x)")).getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Edit")).click();
         page.getByLabel("Path").fill(mavenHome);
         page.locator("#updateSharedCapability_save").click();
     }

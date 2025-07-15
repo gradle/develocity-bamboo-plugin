@@ -35,7 +35,7 @@
     </scm>
 
     <properties>
-        <bamboo.version>10.0.0</bamboo.version>
+        <bamboo.version>10.2.0</bamboo.version>
         <bamboo.data.version>${bamboo.version}</bamboo.data.version>
         <bamboo.product.data.path>
             ${basedir}/src/test/resources/generated-test-resources-10_0_0.zip
