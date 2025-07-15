@@ -138,7 +138,7 @@ public final class BambooApi implements AutoCloseable {
     public String getLog(PlanResultKey planResultKey) {
         HttpGet request =
             new HttpGet(String.format("%s/download/%s/build_logs/%s.log", bambooUrl, planResultKey.getPlanKey().getKey(), planResultKey.getKey()));
-        try (CloseableHttpResponse response = client.execute(request)) {
+        try (CloseableHttpResponse response = client.execute(request, authContext.get())) {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 200) {
                 throw new ApiException(statusCode, "Unable to get build logs for " + planResultKey.getKey());
