@@ -3,7 +3,6 @@ package com.gradle.develocity.bamboo;
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.atlassian.bamboo.util.Version;
-import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,8 +63,7 @@ public final class BambooApi implements AutoCloseable {
         this.client =
             HttpClients.custom()
                 .setDefaultHeaders(
-                    ImmutableList.of(
-                        new BasicHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())))
+                    List.of(new BasicHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())))
                 .build();
 
         CredentialsProvider credentialsProvider = basicCredentialsProvider(user);
@@ -140,7 +138,7 @@ public final class BambooApi implements AutoCloseable {
     public String getLog(PlanResultKey planResultKey) {
         HttpGet request =
             new HttpGet(String.format("%s/download/%s/build_logs/%s.log", bambooUrl, planResultKey.getPlanKey().getKey(), planResultKey.getKey()));
-        try (CloseableHttpResponse response = client.execute(request)) {
+        try (CloseableHttpResponse response = client.execute(request, authContext.get())) {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 200) {
                 throw new ApiException(statusCode, "Unable to get build logs for " + planResultKey.getKey());

@@ -35,22 +35,22 @@
     </scm>
 
     <properties>
-        <bamboo.version>8.2.9</bamboo.version>
+        <bamboo.version>10.2.0</bamboo.version>
         <bamboo.data.version>${bamboo.version}</bamboo.data.version>
         <bamboo.product.data.path>
-            ${basedir}/src/test/resources/generated-test-resources-8_2_9.zip
+            ${basedir}/src/test/resources/generated-test-resources-10_0_0.zip
         </bamboo.product.data.path>
         <amps.version>9.4.0</amps.version>
-        <atlassian.spring.scanner.version>4.0.0</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>5.1.0</atlassian.spring.scanner.version>
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <required.java.version>[1.8,9)</required.java.version>
+        <required.java.version>17</required.java.version>
 
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
@@ -103,13 +103,6 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>33.4.0-jre</version>
             <scope>provided</scope>
         </dependency>
 
@@ -193,6 +186,13 @@
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-process-killer</artifactId>
             <version>1.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.8-jre</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -377,6 +377,16 @@
                         <versionOverride>maven-surefire-plugin</versionOverride>
                         <versionOverride>maven-failsafe-plugin</versionOverride>
                     </versionOverrides>
+                    <instructions>
+                        <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+                        <Bundle-SymbolicName>${atlassian.plugin.key}</Bundle-SymbolicName>
+                        <Import-Packages>
+                            !com.opensymphony.*,
+                            !org.objectweb.asm.*,
+                            *;resolution:="optional",
+                        </Import-Packages>
+                        <skipManifestValidation>true</skipManifestValidation>
+                    </instructions>
                 </configuration>
             </plugin>
             <plugin>
@@ -399,27 +409,6 @@
     </build>
 
     <profiles>
-        <!--
-            - Bamboo 9.2.4 introduced a db schema breaking change, requiring to generate specific test resources
-            - Bamboo 9.3.0 requires Java 11 or 12
-        -->
-        <profile>
-            <id>bamboo924OrLater</id>
-            <properties>
-                <bamboo.product.data.path>
-                    ${basedir}/src/test/resources/generated-test-resources-9_2_13.zip
-                </bamboo.product.data.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>bamboo93OrLater</id>
-            <properties>
-                <bamboo.product.data.path>
-                    ${basedir}/src/test/resources/generated-test-resources-9_2_13.zip
-                </bamboo.product.data.path>
-                <required.java.version>[11,12)</required.java.version>
-            </properties>
-        </profile>
         <profile>
             <id>release</id>
             <build>

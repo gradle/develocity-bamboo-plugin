@@ -1,6 +1,7 @@
 package com.gradle.develocity.bamboo;
 
-import com.atlassian.bamboo.build.ViewBuildResults;
+import com.atlassian.annotations.security.AnonymousSiteAccess;
+import com.atlassian.bamboo.build.BuildResultsAction;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BuildScansAction extends ViewBuildResults {
+@AnonymousSiteAccess
+public class BuildScansAction extends BuildResultsAction {
 
     private final List<String> buildScans = new ArrayList<>();
 

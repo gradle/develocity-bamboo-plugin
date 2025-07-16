@@ -6,7 +6,6 @@ import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.variable.VariableContext;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.google.common.collect.ImmutableSet;
 import com.gradle.develocity.bamboo.config.GradleConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfiguration;
 import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
@@ -47,7 +46,7 @@ public class GradleBuildScanInjector extends AbstractBuildScanInjector<GradleCon
     public static final String ARTIFACTORY_GRADLE_TASK_KEY_SUFFIX = "artifactoryGradleTask";
 
     private static final Set<Predicate<String>> GRADLE_BUILDERS =
-            ImmutableSet.of(
+            Set.of(
                     eq(SCRIPT_PLUGIN_KEY),
                     eq(COMMAND_PLUGIN_KEY),
                     eq(BOB_SWIFT_GROOVY_TASKS_PLUGIN_GRADLE_KEY),
