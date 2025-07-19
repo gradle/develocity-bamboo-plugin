@@ -70,9 +70,9 @@ public abstract class BrowserTest {
     private static Browser launch(BrowserType browserType) {
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(100);
 
-        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
+        //if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions.setHeadless(false);
-        }
+        //}
 
         return browserType.launch(launchOptions);
     }
@@ -162,6 +162,13 @@ public abstract class BrowserTest {
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Shared remote capabilities")).click();
     }
 
+    public final void disableLocalAgents() {
+        gotoAgentsPage();
+
+        page.locator("#localAgentConfiguration > p > span:nth-child(1) > span:nth-child(1)").click();
+        page.locator("#disableLocalAgentButton").click();
+    }
+
     public final void ensurePluginConfiguration(Consumer<BuildScansConfigurationForm> configurator) {
         assertPluginConfiguration(
             configurator,
@@ -195,6 +202,10 @@ public abstract class BrowserTest {
 
     private void gotoCredentialsPage() {
         page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+    }
+
+    private void gotoAgentsPage() {
+        page.navigate(BAMBOO + "/admin/agent/viewAgents.action");
     }
 
 }

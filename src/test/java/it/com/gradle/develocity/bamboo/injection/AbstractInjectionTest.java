@@ -32,6 +32,7 @@ abstract class AbstractInjectionTest extends BrowserTest {
     void login() {
         loginAs(TestUser.ADMIN);
         ensurePluginConfiguration(form -> form.setVcsRepositoryFilter("").doNotEnforceUrl());
+        disableLocalAgents();
     }
 
     public final PlanResultKey triggerBuild(PlanKey planKey, JobKey jobKey) {
