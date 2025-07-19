@@ -70,9 +70,9 @@ public abstract class BrowserTest {
     private static Browser launch(BrowserType browserType) {
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(100);
 
-        //if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
+        if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions.setHeadless(false);
-        //}
+        }
 
         return browserType.launch(launchOptions);
     }
