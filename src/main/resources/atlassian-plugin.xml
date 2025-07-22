@@ -62,7 +62,6 @@
               weight="20">
         <label key="Build scans"/>
         <link linkId="buildScans:${buildKey}-${buildNumber}">/build/result/buildScans.action?buildKey=${buildKey}&amp;buildNumber=${buildNumber}</link>
-        <condition class="com.gradle.develocity.bamboo.BuildScansAvailableCondition"/>
     </web-item>
 
     <xwork key="buildScans"
