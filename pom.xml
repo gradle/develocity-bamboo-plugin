@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gradle.develocity</groupId>
     <artifactId>develocity-bamboo-plugin</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2-SNAPSHOT</version>
     <packaging>atlassian-plugin</packaging>
 
     <name>Develocity Bamboo plugin</name>
