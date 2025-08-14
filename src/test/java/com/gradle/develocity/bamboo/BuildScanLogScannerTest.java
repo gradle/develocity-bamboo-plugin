@@ -73,6 +73,8 @@ public class BuildScanLogScannerTest {
                 Arrays.asList(new BuildOutputLogEntry("Publishing build information..."), new BuildOutputLogEntry(anotherBuildScanUrl)),
                 TestFixtures.randomLogEntries(30),
                 Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan..."), new BuildOutputLogEntry(andAnotherBuildScanUrl)),
+                TestFixtures.randomLogEntries(30),
+                Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan to Develocity..."), new BuildOutputLogEntry(andAnotherBuildScanUrl)),
                 TestFixtures.randomLogEntries(30)
             )
             .flatMap(Collection::stream)

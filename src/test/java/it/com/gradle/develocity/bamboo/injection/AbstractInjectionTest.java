@@ -74,7 +74,8 @@ abstract class AbstractInjectionTest extends BrowserTest {
     protected void assertScanPublished(String output) {
         assertThat(output, Matchers.anyOf(
                 containsString("Publishing build scan..."),
-                containsString("Publishing Build Scan...")
+                containsString("Publishing Build Scan..."),
+                containsString("Publishing Build Scan to Develocity...")
             )
         );
     }
@@ -82,7 +83,8 @@ abstract class AbstractInjectionTest extends BrowserTest {
     protected void assertScanNotPublished(String output) {
         assertThat(output, Matchers.allOf(
                 not(containsString("Publishing build scan...")),
-                not(containsString("Publishing Build Scan..."))
+                not(containsString("Publishing Build Scan...")),
+                not(containsString("Publishing Build Scan to Develocity..."))
             )
         );
     }
