@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 final class BuildScanLogScanner extends LogInterceptorAdapter {
 
-    private static final Pattern BUILD_SCAN_PATTERN = Pattern.compile("Publishing (Build Scan (?: to Develocity)?|build scan|build information)\\.\\.\\.");
+    private static final Pattern BUILD_SCAN_PATTERN = Pattern.compile("Publishing (Build Scan|build scan|build information)(?: to Develocity)?\\.\\.\\.");
     private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S*/s/\\S*");
 
     private static final int LOOK_AHEAD_LINES = 10;

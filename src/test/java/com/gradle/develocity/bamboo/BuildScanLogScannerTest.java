@@ -65,6 +65,7 @@ public class BuildScanLogScannerTest {
         String buildScanUrl = TestFixtures.randomBuildScanUrl();
         String anotherBuildScanUrl = TestFixtures.randomBuildScanUrl();
         String andAnotherBuildScanUrl = TestFixtures.randomBuildScanUrl();
+        String andYetAnotherBuildScanUrl = TestFixtures.randomBuildScanUrl();
 
         Stream.of(
                 TestFixtures.randomLogEntries(10),
@@ -74,7 +75,7 @@ public class BuildScanLogScannerTest {
                 TestFixtures.randomLogEntries(30),
                 Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan..."), new BuildOutputLogEntry(andAnotherBuildScanUrl)),
                 TestFixtures.randomLogEntries(30),
-                Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan to Develocity..."), new BuildOutputLogEntry(andAnotherBuildScanUrl)),
+                Arrays.asList(new BuildOutputLogEntry("Publishing Build Scan to Develocity..."), new BuildOutputLogEntry(andYetAnotherBuildScanUrl)),
                 TestFixtures.randomLogEntries(30)
             )
             .flatMap(Collection::stream)
@@ -82,7 +83,7 @@ public class BuildScanLogScannerTest {
 
         assertThat(
             buildContext.getCurrentResult().getCustomBuildData().get(Constants.BUILD_SCANS_KEY),
-            is(equalTo(buildScanUrl + Constants.BUILD_SCANS_SEPARATOR + anotherBuildScanUrl + Constants.BUILD_SCANS_SEPARATOR + andAnotherBuildScanUrl))
+            is(equalTo(buildScanUrl + Constants.BUILD_SCANS_SEPARATOR + anotherBuildScanUrl + Constants.BUILD_SCANS_SEPARATOR + andAnotherBuildScanUrl + Constants.BUILD_SCANS_SEPARATOR + andYetAnotherBuildScanUrl))
         );
     }
 
