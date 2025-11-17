@@ -55,7 +55,7 @@
         <generated.java.sources.dir>${project.build.directory}/generated-sources/java</generated.java.sources.dir>
 
         <develocity.maven.extension.version>2.2.1</develocity.maven.extension.version>
-        <ccud.maven.extension.version>2.0.7</ccud.maven.extension.version>
+        <ccud.maven.extension.version>2.1.0</ccud.maven.extension.version>
     </properties>
 
     <dependencyManagement>
