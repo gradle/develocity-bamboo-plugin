@@ -26,7 +26,8 @@ public final class SystemProperty {
         UPLOAD_IN_BACKGROUND_SYSTEM_PROPERTIES("develocity.scan.uploadInBackground", "gradle.scan.uploadInBackground"),
         SERVER_URL_SYSTEM_PROPERTIES("develocity.url", "gradle.enterprise.url"),
         ALLOW_UNTRUSTED_SERVER_SYSTEM_PROPERTIES("develocity.allowUntrustedServer", "gradle.enterprise.allowUntrustedServer"),
-        DEVELOCITY_CAPTURE_FILE_FINGERPRINTS_PROPERTY_KEY("develocity.scan.captureFileFingerprints", "gradle.scan.captureGoalInputFiles");
+        DEVELOCITY_CAPTURE_FILE_FINGERPRINTS_PROPERTY_KEY("develocity.scan.captureFileFingerprints", "gradle.scan.captureGoalInputFiles"),
+        DEVELOCITY_CUSTOM_VALUE_KEY("scan.value.CIAutoInjection", null);
 
         private final String develocityKey;
 
