@@ -30,6 +30,16 @@
                         <checksumPolicy>warn</checksumPolicy>
                     </releases>
                 </repository>
+                <repository>
+                    <id>terracotta-releases</id>
+                    <url>https://repo.terracotta.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
             </repositories>
 
             <pluginRepositories>
