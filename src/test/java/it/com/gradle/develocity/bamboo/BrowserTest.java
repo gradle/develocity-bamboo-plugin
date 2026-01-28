@@ -90,27 +90,7 @@ public abstract class BrowserTest {
     }
 
     public final void loginAs(TestUser user) {
-        int maxRetries = 3;
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                page.navigate(BAMBOO, new Page.NavigateOptions().setTimeout(90000));
-                break;
-            } catch (PlaywrightException e) {
-                if (e.getMessage().contains("ERR_ABORTED")) {
-                    if (attempt == maxRetries) {
-                        throw new RuntimeException("Failed to load Admin page after " + maxRetries + " attempts.", e);
-                    }
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {
-                    }
-
-                } else {
-                    throw e;
-                }
-            }
-        }
+        gotoWithRetry(BAMBOO);
 
         // Login
         page.locator("#login").click();
@@ -197,11 +177,34 @@ public abstract class BrowserTest {
     }
 
     private void gotoAdminPage() {
-        page.navigate(BAMBOO + "/admin/administer.action", new Page.NavigateOptions().setTimeout(90000));
+        gotoWithRetry(BAMBOO + "/admin/administer.action");
     }
 
     private void gotoCredentialsPage() {
-        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action", new Page.NavigateOptions().setTimeout(90000));
+        gotoWithRetry(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+    }
+
+    private void gotoWithRetry(String url) {
+        int maxRetries = 3;
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                page.navigate(url, new Page.NavigateOptions().setTimeout(90000));
+                break;
+            } catch (PlaywrightException e) {
+                if (e.getMessage().contains("ERR_ABORTED")) {
+                    if (attempt == maxRetries) {
+                        throw new RuntimeException("Failed to load page after " + maxRetries + " attempts.", e);
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
     }
 
 }
