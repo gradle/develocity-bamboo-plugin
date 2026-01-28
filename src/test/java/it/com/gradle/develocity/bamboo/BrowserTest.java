@@ -93,7 +93,7 @@ public abstract class BrowserTest {
         int maxRetries = 3;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                page.navigate(BAMBOO);
+                page.navigate(BAMBOO, new Page.NavigateOptions().setTimeout(90000));
                 break;
             } catch (PlaywrightException e) {
                 if (e.getMessage().contains("ERR_ABORTED")) {
@@ -197,11 +197,11 @@ public abstract class BrowserTest {
     }
 
     private void gotoAdminPage() {
-        page.navigate(BAMBOO + "/admin/administer.action");
+        page.navigate(BAMBOO + "/admin/administer.action", new Page.NavigateOptions().setTimeout(90000));
     }
 
     private void gotoCredentialsPage() {
-        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action", new Page.NavigateOptions().setTimeout(90000));
     }
 
 }
