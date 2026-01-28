@@ -103,13 +103,6 @@ public abstract class BrowserTest {
         page.locator("#username-field").fill(user.getUsername());
         page.locator("#password-field").fill(user.getPassword());
         page.locator("#login-button").click();
-
-        // Validate Administrator access
-        if (user.isAdmin()) {
-            page.navigate(BAMBOO + "/admin/webSudoRequired.action");
-            page.locator("#webSudoForm_password").fill(user.getPassword());
-            page.locator("#webSudoForm_save").click();
-        }
     }
 
     public final String storePluginCredentialInSharedCredentials(String username, String password) {

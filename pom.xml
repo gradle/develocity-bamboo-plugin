@@ -368,6 +368,7 @@
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <jvmArgs>-Dbamboo.websudo.disabled=true</jvmArgs>
                     <productVersion>${bamboo.version}</productVersion>
                     <productDataVersion>${bamboo.data.version}</productDataVersion>
                     <enableQuickReload>false</enableQuickReload>
