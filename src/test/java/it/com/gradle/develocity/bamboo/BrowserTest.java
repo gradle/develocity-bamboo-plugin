@@ -96,7 +96,7 @@ public abstract class BrowserTest {
 
     public final void loginAs(TestUser user) {
         // Navigate to Bamboo main page
-        page.navigate(BAMBOO);
+        page.navigate(BAMBOO, new Page.NavigateOptions().setTimeout(90000));
 
         // Login
         page.locator("#login").click();
