@@ -2,12 +2,7 @@ package it.com.gradle.develocity.bamboo;
 
 import com.gradle.develocity.bamboo.BambooApi;
 import com.gradle.develocity.bamboo.model.TestUser;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -82,8 +77,8 @@ public abstract class BrowserTest {
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
-                .setRecordVideoDir(Paths.get("target/playwright/videos"))
-                .setRecordVideoSize(1024, 768);
+                    .setRecordVideoDir(Paths.get("target/playwright/videos"))
+                    .setRecordVideoSize(1024, 768);
         }
 
         return browser.newContext(contextOptions);
@@ -95,8 +90,27 @@ public abstract class BrowserTest {
     }
 
     public final void loginAs(TestUser user) {
-        // Navigate to Bamboo main page
-        page.navigate(BAMBOO, new Page.NavigateOptions().setTimeout(90000));
+        int maxRetries = 3;
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                page.navigate(BAMBOO);
+                break;
+            } catch (PlaywrightException e) {
+                if (e.getMessage().contains("ERR_ABORTED")) {
+                    if (attempt == maxRetries) {
+                        throw new RuntimeException("Failed to load Admin page after " + maxRetries + " attempts.", e);
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+
+                } else {
+                    throw e;
+                }
+            }
+        }
 
         // Login
         page.locator("#login").click();
@@ -157,8 +171,8 @@ public abstract class BrowserTest {
 
     public final void ensurePluginConfiguration(Consumer<BuildScansConfigurationForm> configurator) {
         assertPluginConfiguration(
-            configurator,
-            form -> assertThat(form.locator("div.error.control-form-error")).not().isVisible()
+                configurator,
+                form -> assertThat(form.locator("div.error.control-form-error")).not().isVisible()
         );
     }
 
@@ -170,10 +184,10 @@ public abstract class BrowserTest {
         page.locator("#configureBuildScans").click();
 
         BuildScansConfigurationForm form =
-            new BuildScansConfigurationForm(page)
-                .clear()
-                .configure(configurator)
-                .save();
+                new BuildScansConfigurationForm(page)
+                        .clear()
+                        .configure(configurator)
+                        .save();
 
         assertions.accept(form);
     }
