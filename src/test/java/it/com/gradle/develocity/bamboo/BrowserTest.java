@@ -82,7 +82,7 @@ public abstract class BrowserTest {
         }
 
         BrowserContext browserContext = browser.newContext(contextOptions);
-        browserContext.setDefaultTimeout(90000);
+        browserContext.setDefaultTimeout(60000);
 
         return browserContext;
     }
@@ -124,6 +124,7 @@ public abstract class BrowserTest {
             page.getByLabel("Password").fill(password);
         }
         page.locator("#createSharedCredentials_save").click();
+        page.waitForURL("**/admin/credentials/configureSharedCredentials.action");
 
         return credentialsName;
     }
@@ -190,7 +191,7 @@ public abstract class BrowserTest {
         int maxRetries = 3;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                page.navigate(url, new Page.NavigateOptions().setTimeout(60000));
+                page.navigate(url);
                 break;
             } catch (PlaywrightException e) {
                 if (e.getMessage().contains("ERR_ABORTED")) {
