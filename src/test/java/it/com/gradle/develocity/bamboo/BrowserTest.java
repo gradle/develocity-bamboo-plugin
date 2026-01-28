@@ -81,7 +81,10 @@ public abstract class BrowserTest {
                     .setRecordVideoSize(1024, 768);
         }
 
-        return browser.newContext(contextOptions);
+        BrowserContext browserContext = browser.newContext(contextOptions);
+        browserContext.setDefaultTimeout(90000);
+
+        return browserContext;
     }
 
     @AfterEach
@@ -121,7 +124,6 @@ public abstract class BrowserTest {
             page.getByLabel("Password").fill(password);
         }
         page.locator("#createSharedCredentials_save").click();
-        page.reload();
 
         return credentialsName;
     }
@@ -188,7 +190,7 @@ public abstract class BrowserTest {
         int maxRetries = 3;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                page.navigate(url, new Page.NavigateOptions().setTimeout(90000));
+                page.navigate(url, new Page.NavigateOptions().setTimeout(60000));
                 break;
             } catch (PlaywrightException e) {
                 if (e.getMessage().contains("ERR_ABORTED")) {
