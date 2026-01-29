@@ -63,7 +63,7 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(100);
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(200);
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions.setHeadless(false);
@@ -93,7 +93,7 @@ public abstract class BrowserTest {
     }
 
     public final void loginAs(TestUser user) {
-        gotoWithRetry(BAMBOO);
+        page.navigate(BAMBOO);
 
         // Login
         page.locator("#login").click();
@@ -180,34 +180,11 @@ public abstract class BrowserTest {
     }
 
     private void gotoAdminPage() {
-        gotoWithRetry(BAMBOO + "/admin/administer.action");
+        page.navigate(BAMBOO + "/admin/administer.action");
     }
 
     private void gotoCredentialsPage() {
-        gotoWithRetry(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
-    }
-
-    private void gotoWithRetry(String url) {
-        int maxRetries = 3;
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                page.navigate(url);
-                break;
-            } catch (PlaywrightException e) {
-                if (e.getMessage().contains("ERR_ABORTED")) {
-                    if (attempt == maxRetries) {
-                        throw new RuntimeException("Failed to load page after " + maxRetries + " attempts.", e);
-                    }
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {
-                    }
-                } else {
-                    throw e;
-                }
-            }
-        }
+        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
     }
 
 }
