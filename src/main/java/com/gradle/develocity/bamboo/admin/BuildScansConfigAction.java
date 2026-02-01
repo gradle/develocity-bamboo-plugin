@@ -10,6 +10,7 @@ import com.gradle.develocity.bamboo.config.PersistentConfigurationManager;
 import com.gradle.develocity.bamboo.config.UsernameAndPassword;
 import com.gradle.develocity.bamboo.config.UsernameAndPasswordCredentialsProvider;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.interceptor.parameter.StrutsParameter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -204,94 +205,117 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         return SUCCESS;
     }
 
+    @StrutsParameter
     public String getServer() {
         return server;
     }
 
+    @StrutsParameter
     public void setServer(String server) {
         this.server = server;
     }
 
+    @StrutsParameter
     public boolean isAllowUntrustedServer() {
         return allowUntrustedServer;
     }
 
+    @StrutsParameter
     public void setAllowUntrustedServer(boolean allowUntrustedServer) {
         this.allowUntrustedServer = allowUntrustedServer;
     }
 
+    @StrutsParameter
     public String getSharedCredentialName() {
         return sharedCredentialName;
     }
 
+    @StrutsParameter
     public void setSharedCredentialName(String sharedCredentialName) {
         this.sharedCredentialName = sharedCredentialName;
     }
 
+    @StrutsParameter
     public boolean isEnforceUrl() {
         return enforceUrl;
     }
 
+    @StrutsParameter
     public void setEnforceUrl(boolean enforceUrl) {
         this.enforceUrl = enforceUrl;
     }
 
+    @StrutsParameter
     public String getDevelocityPluginVersion() {
         return develocityPluginVersion;
     }
 
+    @StrutsParameter
     public void setDevelocityPluginVersion(String develocityPluginVersion) {
         this.develocityPluginVersion = develocityPluginVersion;
     }
 
+    @StrutsParameter
     public String getCcudPluginVersion() {
         return ccudPluginVersion;
     }
 
+    @StrutsParameter
     public void setCcudPluginVersion(String ccudPluginVersion) {
         this.ccudPluginVersion = ccudPluginVersion;
     }
 
+    @StrutsParameter
     public String getPluginRepository() {
         return pluginRepository;
     }
 
+    @StrutsParameter
     public void setPluginRepository(String pluginRepository) {
         this.pluginRepository = pluginRepository;
     }
 
+    @StrutsParameter
     public String getPluginRepositoryCredentialName() {
         return pluginRepositoryCredentialName;
     }
 
+    @StrutsParameter
     public void setPluginRepositoryCredentialName(String pluginRepositoryCredentialName) {
         this.pluginRepositoryCredentialName = pluginRepositoryCredentialName;
     }
 
+    @StrutsParameter
     public boolean isInjectMavenExtension() {
         return injectMavenExtension;
     }
 
+    @StrutsParameter
     public void setInjectMavenExtension(boolean injectMavenExtension) {
         this.injectMavenExtension = injectMavenExtension;
     }
 
+    @StrutsParameter
     public boolean isInjectCcudExtension() {
         return injectCcudExtension;
     }
 
+    @StrutsParameter
     public void setInjectCcudExtension(boolean injectCcudExtension) {
         this.injectCcudExtension = injectCcudExtension;
     }
 
+    @StrutsParameter
     public String getMavenExtensionCustomCoordinates() {
         return mavenExtensionCustomCoordinates;
     }
 
+    @StrutsParameter
     public void setMavenExtensionCustomCoordinates(String mavenExtensionCustomCoordinates) {
         this.mavenExtensionCustomCoordinates = mavenExtensionCustomCoordinates;
     }
 
+    @StrutsParameter
     public String getCcudExtensionCustomCoordinates() {
         return ccudExtensionCustomCoordinates;
     }
@@ -300,34 +324,42 @@ public class BuildScansConfigAction extends GlobalAdminAction {
         this.ccudExtensionCustomCoordinates = ccudExtensionCustomCoordinates;
     }
 
+    @StrutsParameter
     public String getVcsRepositoryFilter() {
         return vcsRepositoryFilter;
     }
 
+    @StrutsParameter
     public void setVcsRepositoryFilter(String vcsRepositoryFilter) {
         this.vcsRepositoryFilter = vcsRepositoryFilter;
     }
 
+    @StrutsParameter
     public boolean isGradleCaptureFileFingerprints() {
         return gradleCaptureFileFingerprints;
     }
 
+    @StrutsParameter
     public void setGradleCaptureFileFingerprints(boolean gradleCaptureFileFingerprints) {
         this.gradleCaptureFileFingerprints = gradleCaptureFileFingerprints;
     }
 
+    @StrutsParameter
     public boolean isMavenCaptureFileFingerprints() {
         return mavenCaptureFileFingerprints;
     }
 
+    @StrutsParameter
     public void setMavenCaptureFileFingerprints(boolean mavenCaptureFileFingerprints) {
         this.mavenCaptureFileFingerprints = mavenCaptureFileFingerprints;
     }
 
+    @StrutsParameter
     public String getShortLivedTokenExpiry() {
         return shortLivedTokenExpiry;
     }
 
+    @StrutsParameter
     public void setShortLivedTokenExpiry(String shortLivedTokenExpiry) {
         this.shortLivedTokenExpiry = shortLivedTokenExpiry;
     }

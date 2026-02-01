@@ -7,7 +7,7 @@
 
 <body>
 
-[@ww.form action="/admin/saveBuildScansConfig.action" submitLabelKey="global.buttons.update" cancelUri="/admin/buildScansConfig.action" showActionErrors="true"]
+[@ww.form action="saveBuildScansConfig" namespace="/admin" submitLabelKey="global.buttons.update" cancelUri="/admin/buildScansConfig.action" showActionErrors="true"]
     <div style="display: inline-block;">
         [@ui.messageBox type="info"]
             [@ww.text name="develocity.config.auto-injection-info"/]

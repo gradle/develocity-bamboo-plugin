@@ -164,7 +164,7 @@ public abstract class BrowserTest {
         gotoAdminPage();
 
         // Select build scan injection
-        page.locator("#configureBuildScans").click();
+        page.locator("a#configureBuildScans").click();
 
         BuildScansConfigurationForm form =
                 new BuildScansConfigurationForm(page)
@@ -176,7 +176,7 @@ public abstract class BrowserTest {
     }
 
     public final String randomString() {
-        return RandomStringUtils.randomAlphanumeric(10);
+        return RandomStringUtils.secure().nextAlphanumeric(10);
     }
 
     private void gotoAdminPage() {
