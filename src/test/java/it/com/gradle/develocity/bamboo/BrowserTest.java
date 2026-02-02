@@ -4,6 +4,7 @@ import com.gradle.develocity.bamboo.BambooApi;
 import com.gradle.develocity.bamboo.model.TestUser;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +64,7 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(500);
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(200);
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions.setHeadless(false);
@@ -162,6 +163,15 @@ public abstract class BrowserTest {
     public final void assertPluginConfiguration(Consumer<BuildScansConfigurationForm> configurator,
                                                 Consumer<BuildScansConfigurationForm> assertions) {
         gotoAdminPage();
+
+        Locator whatsNewDialog = page.locator(".aui-dialog2-header-main:has-text(\\'new\\')");
+        Locator closeButton = page.locator("button.aui-close-button, button:has-text(\\'Close\\')");
+
+        if (whatsNewDialog.isVisible()) {
+            closeButton.click();
+
+            page.locator(".aui-blanket").waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
+        }
 
         // Select build scan injection
         page.locator("a#configureBuildScans").click();
