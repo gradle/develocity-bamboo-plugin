@@ -125,7 +125,7 @@ public abstract class BrowserTest {
             page.getByLabel("Password").fill(password);
         }
         page.locator("#createSharedCredentials_save").click();
-        page.waitForURL("**/admin/credentials/configureSharedCredentials.action");
+        page.waitForURL("**/configureSharedCredentials.action");
 
         return credentialsName;
     }
@@ -194,7 +194,10 @@ public abstract class BrowserTest {
     }
 
     private void gotoCredentialsPage() {
-        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+        Response navigate = page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+        if (navigate.status() == 404) {
+            page.navigate(BAMBOO + "/admin/configureSharedCredentials.action");
+        }
     }
 
 }

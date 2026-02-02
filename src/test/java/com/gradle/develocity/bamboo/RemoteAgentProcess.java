@@ -59,7 +59,8 @@ public final class RemoteAgentProcess implements AutoCloseable {
                 .collect(Collectors.toSet());
 
         Validate.validState(
-            remoteAgents.size() == 1, "Unexpected number of running agents. Expected 1, but got %d", remoteAgents.size());
+            remoteAgents.size() == 1, "Unexpected number of running agents. Expected 1, but got %d", remoteAgents.size()
+        );
 
         this.remoteAgent = new RemoteAgent(process, Iterables.getOnlyElement(remoteAgents));
     }
@@ -111,9 +112,8 @@ public final class RemoteAgentProcess implements AutoCloseable {
                 30, TimeUnit.SECONDS,
                 10, TimeUnit.SECONDS
             );
-            if (bambooApi.deleteAgentSupported()) {
-                bambooApi.deleteAgent(remoteAgent.id);
-            }
+
+            bambooApi.deleteAgent(remoteAgent.id);
         }
     }
 
@@ -125,7 +125,7 @@ public final class RemoteAgentProcess implements AutoCloseable {
         }
     }
 
-    private static class RemoteAgent {
+    private static final class RemoteAgent {
 
         private final Process process;
         private final long id;
@@ -135,4 +135,5 @@ public final class RemoteAgentProcess implements AutoCloseable {
             this.id = id;
         }
     }
+
 }
