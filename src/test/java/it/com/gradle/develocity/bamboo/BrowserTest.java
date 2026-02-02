@@ -174,7 +174,7 @@ public abstract class BrowserTest {
         }
 
         // Select build scan injection
-        page.locator("a#configureBuildScans").click();
+        page.locator("#configureBuildScans").click();
 
         BuildScansConfigurationForm form =
                 new BuildScansConfigurationForm(page)
