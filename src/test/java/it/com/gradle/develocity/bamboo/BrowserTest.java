@@ -131,7 +131,10 @@ public abstract class BrowserTest {
             page.getByLabel("Password").fill(password);
         }
         page.locator("#createSharedCredentials_save").evaluate("element => element.click()");;
-        page.waitForURL("**/configureSharedCredentials.action");
+        page.waitForResponse(
+                response -> response.url().contains("createSharedCredentials") && response.request().method().equals("POST"),
+                () -> {}
+        );
 
         return credentialsName;
     }
@@ -171,10 +174,9 @@ public abstract class BrowserTest {
         gotoAdminPage();
 
         Locator whatsNewDialog = page.locator(".aui-dialog2-header-main:has-text('new')");
-        Locator closeButton = page.locator("button.aui-close-button, button:has-text('Close')");
 
         if (whatsNewDialog.isVisible()) {
-            closeButton.click();
+            page.locator("#fd__start-close-btn").click();
 
             page.locator(".aui-blanket").waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
         }
