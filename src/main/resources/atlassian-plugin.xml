@@ -38,9 +38,9 @@
         <link linkId="configureBuildScans">/admin/buildScansConfig.action</link>
     </web-item>
 
-    <xwork key="buildScansConfigAdmin"
-           name="Develocity integration">
-        <package name="configureBuildScans" extends="admin">
+    <xwork key="buildScansConfigAdmin" name="Develocity integration">
+        <package name="configureBuildScans" extends="admin" namespace="/admin">
+
             <action name="buildScansConfig"
                     class="com.gradle.develocity.bamboo.admin.BuildScansConfigAction"
                     method="input">

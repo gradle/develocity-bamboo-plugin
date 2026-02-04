@@ -49,8 +49,6 @@ public final class BambooApi implements AutoCloseable {
 
     private static final String BAMBOO_AGENT_URL_PATTERN = "https://packages.atlassian.com/repository/public/com/atlassian/bamboo/bamboo-agent/%1$s/bamboo-agent-%1$s.jar";
 
-    private static final Version BAMBOO_6_10_2 = new Version(6, 10, 2);
-
     private final String bambooUrl;
     private final CloseableHttpClient client;
     private final Supplier<HttpClientContext> authContext;
@@ -183,10 +181,6 @@ public final class BambooApi implements AutoCloseable {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    public boolean deleteAgentSupported() {
-        return getBambooVersion().isGreaterOrEqualTo(BAMBOO_6_10_2);
     }
 
     public void deleteAgent(long agentId) {

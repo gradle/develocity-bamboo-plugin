@@ -119,6 +119,13 @@
             <version>4.12.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>6.8.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -368,6 +375,7 @@
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <jvmArgs>-Dbamboo.websudo.disabled=true</jvmArgs>
                     <productVersion>${bamboo.version}</productVersion>
                     <productDataVersion>${bamboo.data.version}</productDataVersion>
                     <enableQuickReload>false</enableQuickReload>

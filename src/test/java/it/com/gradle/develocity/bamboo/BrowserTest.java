@@ -9,6 +9,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +70,7 @@ public abstract class BrowserTest {
     }
 
     private static Browser launch(BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(100);
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setSlowMo(1000);
 
         if (BooleanUtils.toBoolean(System.getenv(HEADLESS_BROWSER_DISABLED))) {
             launchOptions.setHeadless(false);
@@ -82,11 +84,14 @@ public abstract class BrowserTest {
 
         if (BooleanUtils.toBoolean(System.getenv(VIDEO_RECORDING_ENABLED))) {
             contextOptions
-                .setRecordVideoDir(Paths.get("target/playwright/videos"))
-                .setRecordVideoSize(1024, 768);
+                    .setRecordVideoDir(Paths.get("target/playwright/videos"))
+                    .setRecordVideoSize(1024, 768);
         }
 
-        return browser.newContext(contextOptions);
+        BrowserContext browserContext = browser.newContext(contextOptions);
+        browserContext.setDefaultTimeout(60000);
+
+        return browserContext;
     }
 
     @AfterEach
@@ -95,7 +100,6 @@ public abstract class BrowserTest {
     }
 
     public final void loginAs(TestUser user) {
-        // Navigate to Bamboo main page
         page.navigate(BAMBOO);
 
         // Login
@@ -103,13 +107,6 @@ public abstract class BrowserTest {
         page.locator("#username-field").fill(user.getUsername());
         page.locator("#password-field").fill(user.getPassword());
         page.locator("#login-button").click();
-
-        // Validate Administrator access
-        if (user.isAdmin()) {
-            page.navigate(BAMBOO + "/admin/webSudoRequired.action");
-            page.locator("#webSudoForm_password").fill(user.getPassword());
-            page.locator("#webSudoForm_save").click();
-        }
     }
 
     public final String storePluginCredentialInSharedCredentials(String username, String password) {
@@ -133,8 +130,11 @@ public abstract class BrowserTest {
         if (password != null) {
             page.getByLabel("Password").fill(password);
         }
-        page.locator("#createSharedCredentials_save").click();
-        page.reload();
+        page.locator("#createSharedCredentials_save").evaluate("element => element.click()");;
+        page.waitForResponse(
+                response -> response.url().contains("createSharedCredentials") && response.request().method().equals("POST"),
+                () -> {}
+        );
 
         return credentialsName;
     }
@@ -164,8 +164,8 @@ public abstract class BrowserTest {
 
     public final void ensurePluginConfiguration(Consumer<BuildScansConfigurationForm> configurator) {
         assertPluginConfiguration(
-            configurator,
-            form -> assertThat(form.locator("div.error.control-form-error")).not().isVisible()
+                configurator,
+                form -> assertThat(form.locator("div.error.control-form-error")).not().isVisible()
         );
     }
 
@@ -173,20 +173,28 @@ public abstract class BrowserTest {
                                                 Consumer<BuildScansConfigurationForm> assertions) {
         gotoAdminPage();
 
+        Locator whatsNewDialog = page.locator(".aui-dialog2-header-main:has-text('new')");
+
+        if (whatsNewDialog.isVisible()) {
+            page.locator("#fd__start-close-btn").click();
+
+            page.locator(".aui-blanket").waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
+        }
+
         // Select build scan injection
         page.locator("#configureBuildScans").click();
 
         BuildScansConfigurationForm form =
-            new BuildScansConfigurationForm(page)
-                .clear()
-                .configure(configurator)
-                .save();
+                new BuildScansConfigurationForm(page)
+                        .clear()
+                        .configure(configurator)
+                        .save();
 
         assertions.accept(form);
     }
 
     public final String randomString() {
-        return RandomStringUtils.randomAlphanumeric(10);
+        return RandomStringUtils.secure().nextAlphanumeric(10);
     }
 
     private void gotoAdminPage() {
@@ -194,7 +202,10 @@ public abstract class BrowserTest {
     }
 
     private void gotoCredentialsPage() {
-        page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+        Response navigate = page.navigate(BAMBOO + "/admin/credentials/configureSharedCredentials.action");
+        if (navigate.status() == 404) {
+            page.navigate(BAMBOO + "/admin/configureSharedCredentials.action");
+        }
     }
 
 }
