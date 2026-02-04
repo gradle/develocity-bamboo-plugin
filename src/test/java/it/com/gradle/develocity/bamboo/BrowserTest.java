@@ -170,8 +170,8 @@ public abstract class BrowserTest {
                                                 Consumer<BuildScansConfigurationForm> assertions) {
         gotoAdminPage();
 
-        Locator whatsNewDialog = page.locator(".aui-dialog2-header-main:has-text(\\'new\\')");
-        Locator closeButton = page.locator("button.aui-close-button, button:has-text(\\'Close\\')");
+        Locator whatsNewDialog = page.locator(".aui-dialog2-header-main:has-text('new')");
+        Locator closeButton = page.locator("button.aui-close-button, button:has-text('Close')");
 
         if (whatsNewDialog.isVisible()) {
             closeButton.click();
